@@ -12,9 +12,14 @@ package com.cleanroommc.conventions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Year;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.junit.jupiter.api.Test;
@@ -24,6 +29,14 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class ConventionsPluginFunctionalTest {
+
+    private static final List<String> GITHUB_ENVIRONMENT = List.of(
+            "GITHUB_ACTIONS",
+            "GITHUB_REF_TYPE",
+            "GITHUB_REF_NAME",
+            "GITHUB_HEAD_REF",
+            "GITHUB_RUN_NUMBER"
+    );
 
     @TempDir
     Path projectDir;
@@ -937,8 +950,33 @@ class ConventionsPluginFunctionalTest {
                 """
         );
         Files.writeString(projectDir.resolve("build.gradle"), "plugins {\n    " + plugins + "\n}\n\n" + body);
-        // Cleanroom Versioning refuses to apply without both, so every conventions consumer has to set them.
-        Files.writeString(projectDir.resolve("gradle.properties"), "version = 1.0.0\nversioning.stage = release\n");
+        Files.writeString(projectDir.resolve("gradle.properties"), "versioning.stage = release\n");
+        initRepository();
+    }
+
+    // Cleanroom Versioning computes the version from Git, so every conventions consumer needs a repository with a commit.
+    private void initRepository() throws IOException {
+        git("init", "-b", "master");
+        // Everything the build writes stays untracked and excluded, so the worktree never flips dirty mid-test
+        // and the version stays a stable configuration cache input.
+        Files.writeString(projectDir.resolve(".git/info/exclude"), "*\n");
+        git("-c", "user.email=conventions@example.com", "-c", "user.name=Conventions", "commit", "--allow-empty", "--no-gpg-sign", "-m", "conventions");
+    }
+
+    private void git(String... arguments) throws IOException {
+        List<String> command = new ArrayList<>();
+        command.add("git");
+        command.addAll(List.of(arguments));
+        try {
+            Process process = new ProcessBuilder(command).directory(projectDir.toFile()).redirectErrorStream(true).start();
+            String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+            if (process.waitFor() != 0) {
+                throw new IOException("git " + String.join(" ", arguments) + " failed: " + output);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException(e);
+        }
     }
 
     private void settingsProject(String settings, String body) throws IOException {
@@ -958,11 +996,23 @@ class ConventionsPluginFunctionalTest {
     }
 
     private BuildResult run(String... arguments) {
-        return GradleRunner.create().withProjectDir(projectDir.toFile()).withPluginClasspath().withArguments(arguments).forwardOutput().build();
+        return runner(arguments).build();
     }
 
     private BuildResult runAndFail(String... arguments) {
-        return GradleRunner.create().withProjectDir(projectDir.toFile()).withPluginClasspath().withArguments(arguments).forwardOutput().buildAndFail();
+        return runner(arguments).buildAndFail();
+    }
+
+    private GradleRunner runner(String... arguments) {
+        // Under Actions the test project would be versioned as the outer repository's branch or release tag
+        Map<String, String> environment = new HashMap<>(System.getenv());
+        GITHUB_ENVIRONMENT.forEach(environment::remove);
+        return GradleRunner.create()
+                .withProjectDir(projectDir.toFile())
+                .withPluginClasspath()
+                .withArguments(arguments)
+                .withEnvironment(environment)
+                .forwardOutput();
     }
 
 }

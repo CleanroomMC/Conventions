@@ -88,9 +88,11 @@ conventions {
 The existing `conventions.repoUrl`, `conventions.junitVersion`, `conventions.mockitoVersion`, `conventions.assertjVersion`, `conventions.jmhVersion` and `conventions.jspecifyVersion` Gradle properties remain supported as defaults for compatibility and CI overrides. An extension value takes precedence.
 
 > [!IMPORTANT]
-> Cleanroom Versioning is applied by the base conventions and refuses to apply without `version`
-> and `versioning.stage` (one of `alpha`, `beta`, `rc`, `release`).
-> Both are required in every consuming project.
+> Cleanroom Versioning 3 is applied by the base conventions and computes `project.version` from Git tags, so a
+> consuming project must not declare `version` in `gradle.properties` or the build script, and it needs a Git
+> repository with at least one commit. `versioning.stage` (one of `alpha`, `beta`, `rc`, `release`) is optional,
+> it is `beta` while the version line is below `1.0.0` and `release` from there on. Set it as a Gradle property
+> rather than through the `versioning { }` block when the project applies `java-gradle-plugin`.
 
 ### Extraction
 
@@ -123,8 +125,9 @@ Applied from `settings.gradle`.
 
 ### Base Conventions
 
-- Applies `com.cleanroommc.versioning` gradle plugin.
+- Applies `com.cleanroommc.versioning` gradle plugin, pinned at 3.2.0.
   - Configures projects to follow Cleanroom's Versioning Conventions.
+  - `project.version` comes from the Git tags, `./gradlew -q printVersion` prints it.
 - Default `group` is `com.cleanroommc` when the project has not set one.
 - Force UTF-8 encoding on ALL `JavaCompile`, `Javadoc` and `Test` tasks.
 - Mutes Javadoc's `missing` warnings, everything else in `-Xdoclint` stays on.
@@ -310,11 +313,11 @@ jobs:
 | `cache-provider`     | `enhanced`      | `basic` (MIT) or `enhanced` (Gradle Terms of Use)                      |
 | `build-scan-publish` | `true`          | Publish build scans to `scans.gradle.com`                              |
 
-The workflow runs `./gradlew build -Pversioning.run=${{ github.run_number }}`. Draft PRs are skipped until they are marked ready for review.
+The workflow runs `./gradlew build`. It checks out the full history and tags, which Versioning reads, and the run number reaches the version through the Actions environment. Draft PRs are skipped until they are marked ready for review.
 
 ### Release
 
-[`.github/workflows/release.yml`](.github/workflows/release.yml) builds with `-Pversioning.publish`, generates release notes and `CHANGELOG.md` through git-cliff, then optionally publishes.
+[`.github/workflows/release.yml`](.github/workflows/release.yml) builds the tag, generates release notes and `CHANGELOG.md` through git-cliff, then optionally publishes.
 
 ```yaml filename=".github/workflows/publish.yml"
 name: Publish

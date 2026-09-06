@@ -111,7 +111,7 @@ jobs:
 
       - name: Build
         working-directory: ${{ steps.gradle.outputs.dir }}
-        run: ./gradlew build --no-configuration-cache -Pversioning.publish
+        run: ./gradlew build --no-configuration-cache
 
       - name: Resolve git-cliff config
         id: cliff
@@ -285,7 +285,7 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_CleanroomUsername: ${{ secrets.MAVEN_NAME }}
           ORG_GRADLE_PROJECT_CleanroomPassword: ${{ secrets.MAVEN_PASSWORD }}
-        run: ./gradlew publishAllPublicationsToCleanroomRepository --no-configuration-cache -Pversioning.publish
+        run: ./gradlew publishAllPublicationsToCleanroomRepository --no-configuration-cache
 
       - name: Publish to Plugin Portal
         if: ${{ inputs.publish-plugin-portal && github.ref_type == 'tag' }}
@@ -295,7 +295,7 @@ jobs:
           GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-        run: ./gradlew publishPlugins --no-configuration-cache -Pversioning.publish
+        run: ./gradlew publishPlugins --no-configuration-cache
 
       - name: Publish mods
         if: ${{ inputs.publish-mods && github.ref_type == 'tag' }}
@@ -303,7 +303,7 @@ jobs:
         env:
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-        run: ./gradlew publishMods --no-configuration-cache -Pversioning.publish
+        run: ./gradlew publishMods --no-configuration-cache
 
       - name: Create GitHub Release
         if: github.ref_type == 'tag'
