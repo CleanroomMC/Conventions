@@ -25,6 +25,7 @@ Published plugin IDs:
 | `com.cleanroommc.conventions.base`         | Versioning, Java, encoding, & reproducible archive conventions |
 | `com.cleanroommc.conventions.license`      | Requires LICENSE to match the selected license conventions    |
 | `com.cleanroommc.conventions.style`        | Code formatting & Checkstyle conventions                       |
+| `com.cleanroommc.conventions.annotations`  | JSpecify, JetBrains Annotations & AnoNe conventions            |
 | `com.cleanroommc.conventions.testing`      | JUnit, AssertJ & Mockito conventions                           |
 | `com.cleanroommc.conventions.benchmarking` | JMH benchmarking suite in an isolated `benchmark` source set   |
 | `com.cleanroommc.conventions.publishing`   | Maven & Gradle Plugin Portal publishing conventions            |
@@ -82,10 +83,12 @@ conventions {
     assertjVersion = '3.27.7'
     jmhVersion = '1.37'
     jspecifyVersion = '1.0.0'
+    jetbrainsAnnotationsVersion = '26.1.0'
+    anoneVersion = '1.0.0' // unset by default
 }
 ```
 
-The existing `conventions.repoUrl`, `conventions.junitVersion`, `conventions.mockitoVersion`, `conventions.assertjVersion`, `conventions.jmhVersion` and `conventions.jspecifyVersion` Gradle properties remain supported as defaults for compatibility and CI overrides. An extension value takes precedence.
+The existing `conventions.repoUrl`, `conventions.junitVersion`, `conventions.mockitoVersion`, `conventions.assertjVersion`, `conventions.jmhVersion`, `conventions.jspecifyVersion`, `conventions.jetbrainsAnnotationsVersion` and `conventions.anoneVersion` Gradle properties remain supported as defaults for compatibility and CI overrides. An extension value takes precedence.
 
 > [!IMPORTANT]
 > Cleanroom Versioning 3 is applied by the base conventions and computes `project.version` from Git tags, so a
@@ -132,7 +135,6 @@ Applied from `settings.gradle`.
 - Force UTF-8 encoding on ALL `JavaCompile`, `Javadoc` and `Test` tasks.
 - Mutes Javadoc's `missing` warnings, everything else in `-Xdoclint` stays on.
 - Java toolchain from `conventions.javaMajor`.
-- `org.jspecify:jspecify` as `compileOnly` on every source set.
 - IDEA module downloads sources and Javadoc.
 - Jar manifest `Implementation-*` and `Specification-*` match the POM identity (name, version, CleanroomMC).
 - Verifiable rebuilding of artifacts
@@ -175,6 +177,14 @@ Checkstyle warns when an imported `Nullable`, `NonNull`, `Nonnull`, `NotNull` or
 > FormatJ ships an IntelliJ plugin that reads `formatj.toml`.
 >
 > Run `extractConventions` (or copy [this file](formatj.toml) to the project root) and use the plugin to perform native formatting.
+
+### Annotations Conventions
+
+Added as `compileOnly` on every source set, so none of them reach a consumer's runtime classpath:
+
+- `org.jspecify:jspecify` for nullness.
+- `org.jetbrains:annotations`.
+- `com.cleanroommc:anone`, only once `anoneVersion` is set. AnoNe 1.0.0 is not published yet, so it stays off by default and an empty value removes it again.
 
 ### Testing Conventions
 

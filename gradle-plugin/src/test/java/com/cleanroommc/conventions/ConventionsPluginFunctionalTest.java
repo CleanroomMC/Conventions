@@ -48,6 +48,7 @@ class ConventionsPluginFunctionalTest {
                     "com.cleanroommc.conventions.base",
                     "com.cleanroommc.conventions.license",
                     "com.cleanroommc.conventions.style",
+                    "com.cleanroommc.conventions.annotations",
                     "com.cleanroommc.conventions.testing",
                     "com.cleanroommc.conventions.benchmarking",
                     "com.cleanroommc.conventions.publishing",
@@ -238,15 +239,30 @@ class ConventionsPluginFunctionalTest {
     }
 
     @Test
-    void jspecifyIsCompileOnly() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions.base'", printCompileOnly());
-        assertThat(run("printCompileOnly").getOutput()).contains("org.jspecify:jspecify:1.0.0");
+    void annotationLibrariesAreCompileOnly() throws IOException {
+        project("id 'java'\n    id 'com.cleanroommc.conventions.annotations'", printCompileOnly());
+        String output = run("printCompileOnly").getOutput();
+        assertThat(output).contains("org.jspecify:jspecify:1.0.0");
+        assertThat(output).contains("org.jetbrains:annotations:26.1.0");
+        assertThat(output).doesNotContain("com.cleanroommc:anone");
     }
 
     @Test
-    void jspecifyVersionCanBeConfiguredThroughTheExtension() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions.base'", "conventions { jspecifyVersion = '0.3.0' }\n\n" + printCompileOnly());
-        assertThat(run("printCompileOnly").getOutput()).contains("org.jspecify:jspecify:0.3.0");
+    void annotationVersionsCanBeConfiguredThroughTheExtension() throws IOException {
+        project(
+                "id 'java'\n    id 'com.cleanroommc.conventions.annotations'",
+                "conventions {\n    jspecifyVersion = '0.3.0'\n    jetbrainsAnnotationsVersion = '26.0.2'\n    anoneVersion = '0.9.0'\n}\n\n" + printCompileOnly()
+        );
+        String output = run("printCompileOnly").getOutput();
+        assertThat(output).contains("org.jspecify:jspecify:0.3.0");
+        assertThat(output).contains("org.jetbrains:annotations:26.0.2");
+        assertThat(output).contains("com.cleanroommc:anone:0.9.0");
+    }
+
+    @Test
+    void baseConventionsDoNotAddAnnotationLibraries() throws IOException {
+        project("id 'java'\n    id 'com.cleanroommc.conventions.base'", printCompileOnly());
+        assertThat(run("printCompileOnly").getOutput()).doesNotContain("org.jspecify:jspecify");
     }
 
     @Test

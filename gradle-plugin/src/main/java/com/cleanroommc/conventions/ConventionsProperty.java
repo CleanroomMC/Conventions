@@ -26,6 +26,8 @@ enum ConventionsProperty {
     JMH_VERSION("conventions.jmhVersion"),
     BENCHMARKING("conventions.benchmarking"),
     JSPECIFY_VERSION("conventions.jspecifyVersion"),
+    JETBRAINS_ANNOTATIONS_VERSION("conventions.jetbrainsAnnotationsVersion"),
+    ANONE_VERSION("conventions.anoneVersion"),
     PROVISION_JAVA("conventions.provisionJava"),
     LICENSE("conventions.license");
 

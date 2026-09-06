@@ -28,6 +28,7 @@ final class ConventionsDefaults {
     static final String ASSERTJ_VERSION = "3.27.7";
     static final String JMH_VERSION = "1.37";
     static final String JSPECIFY_VERSION = "1.0.0";
+    static final String JETBRAINS_ANNOTATIONS_VERSION = "26.1.0";
     static final String JAVA_VERSION = "25";
 
     private ConventionsDefaults() {}

@@ -25,6 +25,7 @@ public class ConventionsPlugin implements Plugin<Project> {
         project.getPluginManager().apply(TokenEnvoyPlugin.class);
         project.getPluginManager().apply(ConventionsLicensePlugin.class);
         project.getPluginManager().apply(ConventionsStylePlugin.class);
+        project.getPluginManager().apply(ConventionsAnnotationsPlugin.class);
         project.getPluginManager().apply(ConventionsTestingPlugin.class);
         project.getPluginManager().apply(ConventionsPublishingPlugin.class);
         if (ConventionsProperty.BENCHMARKING.flag(project.getProviders(), false)) {

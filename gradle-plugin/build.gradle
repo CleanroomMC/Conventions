@@ -57,6 +57,12 @@ gradlePlugin {
             displayName = 'Cleanroom Style Conventions'
             description = 'Sets code style conventions for CleanroomMC projects.'
         }
+        conventionsAnnotations {
+            id = "${group}.conventions.annotations"
+            implementationClass = "${group}.conventions.ConventionsAnnotationsPlugin"
+            displayName = 'Cleanroom Annotations Conventions'
+            description = 'Sets annotation library conventions for CleanroomMC projects.'
+        }
         conventionsTesting {
             id = "${group}.conventions.testing"
             implementationClass = "${group}.conventions.ConventionsTestingPlugin"

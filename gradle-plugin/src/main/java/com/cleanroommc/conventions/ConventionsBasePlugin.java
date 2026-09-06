@@ -40,7 +40,7 @@ public class ConventionsBasePlugin implements Plugin<Project> {
         ExtensionContainer extensions = project.getExtensions();
         TaskContainer tasks = project.getTasks();
 
-        ConventionsExtension conventions = ConventionsExtension.register(project);
+        ConventionsExtension.register(project);
         ExtractConventionsTask.register(project);
 
         // Apply Cleanroom Versioning
@@ -60,10 +60,14 @@ public class ConventionsBasePlugin implements Plugin<Project> {
         });
 
         // Gets "conventions.javaMajor" and sets Java toolchain to it
-        project.getPlugins().withType(JavaPlugin.class, _ -> {
-            extensions.getByType(JavaPluginExtension.class).getToolchain().getLanguageVersion().set(JavaLanguageVersion.of(ConventionsProperty.JAVA_VERSION.get(project, ConventionsDefaults.JAVA_VERSION)));
-            configureJSpecify(project, conventions);
-        });
+        project.getPlugins()
+                .withType(
+                        JavaPlugin.class,
+                        _ -> extensions.getByType(JavaPluginExtension.class)
+                                .getToolchain()
+                                .getLanguageVersion()
+                                .set(JavaLanguageVersion.of(ConventionsProperty.JAVA_VERSION.get(project, ConventionsDefaults.JAVA_VERSION)))
+                );
 
         // Verifiable rebuilds
         tasks.withType(AbstractArchiveTask.class).configureEach(task -> {
@@ -77,16 +81,6 @@ public class ConventionsBasePlugin implements Plugin<Project> {
         IdeaModel idea = extensions.getByType(IdeaModel.class);
         idea.getModule().setDownloadSources(true);
         idea.getModule().setDownloadJavadoc(true);
-    }
-
-    private void configureJSpecify(Project project, ConventionsExtension conventions) {
-        JavaPluginExtension java = project.getExtensions().getByType(JavaPluginExtension.class);
-        java.getSourceSets()
-                .configureEach(sourceSet -> project.getDependencies()
-                        .addProvider(
-                                sourceSet.getCompileOnlyConfigurationName(),
-                                conventions.getJspecifyVersion().map(version -> "org.jspecify:jspecify:" + version)
-                        ));
     }
 
     private void configureManifest(Project project, Jar jar) {

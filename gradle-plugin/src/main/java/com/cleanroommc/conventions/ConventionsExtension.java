@@ -37,6 +37,10 @@ public abstract class ConventionsExtension {
         extension.getAssertjVersion().convention(ConventionsProperty.ASSERTJ_VERSION.provider(project).orElse(ConventionsDefaults.ASSERTJ_VERSION));
         extension.getJmhVersion().convention(ConventionsProperty.JMH_VERSION.provider(project).orElse(ConventionsDefaults.JMH_VERSION));
         extension.getJspecifyVersion().convention(ConventionsProperty.JSPECIFY_VERSION.provider(project).orElse(ConventionsDefaults.JSPECIFY_VERSION));
+        extension.getJetbrainsAnnotationsVersion()
+                .convention(ConventionsProperty.JETBRAINS_ANNOTATIONS_VERSION.provider(project).orElse(ConventionsDefaults.JETBRAINS_ANNOTATIONS_VERSION));
+        // AnoNe is unpublished, so it stays opt-in until a version is named.
+        extension.getAnoneVersion().convention(ConventionsProperty.ANONE_VERSION.provider(project).orElse(""));
         extension.getBeginFrom().convention(LicenseYears.beginProvider(project));
         return extension;
     }
@@ -52,6 +56,10 @@ public abstract class ConventionsExtension {
     public abstract Property<String> getJmhVersion();
 
     public abstract Property<String> getJspecifyVersion();
+
+    public abstract Property<String> getJetbrainsAnnotationsVersion();
+
+    public abstract Property<String> getAnoneVersion();
 
     public abstract Property<Integer> getBeginFrom();
 
