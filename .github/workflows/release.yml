@@ -118,7 +118,7 @@ jobs:
         env:
           CLIFF_CONFIG: ${{ inputs.cliff-config }}
           GRADLE_DIR: ${{ steps.gradle.outputs.dir }}
-          WORKFLOW_REF: ${{ github.workflow_ref }}
+          WORKFLOW_SHA: ${{ github.job_workflow_sha }}
         run: |
           set -euo pipefail
           for candidate in "${GRADLE_DIR}/${CLIFF_CONFIG}" "${CLIFF_CONFIG}"; do
@@ -127,12 +127,9 @@ jobs:
               exit 0
             fi
           done
-          # No local override, so take the conventions file from the same ref this workflow was called at
-          slug="${WORKFLOW_REF%%/.github/*}"
-          ref="${WORKFLOW_REF##*@}"
-          ref="${ref#refs/heads/}"
-          ref="${ref#refs/tags/}"
-          url="https://raw.githubusercontent.com/${slug}/${ref}/cliff.toml"
+          # github.workflow_ref names the caller's workflow, not this one, so the conventions repository is spelled
+          # out here and job_workflow_sha pins it to the commit this reusable workflow was resolved from.
+          url="https://raw.githubusercontent.com/CleanroomMC/Convention/${WORKFLOW_SHA}/cliff.toml"
           if ! curl -fsSL "${url}" -o "${RUNNER_TEMP}/cliff.toml"; then
             echo "::error::git-cliff config '${CLIFF_CONFIG}' was not found in '${GRADLE_DIR}' or at the repository root, and '${url}' could not be fetched. Commit a config and pass cliff-config."
             exit 1
@@ -145,7 +142,7 @@ jobs:
           config: ${{ steps.cliff.outputs.config }}
           args: --latest --strip all
         env:
-          OUTPUT: RELEASE_NOTES.md
+          OUTPUT: ${{ runner.temp }}/RELEASE_NOTES.md
           GITHUB_REPO: ${{ github.repository }}
 
       - name: Generate Changelog
@@ -154,7 +151,7 @@ jobs:
           config: ${{ steps.cliff.outputs.config }}
           args: --workdir .
         env:
-          OUTPUT: CHANGELOG.md
+          OUTPUT: ${{ runner.temp }}/CHANGELOG.md
           CLIFF_INCLUDE_DATE: '1'
           GITHUB_REPO: ${{ github.repository }}
 
@@ -167,7 +164,8 @@ jobs:
           import re
           import subprocess
 
-          files = ('RELEASE_NOTES.md', 'CHANGELOG.md')
+          temp = os.environ['RUNNER_TEMP']
+          files = (f'{temp}/RELEASE_NOTES.md', f'{temp}/CHANGELOG.md')
           line_re = re.compile(
               r'^(\s*)\*\[Fixes issue ((?:[\w.-]+/[\w.-]+)?#\d+)(?: by @([^\]]+))?\]\*\s*$'
           )
@@ -319,4 +317,5 @@ jobs:
             echo "::error::No release artifacts matched '${ARTIFACT_PATH}'."
             exit 1
           fi
-          gh release create "$TAG" --title "$TAG" --notes-file RELEASE_NOTES.md CHANGELOG.md "${files[@]}"
+          gh release create "$TAG" --title "$TAG" --notes-file "${RUNNER_TEMP}/RELEASE_NOTES.md" \
+            "${RUNNER_TEMP}/CHANGELOG.md" "${files[@]}"
