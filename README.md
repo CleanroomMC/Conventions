@@ -283,6 +283,23 @@ conventions {
 }
 ```
 
+## Branches
+
+| Branch                    | Purpose                                        | Version                      | CI                                 |
+|---------------------------|------------------------------------------------|------------------------------|------------------------------------|
+| `master`                  | The release line. Every tag is cut here        | `1.1.2-dev.3+run.24`         | Builds on push, publishes on a tag |
+| `develop/<major>.<minor>` | A development line for the version it leads to | `1.4.0-dev.7+run.26`         | Builds on push                     |
+| `feature/<slug>`          | New work, merged back through a pull request   | `1.4.0-feature-foo.3+run.28` | Builds on its pull request         |
+| `fix/<slug>`              | A fix, merged back through a pull request      | `1.1.2-fix-crash.1+run.29`   | Builds on its pull request         |
+
+The branch prefix matches the commit type the work carries, so a `feature/` branch lands `feat` commits and a `fix/` branch lands `fix` commits, the two types `cliff.toml` puts at the top of a changelog. Any other prefix behaves exactly like those two, so `docs/`, `refactor/` and `chore/` need no extra setup.
+
+`feature/` and `fix/` branches take their number from the line they were cut from and count their commits under their own label, so a branch cut from `develop/1.4` reads `1.4.0-feature-foo.3` and the same branch cut from `master` reads `1.1.2-feature-foo.3`. Only tags on `master` publish. Nothing built from a working branch or a development branch reaches a repository unless a workflow is written to do it.
+
+The version column describes [Cleanroom Versioning](https://github.com/CleanroomMC/CleanroomVersioning) 3.x, which the conventions plugin pins at 3.2.0.
+
+Delete a working branch once it is merged. Delete or rename a development branch once its version is tagged, since a development branch that has been released fails the build by design.
+
 ## GitHub Actions
 
 Reusable workflows live in this repository. Pin the `@` ref to a tag (or a commit), which can be better than pinning to `@master` which tracks whatever is latest.
@@ -298,6 +315,9 @@ name: CI
 
 on:
   push:
+    branches:
+      - master
+      - 'develop/**'
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review, review_requested]
   workflow_dispatch:
@@ -319,11 +339,16 @@ jobs:
 | `artifact-path`      | `**/build/libs` | Paths uploaded after a successful build                                |
 | `if-no-files-found`  | `warn`          | `warn`, `error` or `ignore` when nothing matches                       |
 | `java-version`       | `25`            | Temurin JDK used to launch Gradle                                      |
+| `release-branch`     | `master`        | Branch merges are skipped on, matching `versioning.releaseBranch`      |
 | `timeout-minutes`    | `15`            | Job timeout                                                            |
 | `cache-provider`     | `enhanced`      | `basic` (MIT) or `enhanced` (Gradle Terms of Use)                      |
 | `build-scan-publish` | `true`          | Publish build scans to `scans.gradle.com`                              |
 
 The workflow runs `./gradlew build`. It checks out the full history and tags, which Versioning reads, and the run number reaches the version through the Actions environment. Draft PRs are skipped until they are marked ready for review.
+
+The push filter keeps `feature/` and `fix/` branches from building twice for one commit, once for the push and once for the pull request. Drop it to build every pushed branch, at the cost of that duplicate run.
+
+A guard job skips a merge commit pushed to `release-branch`. It sits between the merge and the release tag, so it computes the next patch of the previous tag, a number that will never ship. Merges into a development branch still build, since that branch pins its own number.
 
 ### Release
 

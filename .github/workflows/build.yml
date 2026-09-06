@@ -19,6 +19,10 @@ on:
         description: Temurin JDK used to launch Gradle. The project toolchain can still request a different language version.
         type: string
         default: '25'
+      release-branch:
+        description: Branch merges are skipped on, matching versioning.releaseBranch.
+        type: string
+        default: master
       timeout-minutes:
         description: Job timeout in minutes.
         type: number
@@ -41,9 +45,37 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  build:
+  guard:
     # Draft PRs wait until they are marked ready for review.
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      skip: ${{ steps.check.outputs.skip }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+
+      - name: Check for a release branch merge
+        id: check
+        env:
+          RELEASE_BRANCH: ${{ inputs.release-branch }}
+        run: |
+          set -euo pipefail
+          parents=$(git rev-list --parents -n 1 HEAD | wc -w)
+          if [ "$parents" -gt 2 ] && [ "$GITHUB_REF" = "refs/heads/${RELEASE_BRANCH}" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    needs: guard
+    # A merge into the release branch computes the next patch of the previous tag, a version that never ships.
+    if: needs.guard.outputs.skip != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
