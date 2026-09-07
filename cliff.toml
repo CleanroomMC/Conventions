@@ -41,13 +41,13 @@ https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}
 {%- endmacro -%}
 {%- macro print_commit(commit, commits) -%}
 - {% if commit.scope %}**{{ commit.scope }}**: {% endif -%}
-{{ commit.message | split(pat="\n") | first | trim | upper_first -}}
+{{ commit.message | split(pat="\f") | first | trim | upper_first -}}
 {%- if commit.remote.pr_number %} *[PR by {% if commit.remote.username %}@{{ commit.remote.username }}{% else %}{{ commit.author.name }}{% endif %}{{ self::coauthors(commit=commit, commits=commits) }} in #{{ commit.remote.pr_number }}]*
 {%- elif commit.remote.username %} *[commit by @{{ commit.remote.username }}{{ self::coauthors(commit=commit, commits=commits) }} in {{ commit.id | truncate(length=7, end="") }}]*
 {%- elif commit.author.name %} *[commit by {{ commit.author.name }}{{ self::coauthors(commit=commit, commits=commits) }} in {{ commit.id | truncate(length=7, end="") }}]*
 {%- endif -%}
 {%- if commit.breaking and commit.breaking_description and commit.breaking_description != commit.message %}
-{{ "  " }}{{ commit.breaking_description | split(pat="\n") | first | trim | upper_first }}
+{{ "  " }}{{ commit.breaking_description | split(pat="\f") | first | trim | upper_first }}
 {%- endif -%}
 {%- for hit in commit.raw_message | default(value="") | find_regex(pat="(?i)(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?):?\\s+(?:[\\w.-]+/[\\w.-]+)?#\\d+") %}
 {{ "    " }}*[Fixes issue {{ self::issue_ref(hit=hit) }}]*
@@ -136,12 +136,18 @@ sort_commits = "newest"
 #
 # pack: is the opt-in multi-change squash type. Nested body lines are
 # often GitHub bullets; strip those so they parse as conventional commits.
-# split_commits is global, so non-pack bodies are collapsed to CR. git-cliff
-# splits on lines() (not lone CR) while git-conventional still sees footers.
+# split_commits is global, so non-pack bodies are collapsed onto the subject
+# line with FF, which git-cliff's lines() does not split on. Co-authored-by
+# lines keep their newline so they split off into the Co-authors group, which
+# the template folds back into the byline. FF and not CR because git-conventional
+# treats a lone CR as a line ending and then fails to parse the commit, which
+# loses the type, scope and breaking flag.
+# Rust's regex crate has no look-ahead, so the pattern only gates on the
+# message being multi-line and the pack check lives in the awk program.
 commit_preprocessors = [
     { pattern = '\s*\((\w+\s)?#([0-9]+)\)', replace = "" },
     { pattern = '(?m)^[ \t]*[-*][ \t]+', replace = "" },
-    { pattern = '(?s)^(?!pack(?:\(|:|!)).*\n', replace_command = "tr '\\n' '\\r'" },
+    { pattern = '(?s)^.*\n', replace_command = '''awk 'NR==1 && /^pack[(!:]/ {pack=1} {printf "%s%s", (NR==1 ? "" : (pack || tolower($0) ~ /^co-authored-by:/ ? "\n" : "\f")), $0}' ''' },
 ]
 
 # HTML comments force group order; Tera's group_by is alphabetical otherwise.
