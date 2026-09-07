@@ -39,9 +39,7 @@ public abstract class ConventionsExtension {
         extension.getJspecifyVersion().convention(ConventionsProperty.JSPECIFY_VERSION.provider(project).orElse(ConventionsDefaults.JSPECIFY_VERSION));
         extension.getJetbrainsAnnotationsVersion()
                 .convention(ConventionsProperty.JETBRAINS_ANNOTATIONS_VERSION.provider(project).orElse(ConventionsDefaults.JETBRAINS_ANNOTATIONS_VERSION));
-        // AnoNe is unpublished, so it stays opt-in until a version is named.
-        extension.getAnoneVersion().convention(ConventionsProperty.ANONE_VERSION.provider(project).orElse(""));
-        extension.getBeginFrom().convention(LicenseYears.beginProvider(project));
+        extension.getAnoneVersion().convention(ConventionsProperty.ANONE_VERSION.provider(project).orElse(ConventionsDefaults.ANONE_VERSION));
         return extension;
     }
 

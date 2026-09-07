@@ -46,15 +46,20 @@ final class LicenseYears {
     }
 
     static Provider<LicenseYears> provider(Project project) {
+        return provider(project, project);
+    }
+
+    static Provider<LicenseYears> provider(Project project, Project persistedProject) {
         ConventionsExtension conventions = ConventionsExtension.register(project);
-        return currentYear(project.getProviders()).zip(conventions.getBeginFrom(), (currentYear, begin) -> new LicenseYears(begin, currentYear));
+        Provider<Integer> begin = conventions.getBeginFrom().orElse(beginProvider(persistedProject));
+        return currentYear(project.getProviders()).zip(begin, (currentYear, firstYear) -> new LicenseYears(firstYear, currentYear));
     }
 
     static Provider<Integer> beginProvider(Project project) {
         ProviderFactory providers = project.getProviders();
         Provider<Integer> persisted = providers.of(
                 PersistedBeginYear.class,
-                source -> source.getParameters().getStartDirectory().set(project.getRootProject().getLayout().getProjectDirectory())
+                source -> source.getParameters().getStartDirectory().set(project.getLayout().getProjectDirectory())
         );
         return persisted.orElse(currentYear(providers));
     }

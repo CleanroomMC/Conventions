@@ -766,6 +766,58 @@ class ConventionsPluginFunctionalTest {
         assertThat(runAndFail("checkLicense").getOutput()).contains("does not match CleanroomMC License Version 1.0");
     }
 
+    @Test
+    void checkLicenseUsesAChildLicenseBeforeTheRoot() throws IOException {
+        int current = Year.now().getValue();
+        int begin = current - 5;
+        project("id 'java'", "");
+        Path child = childProject("id 'java'\n    id 'com.cleanroommc.conventions.license'", "");
+        Files.writeString(child.resolve("LICENSE"), LicenseMode.VISIBLE.licenseText(LicenseYears.of(begin, current)));
+
+        assertThat(projectDir.resolve("LICENSE")).doesNotExist();
+        assertThat(run(":child:checkLicense").getOutput()).contains("BUILD SUCCESSFUL");
+    }
+
+    @Test
+    void checkLicenseDoesNotAcceptTheRootWhenTheChildLicenseDiffers() throws IOException {
+        project("id 'java'", "");
+        Path child = childProject("id 'java'\n    id 'com.cleanroommc.conventions.license'", "");
+        Files.writeString(projectDir.resolve("LICENSE"), LicenseMode.VISIBLE.licenseText(LicenseYears.current()));
+        Files.writeString(child.resolve("LICENSE"), "MIT\n");
+
+        BuildResult result = runAndFail(":child:checkLicense");
+
+        assertThat(result.getOutput()).contains(child.resolve("LICENSE").toString());
+    }
+
+    @Test
+    void childExtractionHonorsItsExplicitBeginFrom() throws IOException {
+        int current = Year.now().getValue();
+        project("id 'java'", "");
+        childProject("id 'java'\n    id 'com.cleanroommc.conventions'", "conventions { beginFrom = 2001 }");
+
+        run(":child:extractConventions");
+
+        assertThat(Files.readString(projectDir.resolve("HEADER"))).contains("Copyright (c) 2001-" + current + " CleanroomMC contributors");
+        assertThat(Files.readString(projectDir.resolve("LICENSE"))).contains("Copyright © 2001-" + current + " CleanroomMC contributors");
+    }
+
+    @Test
+    void childExtractionKeepsTheRootYearWhenBeginFromIsImplicit() throws IOException {
+        int current = Year.now().getValue();
+        int rootBegin = current - 5;
+        int childBegin = current - 2;
+        project("id 'java'", "");
+        Path child = childProject("id 'java'\n    id 'com.cleanroommc.conventions'", "");
+        Files.writeString(projectDir.resolve("HEADER"), LicenseMode.VISIBLE.headerText(LicenseYears.of(rootBegin, current - 1)));
+        Files.writeString(child.resolve("HEADER"), LicenseMode.VISIBLE.headerText(LicenseYears.of(childBegin, childBegin)));
+
+        run(":child:extractConventions");
+
+        assertThat(Files.readString(projectDir.resolve("HEADER"))).contains("Copyright (c) " + rootBegin + "-" + current + " CleanroomMC contributors");
+        assertThat(Files.readString(projectDir.resolve("HEADER"))).doesNotContain("Copyright (c) " + childBegin + "-" + current + " CleanroomMC contributors");
+    }
+
     @ParameterizedTest
     @EnumSource(LicenseMode.class)
     void publishingDeclaresTheSelectedLicense(LicenseMode license) throws IOException {
@@ -968,6 +1020,23 @@ class ConventionsPluginFunctionalTest {
         Files.writeString(projectDir.resolve("build.gradle"), "plugins {\n    " + plugins + "\n}\n\n" + body);
         Files.writeString(projectDir.resolve("gradle.properties"), "versioning.stage = release\n");
         initRepository();
+    }
+
+    private Path childProject(String plugins, String body) throws IOException {
+        Files.writeString(
+                projectDir.resolve("settings.gradle"),
+                """
+                plugins {
+                    id 'com.cleanroommc.conventions.settings'
+                }
+                rootProject.name = 'conventions-under-test'
+                include 'child'
+                """
+        );
+        Files.writeString(projectDir.resolve("build.gradle"), "");
+        Path child = Files.createDirectories(projectDir.resolve("child"));
+        Files.writeString(child.resolve("build.gradle"), "plugins {\n    " + plugins + "\n}\n\n" + body);
+        return child;
     }
 
     // Cleanroom Versioning computes the version from Git, so every conventions consumer needs a repository with a commit.

@@ -48,7 +48,7 @@ class CliffPackTest {
         assertThat(preprocessors.get(0).replace()).isEmpty();
         assertThat(preprocessors.get(1).pattern().pattern()).isEqualTo("(?m)^[ \\t]*[-*][ \\t]+");
         assertThat(preprocessors.get(1).replace()).isEmpty();
-        assertThat(preprocessors.get(2).pattern().pattern()).isEqualTo("(?s)^(?!pack(?:\\(|:|!)).*\\n");
+        assertThat(preprocessors.get(2).pattern().pattern()).isEqualTo("(?s)^.*\\n");
         assertThat(preprocessors.get(2).replaceCommand()).isEqualTo(CliffPipeline.COLLAPSE_COMMAND);
 
         List<Parser> parsers = pipeline.parsers();
@@ -188,7 +188,7 @@ class CliffPackTest {
             List<CliffEntry> entries = pipeline.process("feat(ui): add a button\n\nA longer explanation.\n");
             assertThat(entries).hasSize(1);
             assertThat(entries.getFirst().message()).doesNotContain("\n");
-            assertThat(entries.getFirst().message()).contains("\r");
+            assertThat(entries.getFirst().message()).contains("\f");
         }
 
         @Test
@@ -430,7 +430,7 @@ class CliffPackTest {
         }
 
         @Test
-        void keepsCoAuthorsOnARegularCommit() {
+        void splitsCoAuthorsFromARegularCommit() {
             List<CliffEntry> entries = pipeline.process(
                     """
                     feat(ui): add a button
@@ -438,9 +438,9 @@ class CliffPackTest {
                     Co-authored-by: Example <example@example.com>
                     """
             );
-            assertThat(entries).hasSize(1);
+            assertThat(entries).hasSize(2);
             assertEntry(entries.getFirst(), "Feature", "ui", "add a button");
-            assertThat(entries.getFirst().message()).contains("Co-authored-by: Example <example@example.com>");
+            assertEntry(entries.get(1), "Co-authors", null, "Example <example@example.com>");
         }
 
         @Test

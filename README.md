@@ -352,7 +352,7 @@ A guard job skips a merge commit pushed to `release-branch`. It sits between the
 
 ### Release
 
-[`.github/workflows/release.yml`](.github/workflows/release.yml) builds the tag, generates release notes and `CHANGELOG.md` through git-cliff, then optionally publishes.
+[`.github/workflows/release.yml`](.github/workflows/release.yml) builds the tag, generates release notes and `CHANGELOG.md` through git-cliff, then optionally publishes. For tags on the default branch, the generated `CHANGELOG.md` is committed there after the release.
 
 ```yaml filename=".github/workflows/publish.yml"
 name: Publish
@@ -403,6 +403,6 @@ A library typically enables `publish-maven`. A Gradle plugin also sets `publish-
 | `CURSEFORGE_TOKEN`      | `publish-mods`          |
 | `MODRINTH_TOKEN`        | `publish-mods`          |
 
-`publish-mods` needs at least one of the two store tokens. A tag always creates a GitHub Release with `CHANGELOG.md` and the matched jars, even when every publish input is false.
+`publish-mods` needs at least one of the two store tokens. A tag always creates a GitHub Release with the matched jars, even when every publish input is false. The generated `CHANGELOG.md` is committed to the default branch when the tag is on that branch.
 
 git-cliff uses the first of: the path in `cliff-config`, that file at the repository root, then `cliff.toml` from this Conventions ref.

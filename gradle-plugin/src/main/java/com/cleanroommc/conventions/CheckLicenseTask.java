@@ -45,7 +45,7 @@ public abstract class CheckLicenseTask extends DefaultTask {
             task.setDescription("Requires LICENSE in the project directory or a parent directory to match the configured license mode.");
             task.getExpected().convention(years.map(license::licenseText));
             task.getExpectedName().convention(license.displayName());
-            task.getStartDirectory().convention(project.getRootProject().getLayout().getProjectDirectory());
+            task.getStartDirectory().convention(project.getLayout().getProjectDirectory());
         });
         project.getPluginManager().apply(LifecycleBasePlugin.class);
         project.getTasks().named(LifecycleBasePlugin.CHECK_TASK_NAME).configure(check -> check.dependsOn(NAME));

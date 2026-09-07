@@ -46,7 +46,7 @@ public abstract class ExtractConventionsTask extends DefaultTask {
             return;
         }
         LicenseMode license = LicenseMode.from(project);
-        Provider<LicenseYears> years = LicenseYears.provider(project);
+        Provider<LicenseYears> years = LicenseYears.provider(project, project.getRootProject());
         project.getTasks().register(NAME, ExtractConventionsTask.class, task -> {
             task.setGroup("conventions");
             task.setDescription("Writes convention files into the project directory. Not attached to build, check or assemble.");

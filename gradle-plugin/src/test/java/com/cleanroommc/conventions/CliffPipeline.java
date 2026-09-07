@@ -11,15 +11,18 @@
 package com.cleanroommc.conventions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 final class CliffPipeline {
 
-    static final String COLLAPSE_COMMAND = "tr '\\n' '\\r'";
+    static final String COLLAPSE_COMMAND = "awk 'NR==1 && /^pack[(!:]/ {pack=1} {printf \"%s%s\", " + "(NR==1 ? \"\" : (pack || tolower($0) ~ /^co-authored-by:/ ? \"\\n\" : \"\\f\")), $0}' ";
 
     private static final Pattern CONVENTIONAL_HEADER = Pattern.compile("^(?<type>[^\\s(:!]+)(?:\\((?<scope>[^)]*)\\))?(?<breaking>!)?:\\s*(?<desc>.*)$");
+    private static final Pattern PACK_HEADER = Pattern.compile("^pack[(!:]");
     private static final Pattern TOML_STRING = Pattern.compile("(?:'([^']*)'|\"((?:\\\\.|[^\"])*)\")");
     private static final Pattern GROUP_PREFIX = Pattern.compile("^<!--\\s*\\d+\\s*-->");
 
@@ -112,7 +115,7 @@ final class CliffPipeline {
         int end = message.length();
         for (int i = 0; i < message.length(); i++) {
             char c = message.charAt(i);
-            if (c == '\n' || c == '\r') {
+            if (c == '\n' || c == '\r' || c == '\f') {
                 end = i;
                 break;
             }
@@ -230,6 +233,11 @@ final class CliffPipeline {
         if (index >= text.length()) {
             return index;
         }
+        if (text.startsWith("'''", index) || text.startsWith("\"\"\"", index)) {
+            String delimiter = text.substring(index, index + 3);
+            int end = text.indexOf(delimiter, index + 3);
+            return end < 0 ? text.length() : end + 2;
+        }
         char quote = text.charAt(index);
         if (quote != '\'' && quote != '"') {
             return index;
@@ -260,6 +268,14 @@ final class CliffPipeline {
         if (!matcher.find()) {
             return null;
         }
+        if (object.startsWith("'''", matcher.end()) || object.startsWith("\"\"\"", matcher.end())) {
+            String delimiter = object.substring(matcher.end(), matcher.end() + 3);
+            int end = object.indexOf(delimiter, matcher.end() + 3);
+            if (end < 0) {
+                return null;
+            }
+            return delimiter.charAt(0) == '\'' ? object.substring(matcher.end() + 3, end) : unescape(object.substring(matcher.end() + 3, end));
+        }
         Matcher quoted = TOML_STRING.matcher(object);
         if (!quoted.find(matcher.end()) || quoted.start() != matcher.end()) {
             return null;
@@ -271,7 +287,10 @@ final class CliffPipeline {
         if (matcher.group(1) != null) {
             return matcher.group(1);
         }
-        String raw = matcher.group(2);
+        return unescape(matcher.group(2));
+    }
+
+    private static String unescape(String raw) {
         StringBuilder out = new StringBuilder(raw.length());
         for (int i = 0; i < raw.length(); i++) {
             char c = raw.charAt(i);
@@ -305,10 +324,30 @@ final class CliffPipeline {
             if (replaceCommand == null || !pattern.matcher(message).find()) {
                 return message;
             }
-            if (!COLLAPSE_COMMAND.equals(replaceCommand)) {
+            if (!COLLAPSE_COMMAND.trim().equals(replaceCommand.trim())) {
                 throw new IllegalStateException("Unsupported replace_command: " + replaceCommand);
             }
-            return message.replace('\n', '\r');
+            return collapse(message);
+        }
+
+        private static String collapse(String message) {
+            List<String> lines = new ArrayList<>(Arrays.asList(message.split("\\n", -1)));
+            if (lines.size() > 1 && lines.getLast().isEmpty()) {
+                lines.removeLast();
+            }
+            if (lines.isEmpty()) {
+                return "";
+            }
+            boolean pack = PACK_HEADER.matcher(lines.getFirst()).find();
+            StringBuilder collapsed = new StringBuilder(message.length());
+            for (int i = 0; i < lines.size(); i++) {
+                if (i > 0) {
+                    String line = lines.get(i);
+                    collapsed.append(pack || line.toLowerCase(Locale.ROOT).startsWith("co-authored-by:") ? '\n' : '\f');
+                }
+                collapsed.append(lines.get(i));
+            }
+            return collapsed.toString();
         }
 
     }
