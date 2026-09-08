@@ -84,7 +84,7 @@ conventions {
     jmhVersion = '1.37'
     jspecifyVersion = '1.0.0'
     jetbrainsAnnotationsVersion = '26.1.0'
-    anoneVersion = '1.0.0' // unset by default
+    anoneVersion = '1.0.0'
 }
 ```
 
@@ -182,9 +182,9 @@ Checkstyle warns when an imported `Nullable`, `NonNull`, `Nonnull`, `NotNull` or
 
 Added as `compileOnly` on every source set, so none of them reach a consumer's runtime classpath:
 
-- `org.jspecify:jspecify` for nullness.
-- `org.jetbrains:annotations`.
-- `com.cleanroommc:anone`, only once `anoneVersion` is set. AnoNe 1.0.0 is not published yet, so it stays off by default and an empty value removes it again.
+- `org.jspecify:jspecify` for nullness
+- `org.jetbrains:annotations`
+- `com.cleanroommc:anone`
 
 ### Testing Conventions
 

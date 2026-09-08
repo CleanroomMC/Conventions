@@ -129,7 +129,7 @@ jobs:
           done
           # github.workflow_ref names the caller's workflow, not this one, so the conventions repository is spelled
           # out here and job.workflow_sha pins it to the commit this reusable workflow was resolved from.
-          url="https://raw.githubusercontent.com/CleanroomMC/Convention/${WORKFLOW_SHA}/cliff.toml"
+          url="https://raw.githubusercontent.com/CleanroomMC/Conventions/${WORKFLOW_SHA}/cliff.toml"
           if ! curl -fsSL "${url}" -o "${RUNNER_TEMP}/cliff.toml"; then
             echo "::error::git-cliff config '${CLIFF_CONFIG}' was not found in '${GRADLE_DIR}' or at the repository root, and '${url}' could not be fetched. Commit a config and pass cliff-config."
             exit 1
