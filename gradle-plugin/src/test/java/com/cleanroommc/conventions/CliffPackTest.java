@@ -104,6 +104,15 @@ class CliffPackTest {
     }
 
     @Test
+    void firstTimeContributorsSkipMissingUsernamesAndFounder() {
+        String body = cliffBody();
+        assertThat(body).contains("{% if not contributor.username %}{% continue %}{% endif -%}");
+        assertThat(body).contains("{% if contributor.username == remote.github.owner %}{% continue %}{% endif -%}");
+        assertThat(body).contains("{% if not previous.version and founder.remote.username == contributor.username %}{% continue %}{% endif -%}");
+        assertThat(body).contains("{% if not previous.version and founder.author.name == contributor.username %}{% continue %}{% endif -%}");
+    }
+
+    @Test
     void packageIsNotAPackCommit() {
         List<CliffEntry> entries = pipeline.process(
                 """
@@ -115,6 +124,17 @@ class CliffPackTest {
         assertThat(entries).hasSize(1);
         assertThat(entries.getFirst().group()).isEqualTo("Other");
         assertThat(entries.getFirst().message()).doesNotContain("\n");
+    }
+
+    private static String cliffBody() {
+        String toml = ConventionsFile.CLIFF.read();
+        String marker = "body = \"\"\"\n";
+        int start = toml.indexOf(marker);
+        assertThat(start).isNotNegative();
+        start += marker.length();
+        int end = toml.indexOf("\"\"\"", start);
+        assertThat(end).isGreaterThan(start);
+        return toml.substring(start, end);
     }
 
     private static void assertEntry(CliffEntry entry, String group, String scope, String description) {

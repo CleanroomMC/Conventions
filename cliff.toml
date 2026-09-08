@@ -4,7 +4,10 @@
 # Release body, once over the full history for CHANGELOG.md committed to the repository.
 
 # GitHub usernames come from the API. The workflow supplies GITHUB_TOKEN
-# and GITHUB_REPO.
+# and GITHUB_REPO. Commits whose email is not linked to a GitHub account
+# have an empty username. The first-time contributor section skips those,
+# the GitHub owner (often an organization), and the founder on the first
+# release.
 #
 # Set CLIFF_INCLUDE_DATE=1 when generating CHANGELOG.md
 # So each version heading includes the release date.
@@ -94,8 +97,10 @@ https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}
 {% set_global first_timer_heading = false -%}
 {% if github and github.contributors -%}
 {% for contributor in github.contributors | filter(attribute="is_first_time", value=true) -%}
+{% if not contributor.username %}{% continue %}{% endif -%}
 {% if contributor.username == remote.github.owner %}{% continue %}{% endif -%}
 {% if not previous.version and founder.remote.username == contributor.username %}{% continue %}{% endif -%}
+{% if not previous.version and founder.author.name == contributor.username %}{% continue %}{% endif -%}
 {% if not first_timer_heading %}
 ## First-time Contributors
 
