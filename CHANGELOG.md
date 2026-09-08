@@ -1,10 +1,22 @@
 # Changelog
 
+## 1.0.1 - 2026-09-08
+
+## Bug Fix
+
+- First time contributor issues *[commit by @Rongmario in 5790458]*
+
+## First-time Contributors
+
+- **@github-actions[bot] made their first contribution!**
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.0.0...1.0.1
+
 ## 1.0.0 - 2026-09-08
 
 ## Feature
 
-- **conventions**: Add annotations conventions plugin *[commit by Rongmario in eca6887]*
+- **conventions**: Add annotations conventions plugin *[commit by @Rongmario in 468041e]*
 - **plugin**: Apply TokenEnvoy *[commit by @Rongmario in 026abef]*
 - **license**: Support configurable years *[commit by @Rongmario in 2637ae1]*
 - **license**: Add selectable modes *[commit by @Rongmario in c79ab04]*
@@ -33,10 +45,10 @@
 
 ## Bug Fix
 
-- Using old Convention repo name *[commit by @Rongmario in 01c860f]*
-- Tests, anone, actions fallback, subproject license checks *[commit by @Rongmario in 2c7c00b]*
-- Changelog shenanigans *[commit by @Rongmario in 43bbcdb]*
-- **release**: Keep generated notes out of the worktree and fetch cliff.toml from this repository *[commit by Rongmario in 6182d93]*
+- Using old Convention repo name *[commit by @Rongmario in 481f07d]*
+- Tests, anone, actions fallback, subproject license checks *[commit by @Rongmario in ae05225]*
+- Changelog shenanigans *[commit by @Rongmario in 48f0c55]*
+- **release**: Keep generated notes out of the worktree and fetch cliff.toml from this repository *[commit by @Rongmario in 1d88d15]*
 - **conventions**: Namespace the license property and tighten task wiring *[commit by @Rongmario in 5a83b60]*
 - **license**: Match the copyright year as a pattern *[commit by @Rongmario in e720a8f]*
 - **license**: Read copyright years through value sources *[commit by @Rongmario in 6b42313]*
@@ -63,26 +75,22 @@
 
 ## Testing
 
-- Cleanups & physical consumer testing *[commit by @Rongmario in 69ec5fb]*
+- Cleanups & physical consumer testing *[commit by @Rongmario in 654644e]*
 - Cover configurable conventions *[commit by @Rongmario in a1f598f]*
 - **conventions**: Cover expanded plugin suite *[commit by @Rongmario in d39fe85]*
 - Update tests *[commit by @Rongmario in 0d5a311]*
 
 ## Build and Dependencies
 
-- **deps**: Upgrade Cleanroom Versioning to 3.2.0 *[commit by Rongmario in 1962251]*
+- **deps**: Upgrade Cleanroom Versioning to 3.2.0 *[commit by @Rongmario in c62d2ff]*
 - Centralize and deduplicate logic *[commit by @Rongmario in 7716b0b]*
 - **plugin**: Centralize packed resources *[commit by @Rongmario in 0cc9e52]*
 - Apply conventions to this project and bump FormatJ to 0.3.0 *[commit by @Rongmario in 0e89d07]*
 
 ## CI
 
-- Skip release-branch merges and duplicate branch builds *[commit by Rongmario in f346956]*
+- Skip release-branch merges and duplicate branch builds *[commit by @Rongmario in 7ee1b96]*
 - Support optional mod publishing *[commit by @Rongmario in 91f51be]*
 - Add reusable build workflow and default CI *[commit by @Rongmario in 2d2ebf1]*
-
-## First-time Contributors
-
-- **@ made their first contribution!**
 
 
