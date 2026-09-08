@@ -13,6 +13,9 @@ conventions {
 repositories {
     mavenCentral()
     gradlePluginPortal()
+    maven {
+        url = 'https://maven.cleanroommc.com'
+    }
 }
 
 ext.conventionsPluginDir = '.'
@@ -23,6 +26,38 @@ dependencies {
 }
 
 def conventionRoot = layout.projectDirectory.dir('..')
+def consumerTestRepository = layout.buildDirectory.dir('consumer-test-repository')
+
+publishing {
+    repositories {
+        maven {
+            name = 'consumerTest'
+            url = consumerTestRepository
+        }
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform {
+        excludeTags 'published-consumer'
+    }
+}
+
+tasks.register('publishedConsumerTest', Test) {
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform {
+        includeTags 'published-consumer'
+    }
+    dependsOn tasks.named('publishAllPublicationsToConsumerTestRepository')
+    systemProperty 'conventions.testRepository', consumerTestRepository.get().asFile.toURI()
+    systemProperty 'conventions.testVersion', project.version.toString()
+}
+
+tasks.named('check') {
+    dependsOn tasks.named('publishedConsumerTest')
+}
 
 // The root LICENSE is the packed template, so it intentionally retains @YEAR@.
 tasks.named('checkLicense') {
