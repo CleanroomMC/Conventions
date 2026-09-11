@@ -53,7 +53,10 @@ plugins {
 }
 ```
 
-The aggregate plugin also applies [Token Envoy](https://github.com/CleanroomMC/GradleTokenEnvoy) 1.1.0. Configure its `tokenEnvoy` extension to replace `@{NAME}` tokens in compiled classes and resources without rewriting source files. The Token Envoy version is pinned by each Conventions release and cannot be overridden per project. Its `@{NAME}` syntax is unrelated to the `@YEAR@` and `@LICENSE_HEADER@` placeholders used by license templating.
+The aggregate plugin also applies [Token Envoy](https://github.com/CleanroomMC/GradleTokenEnvoy) 2.0.0.
+Configure its `tokenEnvoy` extension to replace `@{NAME}` tokens during Java compilation and resource processing without rewriting source files.
+The Token Envoy version is pinned by each Conventions release and cannot be overridden per project.
+Its `@{NAME}` syntax is unrelated to the `@YEAR@` and `@LICENSE_HEADER@` placeholders used by license templating.
 
 A `repositories { }` block in `build.gradle` is allowed and only appends. It cannot replace Maven Central, the Plugin Portal, or Cleanroom Maven.
 

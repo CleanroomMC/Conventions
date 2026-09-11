@@ -89,6 +89,29 @@ class ConventionsPluginFunctionalTest {
     }
 
     @Test
+    void tokenEnvoyReplacesTokensInCompiledClasses() throws IOException {
+        project(
+                "id 'java'\n    id 'com.cleanroommc.conventions'",
+                """
+                tokenEnvoy {
+                    set 'VERSION', '1.2.3'
+                }
+                """
+        );
+        javaFile(
+                "src/main/java/example/Example.java",
+                "package example;\n\npublic class Example {\n\n    public static final String VERSION = \"@{VERSION}\";\n\n}\n"
+        );
+
+        run("compileJava");
+
+        assertThat(Files.readAllBytes(projectDir.resolve("build/classes/java/main/example/Example.class")))
+                .asString(StandardCharsets.ISO_8859_1)
+                .contains("1.2.3")
+                .doesNotContain("@{VERSION}");
+    }
+
+    @Test
     void extractConventionsWritesPackedFiles() throws IOException {
         project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
         Files.writeString(projectDir.resolve(".gitignore"), "# >>> cleanroom-conventions\nold/\n# <<< cleanroom-conventions\nmine.iml\n");
