@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.1 - 2026-09-11
+
+## Feature
+
+- Bump FormatJ to 0.4.2 *[commit by [@Rongmario](https://github.com/Rongmario) in [6472ea2](https://github.com/CleanroomMC/Conventions/commit/6472ea2759f8242b3e308b82dac360623208f0eb)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.1.0...1.1.1
+
 ## 1.1.0 - 2026-09-11
 
 ## Feature
