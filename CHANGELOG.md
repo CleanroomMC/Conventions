@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.2 - 2026-09-12
+
+## Bug Fix
+
+- Turn off "topo order" for git cliff *[commit by [@Rongmario](https://github.com/Rongmario) in [5b06e34](https://github.com/CleanroomMC/Conventions/commit/5b06e345c35aa5caa088d3cae1715ab67e2ffea0)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.1.1...1.1.2
+
 ## 1.1.1 - 2026-09-11
 
 ## Feature
