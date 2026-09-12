@@ -140,7 +140,7 @@ protect_breaking_commits = true
 filter_commits = false
 recurse_submodules = true
 use_branch_tags = true
-topo_order = true
+topo_order = false
 sort_commits = "newest"
 
 # GitHub squash-merge appends "(#123)" to the subject. Strip it so the
