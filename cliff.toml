@@ -55,8 +55,12 @@ https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}
 {%- elif commit.remote.username %} *[commit by {{ self::author(username=commit.remote.username) }}{{ self::coauthors(commit=commit, commits=commits) }} in {% if get_env(name="CLIFF_INCLUDE_DATE", default="") != "" %}[{{ commit.id | truncate(length=7, end="") }}]({{ self::remote_url() }}/commit/{{ commit.id }}){% else %}{{ commit.id | truncate(length=7, end="") }}{% endif %}]*
 {%- elif commit.author.name %} *[commit by {{ commit.author.name }}{{ self::coauthors(commit=commit, commits=commits) }} in {% if get_env(name="CLIFF_INCLUDE_DATE", default="") != "" %}[{{ commit.id | truncate(length=7, end="") }}]({{ self::remote_url() }}/commit/{{ commit.id }}){% else %}{{ commit.id | truncate(length=7, end="") }}{% endif %}]*
 {%- endif -%}
-{%- if commit.breaking and commit.breaking_description and commit.breaking_description != commit.message %}
-{{ "  " }}{{ commit.breaking_description | split(pat="\f") | first | trim | upper_first }}
+{%- if commit.breaking -%}
+{# split_commits folds the body into breaking_description, so pull the footer text back out. #}
+{%- set breaking_note = commit.breaking_description | default(value="") | find_regex(pat="(?is)BREAKING[ -]CHANGE:.*") -%}
+{%- if breaking_note | length > 0 %}
+{{ "  - " }}{{ breaking_note | first | replace_regex(from="(?is)^BREAKING[ -]CHANGE:\\s*", to="") | replace(from="\f", to=" ") | trim | upper_first }}
+{%- endif -%}
 {%- endif -%}
 {%- for hit in commit.raw_message | default(value="") | find_regex(pat="(?i)(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?):?\\s+(?:[\\w.-]+/[\\w.-]+)?#\\d+") %}
 {{ "    " }}*[Fixes issue {{ self::issue_ref(hit=hit) }}]*
