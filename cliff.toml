@@ -10,8 +10,7 @@
 # release.
 #
 # Set CLIFF_INCLUDE_DATE=1 when generating CHANGELOG.md
-# So each version heading includes the release date and bylines use GitHub links.
-# The GitHub Release body leaves it unset as the title is already the tag.
+# Each entry has a date for version heading, GitHub links for commits.
 
 [changelog]
 header = """
@@ -66,8 +65,6 @@ https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}
 {%- set include_date = get_env(name="CLIFF_INCLUDE_DATE", default="") -%}
 {%- if include_date -%}
 ## {% if version %}{{ version }} - {{ timestamp | date(format="%Y-%m-%d") }}{% else %}Unreleased{% endif %}
-{%- else -%}
-# {% if version %}{{ version }}{% else %}Unreleased{% endif %}
 {%- endif %}
 {% if version and previous.version -%}
 {% if version | split(pat=".") | first != previous.version | split(pat=".") | first %}
