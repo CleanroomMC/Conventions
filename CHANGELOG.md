@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.3 - 2026-09-14
+
+## Bug Fix
+
+- **changelog**: Extract BREAKING CHANGE footer text as sub-bullet *[commit by [@Rongmario](https://github.com/Rongmario) in [5d4c767](https://github.com/CleanroomMC/Conventions/commit/5d4c767b1b74410df6b30faf6d44cf7f3a257557)]*
+- **changelog**: Drop version heading duplicated by GitHub release title *[commit by [@Rongmario](https://github.com/Rongmario) in [50d491e](https://github.com/CleanroomMC/Conventions/commit/50d491e1b3c0349b0e3051f82f441337a01809ee)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.1.2...1.1.3
+
 ## 1.1.2 - 2026-09-12
 
 ## Bug Fix
