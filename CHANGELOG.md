@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.4 - 2026-09-20
+
+## Build and Dependencies
+
+- Update formatj *[commit by [@Rongmario](https://github.com/Rongmario) in [de69bea](https://github.com/CleanroomMC/Conventions/commit/de69bea1c823f73793478716a1d502351d7f141a)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.1.3...1.1.4
+
 ## 1.1.3 - 2026-09-14
 
 ## Bug Fix
