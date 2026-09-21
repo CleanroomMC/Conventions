@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.1.5 - 2026-09-21
+
+## Feature
+
+- Auto-detect mod publishing, use reobfJar task when present *[commit by [@Rongmario](https://github.com/Rongmario) in [ee3cf26](https://github.com/CleanroomMC/Conventions/commit/ee3cf26532e1b493e975a4626267c8382c12eca8)]*
+- Group and order imports *[commit by [@Rongmario](https://github.com/Rongmario) in [ad3321e](https://github.com/CleanroomMC/Conventions/commit/ad3321ec927f2547311a5764a7d110199b979f64)]*
+- Render empty class, method and record bodies spaced *[commit by [@Rongmario](https://github.com/Rongmario) in [2817e7f](https://github.com/CleanroomMC/Conventions/commit/2817e7fcee8cd4d2b817736dfb2e4c1a2250f223)]*
+
+## Bug Fix
+
+- Make issue references more elegant in changelog & release notes *[commit by [@Rongmario](https://github.com/Rongmario) in [249a3a3](https://github.com/CleanroomMC/Conventions/commit/249a3a31eedee4094b8d7aea0b2f64f4e479dab6)]*
+
+## Build and Dependencies
+
+- Update formatj to 0.5.2 *[commit by [@Rongmario](https://github.com/Rongmario) in [80e7835](https://github.com/CleanroomMC/Conventions/commit/80e78359ab29839d2b580cfa4c4a7784b2adae7f)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.1.4...1.1.5
+
 ## 1.1.4 - 2026-09-20
 
 ## Build and Dependencies
