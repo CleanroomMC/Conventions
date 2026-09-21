@@ -167,7 +167,7 @@ jobs:
           temp = os.environ['RUNNER_TEMP']
           files = (f'{temp}/RELEASE_NOTES.md', f'{temp}/CHANGELOG.md')
           line_re = re.compile(
-              r'^(\s*)\*\[Fixes issue ((?:[\w.-]+/[\w.-]+)?#\d+)(?: by @([^\]]+))?\]\*\s*$'
+              r'^(\s*)\*\[Fixes issue ((?:[\w.-]+/[\w.-]+)?#\d+)(?: by (.+))?\]\*\s*$'
           )
           default_repo = os.environ['GITHUB_REPOSITORY']
           authors = {}
@@ -195,19 +195,32 @@ jobs:
                   original = handle.read()
               rewritten = []
               changed = False
+              bullet = None
+              # CHANGELOG.md links its authors, the release body keeps them plain.
+              link = path.endswith('CHANGELOG.md')
               for line in original.splitlines(keepends=True):
                   newline = '\n' if line.endswith('\n') else ''
                   match = line_re.match(line.rstrip('\n'))
                   if match is None or match.group(3):
+                      if line.startswith('- '):
+                          bullet = len(rewritten)
                       rewritten.append(line)
                       continue
                   indent, ref = match.group(1), match.group(2)
                   login = lookup(ref)
-                  if login:
-                      rewritten.append(f'{indent}*[Fixes issue {ref} by @{login}]*{newline}')
-                      changed = True
-                  else:
+                  if not login:
                       rewritten.append(line)
+                      continue
+                  changed = True
+                  who = f'[@{login}](https://github.com/{login})' if link else f'@{login}'
+                  parent = rewritten[bullet].rstrip('\n') if bullet is not None else ''
+                  # The commit subject already names the issue, so credit the reporter in
+                  # the byline rather than repeating the reference on its own line.
+                  if parent.endswith(']*') and ref in parent.split(' *[', 1)[0]:
+                      credit = f', {who}' if ', issue by ' in parent else f', issue by {who}'
+                      rewritten[bullet] = parent[:-2] + credit + ']*' + rewritten[bullet][len(parent):]
+                      continue
+                  rewritten.append(f'{indent}*[Fixes issue {ref} by {who}]*{newline}')
               if changed:
                   with open(path, 'w', encoding='utf-8') as handle:
                       handle.write(''.join(rewritten))
