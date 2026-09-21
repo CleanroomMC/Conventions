@@ -71,7 +71,7 @@ extension block below evaluates.
 | `conventions.license`           | `visible`  | `free` (MIT), `open` (LGPLv3), or `visible`       |
 | `conventions.javaMajor`         | `25`       | Java toolchain language version                   |
 | `conventions.provisionJava`     | `false`    | Settings plugin applies Foojay toolchain resolver |
-| `conventions.modPublishing`     | `false`    | Applies the mod conventions                       |
+| `conventions.modPublishing`     | detected   | Forces the mod conventions on or off              |
 | `conventions.benchmarking`      | `false`    | Applies the benchmarking conventions              |
 | `conventions.checkstyleVersion` | `14.0.0`   | Checkstyle version                                |
 
@@ -251,7 +251,13 @@ Pass standard JMH arguments through the `JavaExec` task. For example:
 
 ### Mod Publishing
 
-Disabled by default. Enable it in the project's `gradle.properties`:
+Applied on its own when the project uses a mod toolchain, namely
+- `com.cleanroommc.cleanroomgradle`
+- `net.minecraftforge.gradle`
+- `com.gtnewhorizons.retrofuturagradle`
+- `top.outlands.gradle`
+
+Set the property to force it either way, which a toolchain that is not on that list needs:
 
 ```properties filename="gradle.properties"
 conventions.modPublishing = true
@@ -263,7 +269,7 @@ This exposes the [mod-publish-plugin's](https://modmuss50.github.io/mod-publish-
 > The following properties have been applied:
 > - Minecraft Version: "1.12.2"
 > - Mod Loader: "forge" ("cleanroom" if/when distributions support it)
-> - File: output of the "jar" task
+> - File: output of the "reobfJar" task where the toolchain produces one, otherwise "jar"
 > - Max Retries: 5
 > - Version: `project.version`
 > - Version Type: (Alpha/Beta/Stable) applied via Cleanroom's Versioning module
@@ -381,7 +387,7 @@ jobs:
     secrets: inherit
 ```
 
-A library typically enables `publish-maven`. A Gradle plugin also sets `publish-plugin-portal: true`. A mod sets `conventions.modPublishing = true` in Gradle and `publish-mods: true` here.
+A library typically enables `publish-maven`. A Gradle plugin also sets `publish-plugin-portal: true`. A mod sets `publish-mods: true` here, and Gradle picks the mod conventions up from the toolchain.
 
 | Input                   | Default               | Purpose                                                                   |
 |-------------------------|-----------------------|---------------------------------------------------------------------------|

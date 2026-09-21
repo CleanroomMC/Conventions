@@ -20,7 +20,12 @@ import me.modmuss50.mpp.platforms.modrinth.Modrinth;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.file.FileCollection;
+import org.gradle.api.file.ProjectLayout;
+import org.gradle.api.file.RegularFile;
 import org.gradle.api.plugins.JavaPlugin;
+import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.bundling.Jar;
 
 import java.util.List;
@@ -28,6 +33,7 @@ import java.util.List;
 public class ConventionsModPlugin implements Plugin<Project> {
 
     private static final String MOD_PUBLISH_PLUGIN_ID = "me.modmuss50.mod-publish-plugin";
+    private static final String REOBF_JAR_TASK = "reobfJar";
 
     @Override
     public void apply(Project project) {
@@ -40,9 +46,8 @@ public class ConventionsModPlugin implements Plugin<Project> {
 
         // Apply "forge" as default mod loader, TODO: Cleanroom when applicable
         publishing.getModLoaders().convention(List.of("forge"));
-        // Apply output of "jar" task as the publishing file by default
-        project.getPlugins()
-                .withType(JavaPlugin.class, _ -> publishing.getFile().convention(project.getTasks().named("jar", Jar.class).flatMap(Jar::getArchiveFile)));
+        // Apply the reobfuscated archive as the publishing file by default, falling back to "jar"
+        project.getPlugins().withType(JavaPlugin.class, _ -> project.afterEvaluate(evaluated -> publishing.getFile().convention(modArchive(evaluated))));
         // Set 5 retries as default
         publishing.getMaxRetries().convention(5);
         // Set release type as the one gotten from Cleanroom Versioning
@@ -63,6 +68,22 @@ public class ConventionsModPlugin implements Plugin<Project> {
         publishing.getPlatforms().withType(Modrinth.class).configureEach(modrinth -> {
             modrinth.getAccessToken().convention(project.getProviders().environmentVariable("MODRINTH_TOKEN"));
             modrinth.getMinecraftVersions().convention(List.of("1.12.2"));
+        });
+    }
+
+    private static Provider<RegularFile> modArchive(Project project) {
+        TaskContainer tasks = project.getTasks();
+        ProjectLayout layout = project.getLayout();
+        Provider<RegularFile> jar = tasks.named("jar", Jar.class).flatMap(Jar::getArchiveFile);
+        if (!tasks.getNames().contains(REOBF_JAR_TASK)) {
+            return jar;
+        }
+        return tasks.named(REOBF_JAR_TASK).flatMap(reobf -> {
+            FileCollection outputs = reobf.getOutputs().getFiles();
+            if (outputs.getFiles().size() != 1) {
+                return jar;
+            }
+            return layout.file(outputs.getElements().map(files -> files.iterator().next().getAsFile()));
         });
     }
 

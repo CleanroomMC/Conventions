@@ -14,11 +14,21 @@ import com.cleanroommc.tokenenvoy.TokenEnvoyPlugin;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.provider.Provider;
+
+import java.util.List;
 
 /**
  * The default overlay for a new CleanroomMC library, mod or tool.
  */
 public class ConventionsPlugin implements Plugin<Project> {
+
+    private static final List<String> MOD_DEVELOPMENT_PLUGIN_IDS = List.of(
+            "com.cleanroommc.cleanroomgradle",
+            "com.gtnewhorizons.retrofuturagradle",
+            "top.outlands.gradle",
+            "net.minecraftforge.gradle"
+    );
 
     @Override
     public void apply(Project project) {
@@ -32,8 +42,14 @@ public class ConventionsPlugin implements Plugin<Project> {
         if (ConventionsProperty.BENCHMARKING.flag(project.getProviders(), false)) {
             project.getPluginManager().apply(ConventionsBenchmarkingPlugin.class);
         }
-        if (ConventionsProperty.MOD_PUBLISHING.flag(project.getProviders(), false)) {
-            project.getPluginManager().apply(ConventionsModPlugin.class);
+        Provider<String> modPublishing = ConventionsProperty.MOD_PUBLISHING.provider(project);
+        if (modPublishing.isPresent()) {
+            if (Boolean.parseBoolean(modPublishing.get())) {
+                project.getPluginManager().apply(ConventionsModPlugin.class);
+            }
+        } else {
+            MOD_DEVELOPMENT_PLUGIN_IDS.forEach(id -> project.getPluginManager()
+                    .withPlugin(id, _ -> project.getPluginManager().apply(ConventionsModPlugin.class)));
         }
     }
 

@@ -593,6 +593,41 @@ class ConventionsPluginFunctionalTest {
     }
 
     @Test
+    void publishesTheReobfuscatedArchiveWhenTheToolchainDeclaresOne() throws IOException {
+        project(
+                "id 'java'\n    id 'com.cleanroommc.conventions.mod'",
+                """
+                tasks.register('reobfJar') {
+                    outputs.file(layout.buildDirectory.file('reobf/example-srg.jar'))
+                }
+                """ +
+                        printModFile()
+        );
+        assertThat(run("printModFile").getOutput()).contains("modFile=example-srg.jar");
+    }
+
+    @Test
+    void publishesTheJarWhenReobfuscationRenamesItInPlace() throws IOException {
+        project("id 'java'\n    id 'com.cleanroommc.conventions.mod'", "tasks.register('reobfJar') { }\n\n" + printModFile());
+        assertThat(run("printModFile").getOutput()).contains("modFile=conventions-under-test");
+    }
+
+    @Test
+    void modPublishingFollowsAModToolchainPlugin() throws IOException {
+        project("id 'java'\n    id 'com.cleanroommc.conventions'\n    id 'com.gtnewhorizons.retrofuturagradle'", printMods());
+        modToolchainPlugin("com.gtnewhorizons.retrofuturagradle");
+        assertThat(run("printMods").getOutput()).contains("mods=present");
+    }
+
+    @Test
+    void anExplicitOptOutBeatsTheModToolchainScan() throws IOException {
+        project("id 'java'\n    id 'com.cleanroommc.conventions'\n    id 'com.gtnewhorizons.retrofuturagradle'", printMods());
+        modToolchainPlugin("com.gtnewhorizons.retrofuturagradle");
+        property("conventions.modPublishing = false");
+        assertThat(run("printMods").getOutput()).contains("mods=absent");
+    }
+
+    @Test
     void checkstyleRejectsAJavaFileWithoutTheHeader() throws IOException {
         project("id 'java'\n    id 'com.cleanroommc.conventions.style'", "");
         Path source = projectDir.resolve("src/main/java/example/Example.java");
@@ -792,6 +827,17 @@ class ConventionsPluginFunctionalTest {
                 """;
     }
 
+    private static String printModFile() {
+        return """
+                tasks.register('printModFile') {
+                    def file = publishMods.file
+                    // The real publish task takes the file as an input, which is what carries the producing task with it.
+                    inputs.files(file)
+                    doLast { println "modFile=${file.get().asFile.name}" }
+                }
+                """;
+    }
+
     private static String printGroup() {
         return """
                 tasks.register('printGroup') {
@@ -883,6 +929,37 @@ class ConventionsPluginFunctionalTest {
         // and the version stays a stable configuration cache input.
         Files.writeString(projectDir.resolve(".git/info/exclude"), "*\n");
         git("-c", "user.email=conventions@example.com", "-c", "user.name=Conventions", "commit", "--allow-empty", "--no-gpg-sign", "-m", "conventions");
+    }
+
+    // A plugin id only comes from a real plugin marker, so the toolchain stands in as a buildSrc plugin.
+    private void modToolchainPlugin(String id) throws IOException {
+        Path buildSrc = Files.createDirectories(projectDir.resolve("buildSrc"));
+        Files.writeString(buildSrc.resolve("settings.gradle"), "rootProject.name = 'stub-toolchain'\n");
+        Files.writeString(
+                buildSrc.resolve("build.gradle"),
+                """
+                plugins {
+                    id 'java-gradle-plugin'
+                }
+
+                gradlePlugin {
+                    plugins {
+                        stub {
+                            id = '%s'
+                            implementationClass = 'StubToolchain'
+                        }
+                    }
+                }
+                """.formatted(
+                        id
+                )
+        );
+        Path source = buildSrc.resolve("src/main/java/StubToolchain.java");
+        Files.createDirectories(source.getParent());
+        Files.writeString(
+                source,
+                "public class StubToolchain implements org.gradle.api.Plugin<org.gradle.api.Project> {\n\n    @Override\n    public void apply(org.gradle.api.Project project) { }\n\n}\n"
+        );
     }
 
     private void git(String... arguments) throws IOException {
