@@ -82,7 +82,7 @@ final class LicenseYears {
     }
 
     private static Provider<Integer> currentYear(ProviderFactory providers) {
-        return providers.of(CurrentYear.class, _ -> {});
+        return providers.of(CurrentYear.class, _ -> { });
     }
 
     /**

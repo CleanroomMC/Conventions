@@ -59,8 +59,8 @@ while-loop = "preserve"
 else-on-new-line = false
 catch-on-new-line = false
 finally-on-new-line = false
-empty-class-body = "compact"
-empty-method-body = "compact"
+empty-class-body = "spaced"
+empty-method-body = "spaced"
 empty-control-body = "expanded"
 
 [spacing]
@@ -157,7 +157,7 @@ arrow-body-on-new-line-when-long = true
 
 [records]
 component-wrapping = "chop-down-if-long"
-single-line-empty-body = true
+single-line-empty-body = false
 compact-constructor-blank-line = false
 with-style = "inline-when-short"
 space-before-with-block = true

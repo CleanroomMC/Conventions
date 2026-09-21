@@ -32,6 +32,6 @@ final class ConventionsDefaults {
     static final String JETBRAINS_ANNOTATIONS_VERSION = "26.1.0";
     static final String JAVA_VERSION = "25";
 
-    private ConventionsDefaults() {}
+    private ConventionsDefaults() { }
 
 }

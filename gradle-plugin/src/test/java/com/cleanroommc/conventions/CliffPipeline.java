@@ -311,9 +311,9 @@ final class CliffPipeline {
         return out.toString();
     }
 
-    record CliffEntry(String group, String scope, String description, String message) {}
+    record CliffEntry(String group, String scope, String description, String message) { }
 
-    record Parser(Pattern message, String group, boolean skip) {}
+    record Parser(Pattern message, String group, boolean skip) { }
 
     record Preprocessor(Pattern pattern, String replace, String replaceCommand) {
 
