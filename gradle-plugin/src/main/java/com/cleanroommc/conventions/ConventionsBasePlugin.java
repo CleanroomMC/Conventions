@@ -10,8 +10,8 @@
 
 package com.cleanroommc.conventions;
 
-import java.util.Map;
 import com.cleanroommc.versioning.gradle.CleanroomVersioningPlugin;
+
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionContainer;
@@ -28,6 +28,8 @@ import org.gradle.external.javadoc.CoreJavadocOptions;
 import org.gradle.jvm.toolchain.JavaLanguageVersion;
 import org.gradle.plugins.ide.idea.IdeaPlugin;
 import org.gradle.plugins.ide.idea.model.IdeaModel;
+
+import java.util.Map;
 
 /**
  * Base Conventions plugin.

@@ -10,6 +10,10 @@
 
 package com.cleanroommc.conventions;
 
+import zone.rong.clearskies.gradle.ClearSkiesPlugin;
+import zone.rong.formatj.gradle.FormatJExtension;
+import zone.rong.formatj.gradle.FormatJPlugin;
+
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.PluginManager;
@@ -18,9 +22,6 @@ import org.gradle.api.plugins.quality.CheckstyleExtension;
 import org.gradle.api.plugins.quality.CheckstylePlugin;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
-import zone.rong.clearskies.gradle.ClearSkiesPlugin;
-import zone.rong.formatj.gradle.FormatJExtension;
-import zone.rong.formatj.gradle.FormatJPlugin;
 
 /**
  * Style Conventions plugin.

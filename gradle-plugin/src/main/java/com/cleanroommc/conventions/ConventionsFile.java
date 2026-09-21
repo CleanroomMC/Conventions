@@ -10,12 +10,13 @@
 
 package com.cleanroommc.conventions;
 
+import org.gradle.api.GradleException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
-import org.gradle.api.GradleException;
 
 enum ConventionsFile {
 

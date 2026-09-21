@@ -10,17 +10,20 @@
 
 package com.cleanroommc.conventions;
 
-import java.util.List;
 import com.cleanroommc.versioning.gradle.CleanroomVersioningPlugin;
 import com.cleanroommc.versioning.gradle.VersioningExtension;
+
 import me.modmuss50.mpp.ModPublishExtension;
 import me.modmuss50.mpp.ReleaseType;
 import me.modmuss50.mpp.platforms.curseforge.Curseforge;
 import me.modmuss50.mpp.platforms.modrinth.Modrinth;
+
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.tasks.bundling.Jar;
+
+import java.util.List;
 
 public class ConventionsModPlugin implements Plugin<Project> {
 

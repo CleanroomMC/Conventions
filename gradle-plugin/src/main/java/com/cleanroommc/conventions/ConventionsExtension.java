@@ -10,15 +10,17 @@
 
 package com.cleanroommc.conventions;
 
-import javax.inject.Inject;
 import me.modmuss50.mpp.ModPublishExtension;
 import me.modmuss50.mpp.platforms.curseforge.Curseforge;
 import me.modmuss50.mpp.platforms.modrinth.Modrinth;
+
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.plugins.ExtensionContainer;
 import org.gradle.api.provider.Property;
+
+import javax.inject.Inject;
 
 public abstract class ConventionsExtension {
 

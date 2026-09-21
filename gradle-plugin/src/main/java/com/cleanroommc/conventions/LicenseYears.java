@@ -10,13 +10,6 @@
 
 package com.cleanroommc.conventions;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.Year;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.file.DirectoryProperty;
@@ -24,6 +17,14 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.provider.ValueSource;
 import org.gradle.api.provider.ValueSourceParameters;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Year;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 final class LicenseYears {
 

@@ -10,12 +10,6 @@
 
 package com.cleanroommc.conventions;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Map;
-import java.util.Set;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
@@ -29,6 +23,13 @@ import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputFiles;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.UntrackedTask;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Writes packed convention files into a directory. Not attached to {@code build}, {@code check} or

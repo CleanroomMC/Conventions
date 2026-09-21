@@ -10,10 +10,6 @@
 
 package com.cleanroommc.conventions;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
@@ -25,6 +21,11 @@ import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 import org.gradle.work.DisableCachingByDefault;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Requires {@code LICENSE} in the project directory or a parent directory to match the configured license mode.

@@ -10,9 +10,10 @@
 
 package com.cleanroommc.conventions;
 
-import java.util.Locale;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
+
+import java.util.Locale;
 
 enum LicenseMode {
 

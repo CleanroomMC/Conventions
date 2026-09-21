@@ -10,8 +10,6 @@
 
 package com.cleanroommc.conventions;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.repositories.PasswordCredentials;
@@ -28,6 +26,9 @@ import org.gradle.plugin.devel.GradlePluginDevelopmentExtension;
 import org.gradle.plugins.signing.SigningExtension;
 import org.gradle.plugins.signing.SigningPlugin;
 import org.gradle.process.ExecOutput;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Publishing Conventions plugin.

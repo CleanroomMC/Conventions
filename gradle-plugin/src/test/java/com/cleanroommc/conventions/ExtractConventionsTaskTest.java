@@ -10,10 +10,12 @@
 
 package com.cleanroommc.conventions;
 
+import org.junit.jupiter.api.Test;
+
+import org.gradle.api.GradleException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import org.gradle.api.GradleException;
-import org.junit.jupiter.api.Test;
 
 class ExtractConventionsTaskTest {
 

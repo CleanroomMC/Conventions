@@ -125,7 +125,26 @@ parameter-placement = "same-line"
 single-marker-inline = false
 
 [imports]
-order = "preserve"
+order = "ascending"
+# Groups descend from the code we own to the platforms we sit on. The longest matching prefix wins,
+# so a prefix that no file uses costs nothing.
+groups = [
+    # Ours
+    ["com.cleanroommc", "zone.rong", "top.outlands"],
+    # Third-party
+    "*",
+    # Gradle
+    "org.gradle",
+    # Coremods and bytecode
+    ["org.spongepowered", "com.llamalad7", "org.objectweb.asm"],
+    # The game
+    ["net.minecraft", "net.minecraftforge", "mcp", "com.mojang", "org.lwjgl"],
+    # JDK
+    ["javax", "java"],
+]
+static-placement = "last"
+blank-line-between-groups = true
+module-imports-first = true
 remove-unused = false
 
 [comments]

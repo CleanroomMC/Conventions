@@ -11,6 +11,7 @@
 package com.cleanroommc.conventions;
 
 import com.cleanroommc.tokenenvoy.TokenEnvoyPlugin;
+
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 

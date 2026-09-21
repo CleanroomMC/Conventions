@@ -10,13 +10,16 @@
 
 package com.cleanroommc.conventions;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import java.util.List;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import com.cleanroommc.conventions.CliffPipeline.CliffEntry;
 import com.cleanroommc.conventions.CliffPipeline.Parser;
 import com.cleanroommc.conventions.CliffPipeline.Preprocessor;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class CliffPackTest {
 
