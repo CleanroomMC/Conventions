@@ -348,6 +348,7 @@ jobs:
 | `artifact-path`      | `**/build/libs` | Paths uploaded after a successful build                                |
 | `if-no-files-found`  | `warn`          | `warn`, `error` or `ignore` when nothing matches                       |
 | `java-version`       | `25`            | Temurin JDK used to launch Gradle                                      |
+| `submodules`         | `true`          | `true`, `recursive` or `false`, passed to `actions/checkout`           |
 | `release-branch`     | `master`        | Branch merges are skipped on, matching `versioning.releaseBranch`      |
 | `timeout-minutes`    | `15`            | Job timeout                                                            |
 | `cache-provider`     | `enhanced`      | `basic` (MIT) or `enhanced` (Gradle Terms of Use)                      |
@@ -393,6 +394,7 @@ A library typically enables `publish-maven`. A Gradle plugin also sets `publish-
 |-------------------------|-----------------------|---------------------------------------------------------------------------|
 | `working-directory`     | `.`                   | Directory that contains `gradlew`                                         |
 | `artifact-path`         | `**/build/libs/*.jar` | Jars attached to the GitHub Release                                       |
+| `submodules`            | `true`                | `true`, `recursive` or `false`, passed to `actions/checkout`              |
 | `cliff-config`          | `cliff.toml`          | Local override. If missing, the workflow fetches this repo's `cliff.toml` |
 | `java-version`          | `25`                  | Temurin JDK used to launch Gradle                                         |
 | `timeout-minutes`       | `30`                  | Job timeout                                                               |
