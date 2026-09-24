@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.7 - 2026-09-24
+
+## Feature
+
+- FormatJ indents wrapped lines by 4 instead of 8, every rule spelled out *[commit by [@Rongmario](https://github.com/Rongmario) in [48746b3](https://github.com/CleanroomMC/Conventions/commit/48746b33afdd219dc65d2e94c89ba3b99e37a652)]*
+- Java 8 projects build with the aggregate plugin *[commit by [@Rongmario](https://github.com/Rongmario) in [f0e504c](https://github.com/CleanroomMC/Conventions/commit/f0e504c97ff17ac940358a4a43df857e37a569c9)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.1.6...1.1.7
+
 ## 1.1.6 - 2026-09-24
 
 ## Feature
