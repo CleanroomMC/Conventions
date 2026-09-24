@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.6 - 2026-09-24
+
+## Feature
+
+- Submodules input for the build and release workflows *[commit by [@Rongmario](https://github.com/Rongmario) in [5b34e90](https://github.com/CleanroomMC/Conventions/commit/5b34e90967788ba51af1232d37c5ab78d9930c6c)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.1.5...1.1.6
+
 ## 1.1.5 - 2026-09-21
 
 ## Feature
