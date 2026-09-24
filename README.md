@@ -162,6 +162,7 @@ Set one license mode in `gradle.properties`:
 - Applies [ClearSkies](https://github.com/Rongmario/ClearSkies), which expands star imports. No configuration.
 - Applies [FormatJ](https://github.com/Rongmario/FormatJ) with `formatj.toml`.
 - Applies Checkstyle with `checkstyle.xml`.
+  - Checkstyle needs Java 21, so a lower `conventions.javaMajor` runs it on a Java 25 toolchain.
 
 The three run in a fixed order, since each one judges what the previous one wrote:
 - ClearSkies > FormatJ > Checkstyle
@@ -192,7 +193,9 @@ Added as `compileOnly` on every source set, so none of them reach a consumer's r
 ### Testing Conventions
 
 - `org.junit:junit-bom`, `junit-jupiter` and `junit-platform-launcher`.
+  - JUnit 6 needs Java 17. Below that, the default is JUnit 5.14.4.
 - `mockito-core` and `mockito-junit-jupiter`.
+  - Mockito 5 needs Java 11. Below that, the default is Mockito 4.11.0.
 - `org.assertj:assertj-bom`, `assertj-core` and `assertj-guava`.
 - `useJUnitPlatform()` on every `Test`.
 - Test logging prints passed, skipped and failed, with full exception traces.

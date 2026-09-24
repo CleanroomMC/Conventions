@@ -22,6 +22,8 @@ import org.gradle.api.plugins.quality.CheckstyleExtension;
 import org.gradle.api.plugins.quality.CheckstylePlugin;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
+import org.gradle.jvm.toolchain.JavaLanguageVersion;
+import org.gradle.jvm.toolchain.JavaToolchainService;
 
 /**
  * Style Conventions plugin.
@@ -29,6 +31,7 @@ import org.gradle.api.tasks.TaskProvider;
 public class ConventionsStylePlugin implements Plugin<Project> {
 
     private static final String CHECKSTYLE_VERSION = "14.0.0";
+    private static final int CHECKSTYLE_JAVA = 21;
 
     @Override
     public void apply(Project project) {
@@ -58,6 +61,16 @@ public class ConventionsStylePlugin implements Plugin<Project> {
                     task.getOutputFile().convention(project.getLayout().getBuildDirectory().file("conventions/checkstyle.xml"));
                 }
         );
+        // Checkstyle runs on the project toolchain, so older targets borrow the conventions' default Java
+        if (ConventionsProperty.javaMajor(project) < CHECKSTYLE_JAVA) {
+            tasks.withType(Checkstyle.class)
+                    .configureEach(task -> task.getJavaLauncher()
+                            .set(
+                                    project.getExtensions()
+                                            .getByType(JavaToolchainService.class)
+                                            .launcherFor(spec -> spec.getLanguageVersion().set(JavaLanguageVersion.of(ConventionsDefaults.JAVA_VERSION)))
+                            ));
+        }
         checkstyle.setConfig(project.getResources().getText().fromFile(generateConfig.flatMap(GenerateCheckstyleConfigTask::getOutputFile)));
 
         // ClearSkies expands star imports, FormatJ formats the lines it wrote, Checkstyle judges the result.

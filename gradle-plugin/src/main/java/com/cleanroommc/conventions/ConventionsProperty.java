@@ -49,6 +49,10 @@ enum ConventionsProperty {
         return provider(project).getOrElse(defaultValue);
     }
 
+    static int javaMajor(Project project) {
+        return Integer.parseInt(JAVA_VERSION.get(project, ConventionsDefaults.JAVA_VERSION));
+    }
+
     boolean flag(ProviderFactory providers, boolean defaultValue) {
         return provider(providers).map(Boolean::parseBoolean).getOrElse(defaultValue);
     }

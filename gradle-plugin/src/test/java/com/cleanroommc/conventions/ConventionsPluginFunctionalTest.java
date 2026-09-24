@@ -115,6 +115,48 @@ class ConventionsPluginFunctionalTest {
     }
 
     @Test
+    void java8ProjectsCompileTestAndCheckWithTokenEnvoy() throws IOException {
+        project(
+                "id 'java'\n    id 'com.cleanroommc.conventions'",
+                """
+                tokenEnvoy {
+                    set 'VERSION', '1.2.3'
+                }
+                """ + printTestDependencies()
+        );
+        property("conventions.javaMajor = 8");
+        javaFile(
+                "src/main/java/example/Example.java",
+                "package example;\n\npublic final class Example {\n\n    public static final String VERSION = \"@{VERSION}\";\n\n    private Example() { }\n\n}\n"
+        );
+        javaFile(
+                "src/test/java/example/ExampleTest.java",
+                """
+                package example;
+
+                import org.junit.jupiter.api.Test;
+
+                import static org.assertj.core.api.Assertions.assertThat;
+
+                class ExampleTest {
+
+                    @Test
+                    void replacesTheToken() {
+                        assertThat(Example.VERSION).isEqualTo("1.2.3");
+                    }
+
+                }
+                """
+        );
+
+        String output = run("printTestDependencies", "test", "checkstyleMain", "checkstyleTest").getOutput();
+
+        assertThat(output).contains("org.junit:junit-bom:5.14.4", "org.mockito:mockito-core:4.11.0");
+        byte[] example = Files.readAllBytes(projectDir.resolve("build/classes/java/main/example/Example.class"));
+        assertThat((example[6] & 255) << 8 | example[7] & 255).isEqualTo(52);
+    }
+
+    @Test
     void extractConventionsWritesPackedFiles() throws IOException {
         project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
         Files.writeString(projectDir.resolve(".gitignore"), "# >>> cleanroom-conventions\nold/\n# <<< cleanroom-conventions\nmine.iml\n");

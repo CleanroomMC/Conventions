@@ -34,8 +34,19 @@ public abstract class ConventionsExtension {
             extension = extensions.create(NAME, ConventionsExtension.class);
         }
         extension.getRepositoryUrl().convention(ConventionsProperty.REPO_URL.provider(project));
-        extension.getJunitVersion().convention(ConventionsProperty.JUNIT_VERSION.provider(project).orElse(ConventionsDefaults.JUNIT_VERSION));
-        extension.getMockitoVersion().convention(ConventionsProperty.MOCKITO_VERSION.provider(project).orElse(ConventionsDefaults.MOCKITO_VERSION));
+        int javaMajor = ConventionsProperty.javaMajor(project);
+        extension.getJunitVersion()
+                .convention(
+                        ConventionsProperty.JUNIT_VERSION
+                                .provider(project)
+                                .orElse(javaMajor < 17 ? ConventionsDefaults.JUNIT_5_VERSION : ConventionsDefaults.JUNIT_VERSION)
+                );
+        extension.getMockitoVersion()
+                .convention(
+                        ConventionsProperty.MOCKITO_VERSION
+                                .provider(project)
+                                .orElse(javaMajor < 11 ? ConventionsDefaults.MOCKITO_4_VERSION : ConventionsDefaults.MOCKITO_VERSION)
+                );
         extension.getAssertjVersion().convention(ConventionsProperty.ASSERTJ_VERSION.provider(project).orElse(ConventionsDefaults.ASSERTJ_VERSION));
         extension.getJmhVersion().convention(ConventionsProperty.JMH_VERSION.provider(project).orElse(ConventionsDefaults.JMH_VERSION));
         extension.getJspecifyVersion().convention(ConventionsProperty.JSPECIFY_VERSION.provider(project).orElse(ConventionsDefaults.JSPECIFY_VERSION));
