@@ -16,11 +16,11 @@ tab-width = 4
 [indent]
 size = 4
 use-tabs = false
-continuation = 8
-chained-call = 8
-array-initializer = 8
-ternary = 8
-throws-clause = 8
+continuation = 4
+chained-call = 4
+array-initializer = 4
+ternary = 4
+throws-clause = 4
 switch-case-labels = true
 switch-case-body = true
 blank-lines = false
@@ -33,6 +33,14 @@ chained-calls = "break-all-when-too-long"
 chain-threshold = 2
 binary-operators = "wrap-if-long"
 operator-position = "after-operator"
+method-reference = "never"
+method-reference-operator-position = "before-operator"
+instanceof = "preserve"
+instanceof-operator-position = "after-operator"
+multicatch = "never"
+multicatch-separator-position = "before-operator"
+intersection-types = "never"
+intersection-separator-position = "before-operator"
 ternary = "wrap-if-long"
 assignment = "never"
 array-initializers = "chop-down-if-long"
@@ -40,6 +48,7 @@ extends-implements = "never"
 throws-clause = "wrap-if-long"
 type-parameters = "never"
 annotation-arguments = "wrap-if-long"
+closing-delimiter = "own-line"
 enum-constants = "chop-down-always"
 require-enum-constant-semicolon = false
 for-statement = "chop-down-if-long"
@@ -81,6 +90,9 @@ around-binary-operators = true
 around-unary-operators = false
 around-lambda-arrow = true
 around-ternary-operators = true
+around-method-reference-operator = false
+around-multicatch-separator = true
+around-intersection-separator = true
 after-comma = true
 before-comma = false
 after-semicolon-in-for = true
@@ -147,11 +159,25 @@ blank-line-between-groups = true
 module-imports-first = true
 remove-unused = false
 
+[modifiers]
+order = "preserve"
+
+[module]
+brace-placement = "inherit"
+empty-body = "inherit"
+blank-lines-after-opening-brace = "inherit"
+blank-lines-before-closing-brace = "inherit"
+blank-lines-between-directive-groups = 0
+exports-opens-target-list-wrapping = "never"
+provides-implementation-list-wrapping = "never"
+
 [comments]
 reflow = "preserve"
 block-comment-star-alignment = true
 trailing-comment-min-spaces = 1
 trailing-comment-column = 0
+keep-first-column-comments = false
+indent-with-code = true
 honour-formatter-off = true
 off-marker = "@formatter:off"
 on-marker = "@formatter:on"
@@ -164,6 +190,8 @@ align-tag-descriptions = false
 add-paragraph-tags = false
 keep-single-line = false
 tag-continuation-indent = 0
+closing-tag-form = "preserve"
+opening-tag-position = "preserve"
 
 [switch]
 case-style = "preserve"
@@ -184,7 +212,7 @@ space-before-with-block = true
 [patterns]
 deconstruction-wrapping = "wrap-if-long"
 keep-simple-pattern-inline = true
-nested-indent = 8
+nested-indent = 4
 
 [sealed]
 permits-wrapping = "wrap-if-long"
