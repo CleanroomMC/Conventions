@@ -53,7 +53,7 @@ plugins {
 }
 ```
 
-The aggregate plugin also applies [Token Envoy](https://github.com/CleanroomMC/GradleTokenEnvoy) 2.0.0.
+The aggregate plugin also applies [Token Envoy](https://github.com/CleanroomMC/GradleTokenEnvoy) 3.0.0.
 Configure its `tokenEnvoy` extension to replace `@{NAME}` tokens during Java compilation and resource processing without rewriting source files.
 The Token Envoy version is pinned by each Conventions release and cannot be overridden per project.
 Its `@{NAME}` syntax is unrelated to the `@YEAR@` and `@LICENSE_HEADER@` placeholders used by license templating.
