@@ -901,7 +901,7 @@ class ConventionsPluginFunctionalTest {
                 """
         );
         Files.writeString(projectDir.resolve("build.gradle"), "plugins {\n    " + plugins + "\n}\n\n" + body);
-        Files.writeString(projectDir.resolve("gradle.properties"), "versioning.stage = release\n");
+        Files.writeString(projectDir.resolve("gradle.properties"), "");
         initRepository();
     }
 

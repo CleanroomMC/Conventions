@@ -81,7 +81,7 @@ class PublishedConsumerFunctionalTest {
                 }
                 """
         );
-        Files.writeString(projectDir.resolve("gradle.properties"), "versioning.stage=release\nconventions.license=free\n");
+        Files.writeString(projectDir.resolve("gradle.properties"), "conventions.license=free\n");
         writeSources(application);
         initRepository();
 

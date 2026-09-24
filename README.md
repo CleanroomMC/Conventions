@@ -96,9 +96,9 @@ The existing `conventions.repoUrl`, `conventions.junitVersion`, `conventions.moc
 > [!IMPORTANT]
 > Cleanroom Versioning 3 is applied by the base conventions and computes `project.version` from Git tags, so a
 > consuming project must not declare `version` in `gradle.properties` or the build script, and it needs a Git
-> repository with at least one commit. `versioning.stage` (one of `alpha`, `beta`, `rc`, `release`) is optional,
-> it is `beta` while the version line is below `1.0.0` and `release` from there on. Set it as a Gradle property
-> rather than through the `versioning { }` block when the project applies `java-gradle-plugin`.
+> repository with at least one commit. The stage (one of `alpha`, `beta`, `rc`, `release`) comes from a suffix on
+> the tag, such as `1.2.0-beta`. Untagged, it is inherited from the highest staged tag in the same major version,
+> else `beta` below `1.0.0` and `release` from there on. Setting `versioning.stage` from Gradle is deprecated.
 
 ### Extraction
 
@@ -131,7 +131,7 @@ Applied from `settings.gradle`.
 
 ### Base Conventions
 
-- Applies `com.cleanroommc.versioning` gradle plugin, pinned at 3.2.0.
+- Applies `com.cleanroommc.versioning` gradle plugin, pinned at 3.3.0.
   - Configures projects to follow Cleanroom's Versioning Conventions.
   - `project.version` comes from the Git tags, `./gradlew -q printVersion` prints it.
 - Default `group` is `com.cleanroommc` when the project has not set one.
@@ -305,7 +305,7 @@ The branch prefix matches the commit type the work carries, so a `feature/` bran
 
 `feature/` and `fix/` branches take their number from the line they were cut from and count their commits under their own label, so a branch cut from `develop/1.4` reads `1.4.0-feature-foo.3` and the same branch cut from `master` reads `1.1.2-feature-foo.3`. Only tags on `master` publish. Nothing built from a working branch or a development branch reaches a repository unless a workflow is written to do it.
 
-The version column describes [Cleanroom Versioning](https://github.com/CleanroomMC/CleanroomVersioning) 3.x, which the conventions plugin pins at 3.2.0.
+The version column describes [Cleanroom Versioning](https://github.com/CleanroomMC/CleanroomVersioning) 3.x, which the conventions plugin pins at 3.3.0.
 
 Delete a working branch once it is merged. Delete or rename a development branch once its version is tagged, since a development branch that has been released fails the build by design.
 
@@ -371,6 +371,7 @@ on:
   push:
     tags:
       - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+-*'
   workflow_dispatch:
 
 permissions:
