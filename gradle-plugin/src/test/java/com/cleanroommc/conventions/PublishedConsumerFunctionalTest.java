@@ -33,11 +33,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PublishedConsumerFunctionalTest {
 
     private static final List<String> GITHUB_ENVIRONMENT = List.of(
-            "GITHUB_ACTIONS",
-            "GITHUB_REF_TYPE",
-            "GITHUB_REF_NAME",
-            "GITHUB_HEAD_REF",
-            "GITHUB_RUN_NUMBER"
+        "GITHUB_ACTIONS",
+        "GITHUB_REF_TYPE",
+        "GITHUB_REF_NAME",
+        "GITHUB_HEAD_REF",
+        "GITHUB_RUN_NUMBER"
     );
 
     @TempDir
@@ -51,8 +51,8 @@ class PublishedConsumerFunctionalTest {
         Assumptions.assumeTrue(version != null && !version.isBlank());
 
         Files.writeString(
-                projectDir.resolve("settings.gradle"),
-                """
+            projectDir.resolve("settings.gradle"),
+            """
                 pluginManagement {
                     repositories {
                         maven { url = uri('%s') }
@@ -66,15 +66,15 @@ class PublishedConsumerFunctionalTest {
                 rootProject.name = 'published-consumer'
                 include 'application'
                 """.formatted(
-                        repository,
-                        version
-                )
+                repository,
+                version
+            )
         );
         Files.writeString(projectDir.resolve("build.gradle"), "");
         Path application = Files.createDirectories(projectDir.resolve("application"));
         Files.writeString(
-                application.resolve("build.gradle"),
-                """
+            application.resolve("build.gradle"),
+            """
                 plugins {
                     id 'java'
                     id 'com.cleanroommc.conventions'
@@ -98,8 +98,8 @@ class PublishedConsumerFunctionalTest {
         Path main = application.resolve("src/main/java/example/Calculator.java");
         Files.createDirectories(main.getParent());
         Files.writeString(
-                main,
-                header + """
+            main,
+            header + """
                 package example;
 
                 public final class Calculator {
@@ -116,8 +116,8 @@ class PublishedConsumerFunctionalTest {
         Path test = application.resolve("src/test/java/example/CalculatorTest.java");
         Files.createDirectories(test.getParent());
         Files.writeString(
-                test,
-                header + """
+            test,
+            header + """
                 package example;
 
                 import static org.assertj.core.api.Assertions.assertThat;

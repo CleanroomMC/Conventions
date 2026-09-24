@@ -38,8 +38,8 @@ class LicenseYearsTest {
     @Test
     void rejectsAFutureStartYear() {
         assertThatThrownBy(() -> LicenseYears.of(2027, 2026))
-                .isInstanceOf(GradleException.class)
-                .hasMessageContaining("must not be later than the current year 2026");
+            .isInstanceOf(GradleException.class)
+            .hasMessageContaining("must not be later than the current year 2026");
     }
 
     @Test

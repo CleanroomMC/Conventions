@@ -53,23 +53,23 @@ public class ConventionsStylePlugin implements Plugin<Project> {
         CheckstyleExtension checkstyle = project.getExtensions().getByType(CheckstyleExtension.class);
         checkstyle.setToolVersion(ConventionsProperty.CHECKSTYLE_VERSION.get(project, CHECKSTYLE_VERSION));
         TaskProvider<GenerateCheckstyleConfigTask> generateConfig = tasks.register(
-                GenerateCheckstyleConfigTask.NAME,
-                GenerateCheckstyleConfigTask.class,
-                task -> {
-                    task.setDescription("Generates Checkstyle configuration for the selected license.");
-                    task.getContents().convention(ConventionsFile.checkstyle(license));
-                    task.getOutputFile().convention(project.getLayout().getBuildDirectory().file("conventions/checkstyle.xml"));
-                }
+            GenerateCheckstyleConfigTask.NAME,
+            GenerateCheckstyleConfigTask.class,
+            task -> {
+                task.setDescription("Generates Checkstyle configuration for the selected license.");
+                task.getContents().convention(ConventionsFile.checkstyle(license));
+                task.getOutputFile().convention(project.getLayout().getBuildDirectory().file("conventions/checkstyle.xml"));
+            }
         );
         // Checkstyle runs on the project toolchain, so older targets borrow the conventions' default Java
         if (ConventionsProperty.javaMajor(project) < CHECKSTYLE_JAVA) {
             tasks.withType(Checkstyle.class)
-                    .configureEach(task -> task.getJavaLauncher()
-                            .set(
-                                    project.getExtensions()
-                                            .getByType(JavaToolchainService.class)
-                                            .launcherFor(spec -> spec.getLanguageVersion().set(JavaLanguageVersion.of(ConventionsDefaults.JAVA_VERSION)))
-                            ));
+                .configureEach(task -> task.getJavaLauncher()
+                    .set(
+                        project.getExtensions()
+                            .getByType(JavaToolchainService.class)
+                            .launcherFor(spec -> spec.getLanguageVersion().set(JavaLanguageVersion.of(ConventionsDefaults.JAVA_VERSION)))
+                    ));
         }
         checkstyle.setConfig(project.getResources().getText().fromFile(generateConfig.flatMap(GenerateCheckstyleConfigTask::getOutputFile)));
 
@@ -77,12 +77,12 @@ public class ConventionsStylePlugin implements Plugin<Project> {
         tasks.named(FormatJPlugin.APPLY_TASK_NAME).configure(task -> task.mustRunAfter(ClearSkiesPlugin.APPLY_TASK_NAME));
         tasks.named(FormatJPlugin.CHECK_TASK_NAME).configure(task -> task.mustRunAfter(ClearSkiesPlugin.CHECK_TASK_NAME));
         tasks.withType(Checkstyle.class)
-                .configureEach(task -> task.mustRunAfter(
-                        ClearSkiesPlugin.APPLY_TASK_NAME,
-                        ClearSkiesPlugin.CHECK_TASK_NAME,
-                        FormatJPlugin.APPLY_TASK_NAME,
-                        FormatJPlugin.CHECK_TASK_NAME
-                ));
+            .configureEach(task -> task.mustRunAfter(
+                ClearSkiesPlugin.APPLY_TASK_NAME,
+                ClearSkiesPlugin.CHECK_TASK_NAME,
+                FormatJPlugin.APPLY_TASK_NAME,
+                FormatJPlugin.CHECK_TASK_NAME
+            ));
     }
 
 }

@@ -52,11 +52,11 @@ public class ConventionsModPlugin implements Plugin<Project> {
         publishing.getMaxRetries().convention(5);
         // Set release type as the one gotten from Cleanroom Versioning
         publishing.getType().convention(
-                project.getExtensions().getByType(VersioningExtension.class).getStage().map(stage -> switch (stage) {
-                    case ALPHA -> ReleaseType.ALPHA;
-                    case BETA, RC -> ReleaseType.BETA;
-                    case RELEASE -> ReleaseType.STABLE;
-                })
+            project.getExtensions().getByType(VersioningExtension.class).getStage().map(stage -> switch (stage) {
+                case ALPHA -> ReleaseType.ALPHA;
+                case BETA, RC -> ReleaseType.BETA;
+                case RELEASE -> ReleaseType.STABLE;
+            })
         );
 
         // Apply "1.12.2" as default mc version, token env var: "CURSEFORGE_TOKEN"

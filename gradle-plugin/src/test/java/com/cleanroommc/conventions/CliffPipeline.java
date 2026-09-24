@@ -45,10 +45,10 @@ final class CliffPipeline {
     static CliffPipeline parse(String toml) {
         String git = section(toml, "git");
         return new CliffPipeline(
-                booleanValue(git, "split_commits"),
-                stringArray(git, "processing_order"),
-                parsePreprocessors(bracketArray(git, "commit_preprocessors")),
-                parseParsers(bracketArray(git, "commit_parsers"))
+            booleanValue(git, "split_commits"),
+            stringArray(git, "processing_order"),
+            parsePreprocessors(bracketArray(git, "commit_preprocessors")),
+            parseParsers(bracketArray(git, "commit_parsers"))
         );
     }
 

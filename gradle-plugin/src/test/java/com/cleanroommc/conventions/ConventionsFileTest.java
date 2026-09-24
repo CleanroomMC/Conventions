@@ -25,7 +25,7 @@ class ConventionsFileTest {
     void javaHeaderWrapsTheHeaderFile() {
         int current = Year.now().getValue();
         assertThat(LicenseMode.VISIBLE.javaHeader(LicenseYears.current())).isEqualTo(
-                """
+            """
                 /*
                  * Copyright (c) %d CleanroomMC contributors
                  *
@@ -35,8 +35,8 @@ class ConventionsFileTest {
                  *
                  * This is visible-source software and is not open-source software.
                  */""".formatted(
-                        current
-                )
+                current
+            )
         );
     }
 

@@ -62,7 +62,7 @@ public class ConventionsPublishingPlugin implements Plugin<Project> {
                 return;
             }
             publishing.getPublications()
-                    .register(MAVEN_PUBLICATION, MavenPublication.class, publication -> publication.from(project.getComponents().getByName("java")));
+                .register(MAVEN_PUBLICATION, MavenPublication.class, publication -> publication.from(project.getComponents().getByName("java")));
         });
     }
 
@@ -109,16 +109,16 @@ public class ConventionsPublishingPlugin implements Plugin<Project> {
         homepageUrl.finalizeValueOnRead();
 
         publishing.getPublications()
-                .withType(MavenPublication.class)
-                .configureEach(publication -> configurePom(project, publication, homepageUrl, repositoryUrl, license));
+            .withType(MavenPublication.class)
+            .configureEach(publication -> configurePom(project, publication, homepageUrl, repositoryUrl, license));
     }
 
     private void configurePom(
-            Project project,
-            MavenPublication publication,
-            Provider<String> homepageUrl,
-            Provider<String> repositoryUrl,
-            LicenseMode licenseMode
+        Project project,
+        MavenPublication publication,
+        Provider<String> homepageUrl,
+        Provider<String> repositoryUrl,
+        LicenseMode licenseMode
     ) {
         publication.pom(pom -> {
             pom.getName().convention(project.provider(project::getName));
@@ -158,9 +158,9 @@ public class ConventionsPublishingPlugin implements Plugin<Project> {
 
     private Provider<String> gitUpstreamUrl(Project project) {
         Provider<String> remote = git(project, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{upstream}")
-                .filter(ref -> ref.indexOf('/') >= 0)
-                .map(ref -> ref.substring(0, ref.indexOf('/')))
-                .orElse("origin");
+            .filter(ref -> ref.indexOf('/') >= 0)
+            .map(ref -> ref.substring(0, ref.indexOf('/')))
+            .orElse("origin");
         return remote.flatMap(name -> git(project, "remote", "get-url", name)).map(ConventionsPublishingPlugin::canonicalHttpUrl);
     }
 
@@ -174,10 +174,10 @@ public class ConventionsPublishingPlugin implements Plugin<Project> {
             spec.setIgnoreExitValue(true);
         });
         return output.getResult()
-                .filter(result -> result.getExitValue() == 0)
-                .flatMap(_ -> output.getStandardOutput().getAsText())
-                .map(String::trim)
-                .filter(text -> !text.isEmpty());
+            .filter(result -> result.getExitValue() == 0)
+            .flatMap(_ -> output.getStandardOutput().getAsText())
+            .map(String::trim)
+            .filter(text -> !text.isEmpty());
     }
 
     private static String canonicalHttpUrl(String url) {

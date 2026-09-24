@@ -63,13 +63,13 @@ public class ConventionsBasePlugin implements Plugin<Project> {
 
         // Gets "conventions.javaMajor" and sets Java toolchain to it
         project.getPlugins()
-                .withType(
-                        JavaPlugin.class,
-                        _ -> extensions.getByType(JavaPluginExtension.class)
-                                .getToolchain()
-                                .getLanguageVersion()
-                                .set(JavaLanguageVersion.of(ConventionsProperty.JAVA_VERSION.get(project, ConventionsDefaults.JAVA_VERSION)))
-                );
+            .withType(
+                JavaPlugin.class,
+                _ -> extensions.getByType(JavaPluginExtension.class)
+                    .getToolchain()
+                    .getLanguageVersion()
+                    .set(JavaLanguageVersion.of(ConventionsProperty.JAVA_VERSION.get(project, ConventionsDefaults.JAVA_VERSION)))
+            );
 
         // Verifiable rebuilds
         tasks.withType(AbstractArchiveTask.class).configureEach(task -> {
@@ -87,24 +87,24 @@ public class ConventionsBasePlugin implements Plugin<Project> {
 
     private void configureManifest(Project project, Jar jar) {
         jar.getManifest()
-                .attributes(
-                        Map.of(
-                                "Implementation-Title",
-                                project.provider(project::getName),
-                                "Implementation-Version",
-                                project.provider(() -> project.getVersion().toString()),
-                                "Implementation-Vendor",
-                                ConventionsDefaults.ORGANIZATION_NAME,
-                                "Implementation-Vendor-Id",
-                                project.provider(() -> project.getGroup().toString()),
-                                "Specification-Title",
-                                project.provider(project::getName),
-                                "Specification-Version",
-                                project.provider(() -> project.getVersion().toString()),
-                                "Specification-Vendor",
-                                ConventionsDefaults.ORGANIZATION_NAME
-                        )
-                );
+            .attributes(
+                Map.of(
+                    "Implementation-Title",
+                    project.provider(project::getName),
+                    "Implementation-Version",
+                    project.provider(() -> project.getVersion().toString()),
+                    "Implementation-Vendor",
+                    ConventionsDefaults.ORGANIZATION_NAME,
+                    "Implementation-Vendor-Id",
+                    project.provider(() -> project.getGroup().toString()),
+                    "Specification-Title",
+                    project.provider(project::getName),
+                    "Specification-Version",
+                    project.provider(() -> project.getVersion().toString()),
+                    "Specification-Vendor",
+                    ConventionsDefaults.ORGANIZATION_NAME
+                )
+            );
     }
 
 }

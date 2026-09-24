@@ -34,11 +34,11 @@ class CliffPackTest {
     void gitSectionMatchesCliffToml() {
         assertThat(pipeline.splitCommits()).isTrue();
         assertThat(pipeline.processingOrder()).containsExactly(
-                "commit_preprocessors",
-                "split_commits",
-                "conventional_commits",
-                "commit_parsers",
-                "link_parsers"
+            "commit_preprocessors",
+            "split_commits",
+            "conventional_commits",
+            "commit_parsers",
+            "link_parsers"
         );
 
         List<Preprocessor> preprocessors = pipeline.preprocessors();
@@ -74,7 +74,7 @@ class CliffPackTest {
     @Test
     void packSplitsNestedConventionalCommits() {
         List<CliffEntry> entries = pipeline.process(
-                """
+            """
                 pack: implemented large surface PR (#123)
 
                 - fix(inventory): shift-click from the hotbar
@@ -93,7 +93,7 @@ class CliffPackTest {
     @Test
     void regularCommitsStayOneCollapsedEntry() {
         List<CliffEntry> entries = pipeline.process(
-                """
+            """
                 feat(example): example multiline commit (#389)
 
                 - feature(another): implemented another feature
@@ -118,7 +118,7 @@ class CliffPackTest {
     @Test
     void packageIsNotAPackCommit() {
         List<CliffEntry> entries = pipeline.process(
-                """
+            """
                 package: bump the wrapper
 
                 - feat(core): should not split

@@ -19,12 +19,12 @@ enum LicenseMode {
 
     FREE("free", "licenses/free/LICENSE", "licenses/free/HEADER", "MIT License", "https://opensource.org/licenses/MIT", ""),
     OPEN(
-            "open",
-            "licenses/open/LICENSE",
-            "licenses/open/HEADER",
-            "GNU Lesser General Public License v3.0 only",
-            "https://www.gnu.org/licenses/lgpl-3.0.html",
-            ""
+        "open",
+        "licenses/open/LICENSE",
+        "licenses/open/HEADER",
+        "GNU Lesser General Public License v3.0 only",
+        "https://www.gnu.org/licenses/lgpl-3.0.html",
+        ""
     ),
     VISIBLE("visible", "LICENSE", "HEADER", ConventionsDefaults.LICENSE_NAME, ConventionsDefaults.LICENSE_URL, ConventionsDefaults.LICENSE_COMMENTS);
 

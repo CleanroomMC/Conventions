@@ -59,8 +59,8 @@ final class LicenseYears {
     static Provider<Integer> beginProvider(Project project) {
         ProviderFactory providers = project.getProviders();
         Provider<Integer> persisted = providers.of(
-                PersistedBeginYear.class,
-                source -> source.getParameters().getStartDirectory().set(project.getLayout().getProjectDirectory())
+            PersistedBeginYear.class,
+            source -> source.getParameters().getStartDirectory().set(project.getLayout().getProjectDirectory())
         );
         return persisted.orElse(currentYear(providers));
     }

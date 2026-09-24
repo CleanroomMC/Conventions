@@ -31,7 +31,7 @@ public class ConventionsAnnotationsPlugin implements Plugin<Project> {
                 dependencies.addProvider(compileOnly, conventions.getJspecifyVersion().map(version -> "org.jspecify:jspecify:" + version));
                 dependencies.addProvider(compileOnly, conventions.getJetbrainsAnnotationsVersion().map(version -> "org.jetbrains:annotations:" + version));
                 dependencies.addProvider(compileOnly, conventions.getAnoneVersion().filter(version -> !version.isEmpty()).map(version -> "com.cleanroommc:anone:" +
-                        version));
+                    version));
             });
         });
     }

@@ -67,7 +67,7 @@ public abstract class CheckLicenseTask extends DefaultTask {
         Path license = findLicense(start);
         if (license == null) {
             throw new GradleException(
-                    "Missing LICENSE. Run extractConventions, or copy " + getExpectedName().get() + " to the project directory or a parent directory."
+                "Missing LICENSE. Run extractConventions, or copy " + getExpectedName().get() + " to the project directory or a parent directory."
             );
         }
         String actual = Files.readString(license, StandardCharsets.UTF_8);

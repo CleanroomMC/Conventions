@@ -59,11 +59,11 @@ enum ConventionsFile {
 
     static String checkstyle(LicenseMode license) {
         String header = license.javaHeaderPattern()
-                .replace("&", "&amp;")
-                .replace("\"", "&quot;")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;")
-                .replace("\n", "\\n");
+            .replace("&", "&amp;")
+            .replace("\"", "&quot;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace("\n", "\\n");
         return CHECKSTYLE.read().replace("@LICENSE_HEADER@", header);
     }
 

@@ -107,7 +107,7 @@ public abstract class ExtractConventionsTask extends DefaultTask {
         int end = existing.indexOf(REGION_END);
         if (begin >= 0 && end < begin) {
             throw new GradleException(
-                    fileName + " opens '" + REGION_BEGIN + "' without a matching '" + REGION_END + "'. Repair or delete the region and run " + NAME + " again."
+                fileName + " opens '" + REGION_BEGIN + "' without a matching '" + REGION_END + "'. Repair or delete the region and run " + NAME + " again."
             );
         }
         if (begin >= 0) {
