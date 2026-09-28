@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.8 - 2026-09-28
+
+## Bug Fix
+
+- Stop bot accounts being flagged as first-time contributors *[commit by [@Rongmario](https://github.com/Rongmario) in [9c1b0c0](https://github.com/CleanroomMC/Conventions/commit/9c1b0c0c84cbcb8f928706711ad2071ac55a2c1e)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.1.7...1.1.8
+
 ## 1.1.7 - 2026-09-24
 
 ## Feature
@@ -82,10 +90,6 @@
 ## Bug Fix
 
 - First time contributor issues *[commit by [@Rongmario](https://github.com/Rongmario) in [5790458](https://github.com/CleanroomMC/Conventions/commit/5790458cd7d91b942f2584962cac306e718dca00)]*
-
-## First-time Contributors
-
-- **[@github-actions[bot]](https://github.com/github-actions[bot]) made their first contribution!**
 
 **Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.0.0...1.0.1
 
