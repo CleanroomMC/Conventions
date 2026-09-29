@@ -33,6 +33,7 @@ public abstract class ConventionsExtension {
         if (extension == null) {
             extension = extensions.create(NAME, ConventionsExtension.class);
         }
+        extension.getAuthor().convention(ConventionsDefaults.AUTHOR);
         extension.getRepositoryUrl().convention(ConventionsProperty.REPO_URL.provider(project));
         int javaMajor = ConventionsProperty.javaMajor(project);
         extension.getJunitVersion()
@@ -73,6 +74,8 @@ public abstract class ConventionsExtension {
     public abstract Property<String> getAnoneVersion();
 
     public abstract Property<Integer> getBeginFrom();
+
+    public abstract Property<String> getAuthor();
 
     public ModsExtension getMods() {
         return ((ExtensionAware) this).getExtensions().getByType(ModsExtension.class);

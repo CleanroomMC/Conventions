@@ -13,6 +13,7 @@ package com.cleanroommc.conventions;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.provider.ValueSource;
@@ -26,16 +27,16 @@ import java.time.Year;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-final class LicenseYears {
+final class CopyrightNotice {
 
     static final String YEAR_TOKEN = "@YEAR@";
-
-    private static final Pattern COPYRIGHT = Pattern.compile("(?m)^(Copyright (?:\\(c\\)|©) )(\\d{4})(?:-(?:\\d{4}|present))?( CleanroomMC contributors)$");
+    static final String AUTHOR_TOKEN = "@AUTHOR@";
 
     private final int begin;
     private final int current;
+    private final String author;
 
-    private LicenseYears(int begin, int current) {
+    private CopyrightNotice(int begin, int current, String author) {
         if (begin < 1000) {
             throw new GradleException("conventions.beginFrom must be a four-digit year.");
         }
@@ -44,34 +45,37 @@ final class LicenseYears {
         }
         this.begin = begin;
         this.current = current;
+        this.author = author;
     }
 
-    static Provider<LicenseYears> provider(Project project) {
+    static Provider<CopyrightNotice> provider(Project project) {
         return provider(project, project);
     }
 
-    static Provider<LicenseYears> provider(Project project, Project persistedProject) {
+    static Provider<CopyrightNotice> provider(Project project, Project persistedProject) {
         ConventionsExtension conventions = ConventionsExtension.register(project);
-        Provider<Integer> begin = conventions.getBeginFrom().orElse(beginProvider(persistedProject));
-        return currentYear(project.getProviders()).zip(begin, (currentYear, firstYear) -> new LicenseYears(firstYear, currentYear));
+        Provider<String> author = conventions.getAuthor();
+        Provider<Integer> begin = conventions.getBeginFrom().orElse(beginProvider(persistedProject, author));
+        Provider<Integer> current = currentYear(project.getProviders());
+        return author.flatMap(holder -> current.zip(begin, (currentYear, firstYear) -> new CopyrightNotice(firstYear, currentYear, holder)));
     }
 
-    static Provider<Integer> beginProvider(Project project) {
+    static Provider<Integer> beginProvider(Project project, Provider<String> author) {
         ProviderFactory providers = project.getProviders();
-        Provider<Integer> persisted = providers.of(
-            PersistedBeginYear.class,
-            source -> source.getParameters().getStartDirectory().set(project.getLayout().getProjectDirectory())
-        );
+        Provider<Integer> persisted = providers.of(PersistedBeginYear.class, source -> {
+            source.getParameters().getStartDirectory().set(project.getLayout().getProjectDirectory());
+            source.getParameters().getAuthor().set(author);
+        });
         return persisted.orElse(currentYear(providers));
     }
 
-    static LicenseYears of(int begin, int current) {
-        return new LicenseYears(begin, current);
+    static CopyrightNotice of(int begin, int current) {
+        return new CopyrightNotice(begin, current, ConventionsDefaults.AUTHOR);
     }
 
-    static LicenseYears current() {
+    static CopyrightNotice current() {
         int current = Year.now().getValue();
-        return new LicenseYears(current, current);
+        return of(current, current);
     }
 
     String value() {
@@ -79,7 +83,7 @@ final class LicenseYears {
     }
 
     String apply(String text) {
-        return text.replace(YEAR_TOKEN, value());
+        return text.replace(YEAR_TOKEN, value()).replace(AUTHOR_TOKEN, author);
     }
 
     private static Provider<Integer> currentYear(ProviderFactory providers) {
@@ -109,14 +113,19 @@ final class LicenseYears {
 
             DirectoryProperty getStartDirectory();
 
+            Property<String> getAuthor();
+
         }
 
         @Override
         public Integer obtain() {
+            Pattern copyright = Pattern.compile(
+                "(?m)^Copyright (?:\\(c\\)|©) (\\d{4})(?:-(?:\\d{4}|present))? " + Pattern.quote(getParameters().getAuthor().get()) + "$"
+            );
             Path cursor = getParameters().getStartDirectory().getAsFile().get().toPath().toAbsolutePath().normalize();
             while (cursor != null) {
                 for (String fileName : new String[] { "HEADER", "LICENSE" }) {
-                    Integer year = read(cursor.resolve(fileName));
+                    Integer year = read(cursor.resolve(fileName), copyright);
                     if (year != null) {
                         return year;
                     }
@@ -127,7 +136,7 @@ final class LicenseYears {
         }
 
         // The walk reaches directories this build does not own, so an unreadable or non-UTF-8 candidate is not ours.
-        private static Integer read(Path file) {
+        private static Integer read(Path file, Pattern copyright) {
             if (!Files.isRegularFile(file)) {
                 return null;
             }
@@ -137,8 +146,8 @@ final class LicenseYears {
             } catch (IOException e) {
                 return null;
             }
-            Matcher matcher = COPYRIGHT.matcher(text);
-            return matcher.find() ? Integer.parseInt(matcher.group(2)) : null;
+            Matcher matcher = copyright.matcher(text);
+            return matcher.find() ? Integer.parseInt(matcher.group(1)) : null;
         }
 
     }

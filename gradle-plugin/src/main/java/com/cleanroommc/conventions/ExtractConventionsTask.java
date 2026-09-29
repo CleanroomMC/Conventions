@@ -47,14 +47,14 @@ public abstract class ExtractConventionsTask extends DefaultTask {
             return;
         }
         LicenseMode license = LicenseMode.from(project);
-        Provider<LicenseYears> years = LicenseYears.provider(project, project.getRootProject());
+        Provider<CopyrightNotice> notice = CopyrightNotice.provider(project, project.getRootProject());
         project.getTasks().register(NAME, ExtractConventionsTask.class, task -> {
             task.setGroup("conventions");
             task.setDescription("Writes convention files into the project directory. Not attached to build, check or assemble.");
             task.getDestinationDirectory().convention(project.getRootProject().getLayout().getProjectDirectory());
             for (ConventionsFile file : ConventionsFile.values()) {
                 if (file == ConventionsFile.CHECKSTYLE) {
-                    task.getContents().put(file.fileName(), ConventionsFile.checkstyle(license));
+                    task.getContents().put(file.fileName(), ConventionsFile.checkstyle(project, license));
                 } else {
                     task.getContents().put(file.fileName(), file.read());
                 }
@@ -63,8 +63,8 @@ public abstract class ExtractConventionsTask extends DefaultTask {
                 }
                 task.getOutputFiles().from(task.getDestinationDirectory().file(file.fileName()));
             }
-            task.getContents().put("LICENSE", years.map(license::licenseText));
-            task.getContents().put("HEADER", years.map(license::headerText));
+            task.getContents().put("LICENSE", notice.map(license::licenseText));
+            task.getContents().put("HEADER", notice.map(license::headerText));
             task.getOutputFiles().from(task.getDestinationDirectory().file("LICENSE"));
             task.getOutputFiles().from(task.getDestinationDirectory().file("HEADER"));
         });

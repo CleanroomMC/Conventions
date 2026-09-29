@@ -57,7 +57,7 @@ public class ConventionsStylePlugin implements Plugin<Project> {
             GenerateCheckstyleConfigTask.class,
             task -> {
                 task.setDescription("Generates Checkstyle configuration for the selected license.");
-                task.getContents().convention(ConventionsFile.checkstyle(license));
+                task.getContents().convention(ConventionsFile.checkstyle(project, license));
                 task.getOutputFile().convention(project.getLayout().getBuildDirectory().file("conventions/checkstyle.xml"));
             }
         );

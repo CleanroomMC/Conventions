@@ -16,6 +16,7 @@ final class ConventionsDefaults {
 
     static final String GROUP = "com.cleanroommc";
     static final String ORGANIZATION_NAME = "CleanroomMC";
+    static final String AUTHOR = "CleanroomMC contributors";
     static final String ORGANIZATION_URL = "https://cleanroommc.com";
     static final String LICENSE_NAME = "CleanroomMC License Version 1.0";
     static final String LICENSE_URL = "https://github.com/CleanroomMC/Conventions/blob/master/LICENSE";

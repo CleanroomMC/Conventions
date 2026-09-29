@@ -59,7 +59,7 @@ tasks.named('check') {
     dependsOn tasks.named('publishedConsumerTest')
 }
 
-// The root LICENSE is the packed template, so it intentionally retains @YEAR@.
+// The root LICENSE is the packed template, so it intentionally retains @YEAR@ and @AUTHOR@.
 tasks.named('checkLicense') {
     expected.set(providers.fileContents(conventionRoot.file('LICENSE')).asText)
 }

@@ -11,6 +11,8 @@
 package com.cleanroommc.conventions;
 
 import org.gradle.api.GradleException;
+import org.gradle.api.Project;
+import org.gradle.api.provider.Provider;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,8 +59,12 @@ enum ConventionsFile {
         return mergeMarkedRegion;
     }
 
-    static String checkstyle(LicenseMode license) {
-        String header = license.javaHeaderPattern()
+    static Provider<String> checkstyle(Project project, LicenseMode license) {
+        return ConventionsExtension.register(project).getAuthor().map(author -> checkstyle(license, author));
+    }
+
+    static String checkstyle(LicenseMode license, String author) {
+        String header = license.javaHeaderPattern(author)
             .replace("&", "&amp;")
             .replace("\"", "&quot;")
             .replace("<", "&lt;")
@@ -96,7 +102,7 @@ enum ConventionsFile {
                 pattern.append('\n');
             }
             String quoted = REGEX_METACHARACTER.matcher(line).replaceAll("\\\\$0");
-            pattern.append('^').append(quoted.replace(LicenseYears.YEAR_TOKEN, YEAR_PATTERN)).append('$');
+            pattern.append('^').append(quoted.replace(CopyrightNotice.YEAR_TOKEN, YEAR_PATTERN)).append('$');
         }
         return pattern.toString();
     }

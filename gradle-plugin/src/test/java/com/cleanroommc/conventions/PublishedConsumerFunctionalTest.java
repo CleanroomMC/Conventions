@@ -94,7 +94,7 @@ class PublishedConsumerFunctionalTest {
     }
 
     private void writeSources(Path application) throws IOException {
-        String header = LicenseMode.FREE.javaHeader(LicenseYears.current()) + "\n\n";
+        String header = LicenseMode.FREE.javaHeader(CopyrightNotice.current()) + "\n\n";
         Path main = application.resolve("src/main/java/example/Calculator.java");
         Files.createDirectories(main.getParent());
         Files.writeString(

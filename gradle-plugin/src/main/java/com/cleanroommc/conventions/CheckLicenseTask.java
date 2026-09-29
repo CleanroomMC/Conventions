@@ -40,11 +40,11 @@ public abstract class CheckLicenseTask extends DefaultTask {
             return;
         }
         LicenseMode license = LicenseMode.from(project);
-        Provider<LicenseYears> years = LicenseYears.provider(project);
+        Provider<CopyrightNotice> notice = CopyrightNotice.provider(project);
         project.getTasks().register(NAME, CheckLicenseTask.class, task -> {
             task.setGroup(LifecycleBasePlugin.VERIFICATION_GROUP);
             task.setDescription("Requires LICENSE in the project directory or a parent directory to match the configured license mode.");
-            task.getExpected().convention(years.map(license::licenseText));
+            task.getExpected().convention(notice.map(license::licenseText));
             task.getExpectedName().convention(license.displayName());
             task.getStartDirectory().convention(project.getLayout().getProjectDirectory());
         });

@@ -62,20 +62,20 @@ enum LicenseMode {
         return propertyValue;
     }
 
-    String licenseText(LicenseYears years) {
-        return years.apply(ConventionsFile.readResource(licenseResource));
+    String licenseText(CopyrightNotice notice) {
+        return notice.apply(ConventionsFile.readResource(licenseResource));
     }
 
-    String headerText(LicenseYears years) {
-        return years.apply(ConventionsFile.readResource(headerResource));
+    String headerText(CopyrightNotice notice) {
+        return notice.apply(ConventionsFile.readResource(headerResource));
     }
 
-    String javaHeader(LicenseYears years) {
-        return ConventionsFile.toJavaBlockComment(headerText(years));
+    String javaHeader(CopyrightNotice notice) {
+        return ConventionsFile.toJavaBlockComment(headerText(notice));
     }
 
-    String javaHeaderPattern() {
-        return ConventionsFile.toJavaBlockCommentPattern(ConventionsFile.readResource(headerResource));
+    String javaHeaderPattern(String author) {
+        return ConventionsFile.toJavaBlockCommentPattern(ConventionsFile.readResource(headerResource).replace(CopyrightNotice.AUTHOR_TOKEN, author));
     }
 
     String displayName() {

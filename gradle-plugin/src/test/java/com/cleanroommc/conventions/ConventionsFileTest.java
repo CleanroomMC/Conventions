@@ -24,7 +24,7 @@ class ConventionsFileTest {
     @Test
     void javaHeaderWrapsTheHeaderFile() {
         int current = Year.now().getValue();
-        assertThat(LicenseMode.VISIBLE.javaHeader(LicenseYears.current())).isEqualTo(
+        assertThat(LicenseMode.VISIBLE.javaHeader(CopyrightNotice.current())).isEqualTo(
             """
                 /*
                  * Copyright (c) %d CleanroomMC contributors
@@ -48,16 +48,18 @@ class ConventionsFileTest {
     @ParameterizedTest
     @EnumSource(LicenseMode.class)
     void checkstyleRendersEveryLicenseHeader(LicenseMode license) {
-        assertThat(ConventionsFile.checkstyle(license)).doesNotContain("@LICENSE_HEADER@");
-        assertThat(ConventionsFile.checkstyle(license)).contains(license.javaHeaderPattern().lines().findFirst().orElseThrow());
+        assertThat(ConventionsFile.checkstyle(license, ConventionsDefaults.AUTHOR)).doesNotContain("@LICENSE_HEADER@");
+        assertThat(ConventionsFile.checkstyle(license, ConventionsDefaults.AUTHOR)).contains(
+            license.javaHeaderPattern(ConventionsDefaults.AUTHOR).lines().findFirst().orElseThrow()
+        );
     }
 
     @ParameterizedTest
     @EnumSource(LicenseMode.class)
     void theHeaderPatternMatchesEveryYearForm(LicenseMode license) {
-        List<String> patterns = license.javaHeaderPattern().lines().toList();
+        List<String> patterns = license.javaHeaderPattern(ConventionsDefaults.AUTHOR).lines().toList();
         for (int begin = 2021; begin <= 2031; begin++) {
-            List<String> header = license.javaHeader(LicenseYears.of(2021, begin)).lines().toList();
+            List<String> header = license.javaHeader(CopyrightNotice.of(2021, begin)).lines().toList();
             assertThat(header).hasSameSizeAs(patterns);
             for (int line = 0; line < header.size(); line++) {
                 assertThat(header.get(line)).matches(patterns.get(line));

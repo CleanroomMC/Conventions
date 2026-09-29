@@ -186,9 +186,9 @@ class ConventionsPluginFunctionalTest {
 
         run("extractConventions");
 
-        LicenseYears years = LicenseYears.current();
-        assertThat(Files.readString(projectDir.resolve("LICENSE"))).isEqualTo(license.licenseText(years));
-        assertThat(Files.readString(projectDir.resolve("HEADER"))).isEqualTo(license.headerText(years));
+        CopyrightNotice notice = CopyrightNotice.current();
+        assertThat(Files.readString(projectDir.resolve("LICENSE"))).isEqualTo(license.licenseText(notice));
+        assertThat(Files.readString(projectDir.resolve("HEADER"))).isEqualTo(license.headerText(notice));
         assertThat(Files.readString(projectDir.resolve("LICENSE"))).doesNotContain("@YEAR@");
         assertThat(Files.readString(projectDir.resolve("HEADER"))).doesNotContain("@YEAR@");
         assertThat(Files.readString(projectDir.resolve("checkstyle.xml"))).doesNotContain("@LICENSE_HEADER@");
@@ -206,11 +206,25 @@ class ConventionsPluginFunctionalTest {
     }
 
     @Test
+    void authorSetsTheCopyrightHolder() throws IOException {
+        int current = Year.now().getValue();
+        int previous = current - 1;
+        project("id 'java'\n    id 'com.cleanroommc.conventions'", "conventions { author = 'Jane Doe (jane.doe)' }");
+        Files.writeString(projectDir.resolve("HEADER"), "Copyright (c) " + previous + " Jane Doe (jane.doe)\n");
+
+        run("extractConventions");
+
+        assertThat(Files.readString(projectDir.resolve("HEADER"))).contains("Copyright (c) " + previous + "-" + current + " Jane Doe (jane.doe)");
+        assertThat(Files.readString(projectDir.resolve("LICENSE"))).contains("Copyright © " + previous + "-" + current + " Jane Doe (jane.doe)");
+        assertThat(Files.readString(projectDir.resolve("checkstyle.xml"))).contains("Jane Doe \\(jane\\.doe\\)");
+    }
+
+    @Test
     void extractionPreservesThePreviousYearAsTheBeginning() throws IOException {
         int current = Year.now().getValue();
         int previous = current - 1;
         project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
-        Files.writeString(projectDir.resolve("HEADER"), LicenseMode.VISIBLE.headerText(LicenseYears.of(previous, previous)));
+        Files.writeString(projectDir.resolve("HEADER"), LicenseMode.VISIBLE.headerText(CopyrightNotice.of(previous, previous)));
 
         run("extractConventions");
 
@@ -225,7 +239,7 @@ class ConventionsPluginFunctionalTest {
         Path parent = projectDir;
         projectDir = Files.createDirectory(parent.resolve("consumer"));
         project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
-        Files.writeString(parent.resolve("HEADER"), LicenseMode.VISIBLE.headerText(LicenseYears.of(begin, current - 1)));
+        Files.writeString(parent.resolve("HEADER"), LicenseMode.VISIBLE.headerText(CopyrightNotice.of(begin, current - 1)));
 
         run("extractConventions");
 
@@ -238,7 +252,7 @@ class ConventionsPluginFunctionalTest {
         int begin = current - 3;
         project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
         run("--configuration-cache", "extractConventions");
-        Files.writeString(projectDir.resolve("HEADER"), LicenseMode.VISIBLE.headerText(LicenseYears.of(begin, begin)));
+        Files.writeString(projectDir.resolve("HEADER"), LicenseMode.VISIBLE.headerText(CopyrightNotice.of(begin, begin)));
 
         BuildResult second = run("--configuration-cache", "extractConventions");
 
@@ -692,7 +706,7 @@ class ConventionsPluginFunctionalTest {
         project("id 'java'\n    id 'com.cleanroommc.conventions.style'", "");
         Path source = projectDir.resolve("src/main/java/example/Example.java");
         Files.createDirectories(source.getParent());
-        Files.writeString(source, javaSource(LicenseMode.VISIBLE, LicenseYears.of(2021, 2022), "package example;\n\npublic class Example {\n}\n"));
+        Files.writeString(source, javaSource(LicenseMode.VISIBLE, CopyrightNotice.of(2021, 2022), "package example;\n\npublic class Example {\n}\n"));
         assertThat(run("checkstyleMain").getOutput()).contains("BUILD SUCCESSFUL");
     }
 
@@ -705,7 +719,7 @@ class ConventionsPluginFunctionalTest {
     @Test
     void checkLicensePassesWhenTheFileMatches() throws IOException {
         project("id 'java'\n    id 'com.cleanroommc.conventions.license'", "");
-        Files.writeString(projectDir.resolve("LICENSE"), LicenseMode.VISIBLE.licenseText(LicenseYears.current()));
+        Files.writeString(projectDir.resolve("LICENSE"), LicenseMode.VISIBLE.licenseText(CopyrightNotice.current()));
         assertThat(run("checkLicense").getOutput()).contains("BUILD SUCCESSFUL");
     }
 
@@ -722,7 +736,7 @@ class ConventionsPluginFunctionalTest {
         int begin = current - 5;
         project("id 'java'", "");
         Path child = childProject("id 'java'\n    id 'com.cleanroommc.conventions.license'", "");
-        Files.writeString(child.resolve("LICENSE"), LicenseMode.VISIBLE.licenseText(LicenseYears.of(begin, current)));
+        Files.writeString(child.resolve("LICENSE"), LicenseMode.VISIBLE.licenseText(CopyrightNotice.of(begin, current)));
 
         assertThat(projectDir.resolve("LICENSE")).doesNotExist();
         assertThat(run(":child:checkLicense").getOutput()).contains("BUILD SUCCESSFUL");
@@ -732,7 +746,7 @@ class ConventionsPluginFunctionalTest {
     void checkLicenseDoesNotAcceptTheRootWhenTheChildLicenseDiffers() throws IOException {
         project("id 'java'", "");
         Path child = childProject("id 'java'\n    id 'com.cleanroommc.conventions.license'", "");
-        Files.writeString(projectDir.resolve("LICENSE"), LicenseMode.VISIBLE.licenseText(LicenseYears.current()));
+        Files.writeString(projectDir.resolve("LICENSE"), LicenseMode.VISIBLE.licenseText(CopyrightNotice.current()));
         Files.writeString(child.resolve("LICENSE"), "MIT\n");
 
         BuildResult result = runAndFail(":child:checkLicense");
@@ -759,8 +773,8 @@ class ConventionsPluginFunctionalTest {
         int childBegin = current - 2;
         project("id 'java'", "");
         Path child = childProject("id 'java'\n    id 'com.cleanroommc.conventions'", "");
-        Files.writeString(projectDir.resolve("HEADER"), LicenseMode.VISIBLE.headerText(LicenseYears.of(rootBegin, current - 1)));
-        Files.writeString(child.resolve("HEADER"), LicenseMode.VISIBLE.headerText(LicenseYears.of(childBegin, childBegin)));
+        Files.writeString(projectDir.resolve("HEADER"), LicenseMode.VISIBLE.headerText(CopyrightNotice.of(rootBegin, current - 1)));
+        Files.writeString(child.resolve("HEADER"), LicenseMode.VISIBLE.headerText(CopyrightNotice.of(childBegin, childBegin)));
 
         run(":child:extractConventions");
 
@@ -800,11 +814,11 @@ class ConventionsPluginFunctionalTest {
     }
 
     private static String javaSource(LicenseMode license, String body) {
-        return javaSource(license, LicenseYears.current(), body);
+        return javaSource(license, CopyrightNotice.current(), body);
     }
 
-    private static String javaSource(LicenseMode license, LicenseYears years, String body) {
-        return license.javaHeader(years) + "\n\n" + body;
+    private static String javaSource(LicenseMode license, CopyrightNotice notice, String body) {
+        return license.javaHeader(notice) + "\n\n" + body;
     }
 
     private static String printToolchain() {
