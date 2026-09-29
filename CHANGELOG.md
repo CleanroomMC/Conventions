@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.1.9 - 2026-09-29
+
+## Feature
+
+- Custom authorship for licensing *[commit by [@Rongmario](https://github.com/Rongmario) in [2e5a255](https://github.com/CleanroomMC/Conventions/commit/2e5a2551811b2a647e92aad301bd896a6ffc436c)]*
+
+## Bug Fix
+
+- Add junit launcher to testImplementation config *[commit by [@Rongmario](https://github.com/Rongmario) in [abd6bcb](https://github.com/CleanroomMC/Conventions/commit/abd6bcb603d73941a7e9dd66cc7e23c9cfa7baa5)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.1.8...1.1.9
+
 ## 1.1.8 - 2026-09-28
 
 ## Bug Fix
