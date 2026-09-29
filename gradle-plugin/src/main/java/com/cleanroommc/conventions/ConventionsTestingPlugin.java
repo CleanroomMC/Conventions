@@ -31,11 +31,10 @@ public class ConventionsTestingPlugin implements Plugin<Project> {
         project.getPlugins().withType(JavaPlugin.class, _ -> {
             DependencyHandler dependencies = project.getDependencies();
             String testImplementation = JavaPlugin.TEST_IMPLEMENTATION_CONFIGURATION_NAME;
-            String testRuntimeOnly = JavaPlugin.TEST_RUNTIME_ONLY_CONFIGURATION_NAME;
 
             dependencies.addProvider(testImplementation, conventions.getJunitVersion().map(version -> dependencies.platform("org.junit:junit-bom:" + version)));
             dependencies.add(testImplementation, "org.junit.jupiter:junit-jupiter");
-            dependencies.add(testRuntimeOnly, "org.junit.platform:junit-platform-launcher");
+            dependencies.add(testImplementation, "org.junit.platform:junit-platform-launcher");
 
             dependencies.addProvider(testImplementation, conventions.getMockitoVersion().map(version -> "org.mockito:mockito-core:" + version));
             dependencies.addProvider(testImplementation, conventions.getMockitoVersion().map(version -> "org.mockito:mockito-junit-jupiter:" + version));
