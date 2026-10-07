@@ -57,7 +57,10 @@ final class CopyrightNotice {
         Provider<String> author = conventions.getAuthor();
         Provider<Integer> begin = conventions.getBeginFrom().orElse(beginProvider(persistedProject, author));
         Provider<Integer> current = currentYear(project.getProviders());
-        return author.flatMap(holder -> current.zip(begin, (currentYear, firstYear) -> new CopyrightNotice(firstYear, currentYear, holder)));
+        return author.flatMap(holder -> current.zip(
+            begin,
+            (currentYear, firstYear) -> new CopyrightNotice(firstYear, currentYear, holder)
+        ));
     }
 
     static Provider<Integer> beginProvider(Project project, Provider<String> author) {
@@ -78,16 +81,16 @@ final class CopyrightNotice {
         return of(current, current);
     }
 
+    private static Provider<Integer> currentYear(ProviderFactory providers) {
+        return providers.of(CurrentYear.class, _ -> { });
+    }
+
     String value() {
         return begin == current ? Integer.toString(current) : begin + "-" + current;
     }
 
     String apply(String text) {
         return text.replace(YEAR_TOKEN, value()).replace(AUTHOR_TOKEN, author);
-    }
-
-    private static Provider<Integer> currentYear(ProviderFactory providers) {
-        return providers.of(CurrentYear.class, _ -> { });
     }
 
     /**
@@ -109,18 +112,26 @@ final class CopyrightNotice {
      */
     public abstract static class PersistedBeginYear implements ValueSource<Integer, PersistedBeginYear.Parameters> {
 
-        public interface Parameters extends ValueSourceParameters {
-
-            DirectoryProperty getStartDirectory();
-
-            Property<String> getAuthor();
-
+        // The walk reaches directories this build does not own, so an unreadable or non-UTF-8 candidate is not ours.
+        private static Integer read(Path file, Pattern copyright) {
+            if (!Files.isRegularFile(file)) {
+                return null;
+            }
+            String text;
+            try {
+                text = new String(Files.readAllBytes(file), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                return null;
+            }
+            Matcher matcher = copyright.matcher(text);
+            return matcher.find() ? Integer.parseInt(matcher.group(1)) : null;
         }
 
         @Override
         public Integer obtain() {
             Pattern copyright = Pattern.compile(
-                "(?m)^Copyright (?:\\(c\\)|©) (\\d{4})(?:-(?:\\d{4}|present))? " + Pattern.quote(getParameters().getAuthor().get()) + "$"
+                "(?m)^Copyright (?:\\(c\\)|©) (\\d{4})(?:-(?:\\d{4}|present))? " +
+                    Pattern.quote(getParameters().getAuthor().get()) + "$"
             );
             Path cursor = getParameters().getStartDirectory().getAsFile().get().toPath().toAbsolutePath().normalize();
             while (cursor != null) {
@@ -135,19 +146,12 @@ final class CopyrightNotice {
             return null;
         }
 
-        // The walk reaches directories this build does not own, so an unreadable or non-UTF-8 candidate is not ours.
-        private static Integer read(Path file, Pattern copyright) {
-            if (!Files.isRegularFile(file)) {
-                return null;
-            }
-            String text;
-            try {
-                text = new String(Files.readAllBytes(file), StandardCharsets.UTF_8);
-            } catch (IOException e) {
-                return null;
-            }
-            Matcher matcher = copyright.matcher(text);
-            return matcher.find() ? Integer.parseInt(matcher.group(1)) : null;
+        public interface Parameters extends ValueSourceParameters {
+
+            DirectoryProperty getStartDirectory();
+
+            Property<String> getAuthor();
+
         }
 
     }

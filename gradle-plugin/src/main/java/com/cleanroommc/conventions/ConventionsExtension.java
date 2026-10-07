@@ -46,14 +46,28 @@ public abstract class ConventionsExtension {
             .convention(
                 ConventionsProperty.MOCKITO_VERSION
                     .provider(project)
-                    .orElse(javaMajor < 11 ? ConventionsDefaults.MOCKITO_4_VERSION : ConventionsDefaults.MOCKITO_VERSION)
+                    .orElse(
+                        javaMajor < 11 ? ConventionsDefaults.MOCKITO_4_VERSION : ConventionsDefaults.MOCKITO_VERSION
+                    )
             );
-        extension.getAssertjVersion().convention(ConventionsProperty.ASSERTJ_VERSION.provider(project).orElse(ConventionsDefaults.ASSERTJ_VERSION));
-        extension.getJmhVersion().convention(ConventionsProperty.JMH_VERSION.provider(project).orElse(ConventionsDefaults.JMH_VERSION));
-        extension.getJspecifyVersion().convention(ConventionsProperty.JSPECIFY_VERSION.provider(project).orElse(ConventionsDefaults.JSPECIFY_VERSION));
+        extension.getAssertjVersion()
+            .convention(
+                ConventionsProperty.ASSERTJ_VERSION.provider(project).orElse(ConventionsDefaults.ASSERTJ_VERSION)
+            );
+        extension.getJmhVersion()
+            .convention(ConventionsProperty.JMH_VERSION.provider(project).orElse(ConventionsDefaults.JMH_VERSION));
+        extension.getJspecifyVersion()
+            .convention(
+                ConventionsProperty.JSPECIFY_VERSION.provider(project).orElse(ConventionsDefaults.JSPECIFY_VERSION)
+            );
         extension.getJetbrainsAnnotationsVersion()
-            .convention(ConventionsProperty.JETBRAINS_ANNOTATIONS_VERSION.provider(project).orElse(ConventionsDefaults.JETBRAINS_ANNOTATIONS_VERSION));
-        extension.getAnoneVersion().convention(ConventionsProperty.ANONE_VERSION.provider(project).orElse(ConventionsDefaults.ANONE_VERSION));
+            .convention(
+                ConventionsProperty.JETBRAINS_ANNOTATIONS_VERSION
+                    .provider(project)
+                    .orElse(ConventionsDefaults.JETBRAINS_ANNOTATIONS_VERSION)
+            );
+        extension.getAnoneVersion()
+            .convention(ConventionsProperty.ANONE_VERSION.provider(project).orElse(ConventionsDefaults.ANONE_VERSION));
         return extension;
     }
 

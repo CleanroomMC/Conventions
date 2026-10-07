@@ -19,9 +19,12 @@ import java.util.regex.Pattern;
 
 final class CliffPipeline {
 
-    static final String COLLAPSE_COMMAND = "awk 'NR==1 && /^pack[(!:]/ {pack=1} {printf \"%s%s\", " + "(NR==1 ? \"\" : (pack || tolower($0) ~ /^co-authored-by:/ ? \"\\n\" : \"\\f\")), $0}' ";
+    static final String COLLAPSE_COMMAND = "awk 'NR==1 && /^pack[(!:]/ {pack=1} {printf \"%s%s\", " +
+        "(NR==1 ? \"\" : (pack || tolower($0) ~ /^co-authored-by:/ ? \"\\n\" : \"\\f\")), $0}' ";
 
-    private static final Pattern CONVENTIONAL_HEADER = Pattern.compile("^(?<type>[^\\s(:!]+)(?:\\((?<scope>[^)]*)\\))?(?<breaking>!)?:\\s*(?<desc>.*)$");
+    private static final Pattern CONVENTIONAL_HEADER = Pattern.compile(
+        "^(?<type>[^\\s(:!]+)(?:\\((?<scope>[^)]*)\\))?(?<breaking>!)?:\\s*(?<desc>.*)$"
+    );
     private static final Pattern PACK_HEADER = Pattern.compile("^pack[(!:]");
     private static final Pattern TOML_STRING = Pattern.compile("(?:'([^']*)'|\"((?:\\\\.|[^\"])*)\")");
     private static final Pattern GROUP_PREFIX = Pattern.compile("^<!--\\s*\\d+\\s*-->");
@@ -31,7 +34,12 @@ final class CliffPipeline {
     private final List<Preprocessor> preprocessors;
     private final List<Parser> parsers;
 
-    private CliffPipeline(boolean splitCommits, List<String> processingOrder, List<Preprocessor> preprocessors, List<Parser> parsers) {
+    private CliffPipeline(
+        boolean splitCommits,
+        List<String> processingOrder,
+        List<Preprocessor> preprocessors,
+        List<Parser> parsers
+    ) {
         this.splitCommits = splitCommits;
         this.processingOrder = List.copyOf(processingOrder);
         this.preprocessors = List.copyOf(preprocessors);
@@ -50,65 +58,6 @@ final class CliffPipeline {
             parsePreprocessors(bracketArray(git, "commit_preprocessors")),
             parseParsers(bracketArray(git, "commit_parsers"))
         );
-    }
-
-    boolean splitCommits() {
-        return splitCommits;
-    }
-
-    List<String> processingOrder() {
-        return processingOrder;
-    }
-
-    List<Preprocessor> preprocessors() {
-        return preprocessors;
-    }
-
-    List<Parser> parsers() {
-        return parsers;
-    }
-
-    List<CliffEntry> process(String message) {
-        String rendered = message;
-        for (Preprocessor preprocessor : preprocessors) {
-            rendered = preprocessor.apply(rendered);
-        }
-        List<String> pieces = new ArrayList<>();
-        if (splitCommits) {
-            for (String line : rendered.split("\n", -1)) {
-                if (!line.isEmpty()) {
-                    pieces.add(line);
-                }
-            }
-        } else {
-            pieces.add(rendered);
-        }
-        List<CliffEntry> entries = new ArrayList<>();
-        for (String piece : pieces) {
-            Parser parser = match(piece);
-            if (parser == null || parser.skip) {
-                continue;
-            }
-            Matcher header = CONVENTIONAL_HEADER.matcher(header(piece));
-            String scope = null;
-            String description = header(piece);
-            if (header.matches()) {
-                scope = header.group("scope");
-                description = header.group("desc");
-            }
-            entries.add(new CliffEntry(displayGroup(parser.group), scope, description, piece));
-        }
-        return entries;
-    }
-
-    private Parser match(String message) {
-        String trimmed = message.trim();
-        for (Parser parser : parsers) {
-            if (parser.message.matcher(trimmed).find()) {
-                return parser;
-            }
-        }
-        return null;
     }
 
     private static String header(String message) {
@@ -274,7 +223,9 @@ final class CliffPipeline {
             if (end < 0) {
                 return null;
             }
-            return delimiter.charAt(0) == '\'' ? object.substring(matcher.end() + 3, end) : unescape(object.substring(matcher.end() + 3, end));
+            return delimiter.charAt(0) == '\''
+                ? object.substring(matcher.end() + 3, end)
+                : unescape(object.substring(matcher.end() + 3, end));
         }
         Matcher quoted = TOML_STRING.matcher(object);
         if (!quoted.find(matcher.end()) || quoted.start() != matcher.end()) {
@@ -311,24 +262,70 @@ final class CliffPipeline {
         return out.toString();
     }
 
+    boolean splitCommits() {
+        return splitCommits;
+    }
+
+    List<String> processingOrder() {
+        return processingOrder;
+    }
+
+    List<Preprocessor> preprocessors() {
+        return preprocessors;
+    }
+
+    List<Parser> parsers() {
+        return parsers;
+    }
+
+    List<CliffEntry> process(String message) {
+        String rendered = message;
+        for (Preprocessor preprocessor : preprocessors) {
+            rendered = preprocessor.apply(rendered);
+        }
+        List<String> pieces = new ArrayList<>();
+        if (splitCommits) {
+            for (String line : rendered.split("\n", -1)) {
+                if (!line.isEmpty()) {
+                    pieces.add(line);
+                }
+            }
+        } else {
+            pieces.add(rendered);
+        }
+        List<CliffEntry> entries = new ArrayList<>();
+        for (String piece : pieces) {
+            Parser parser = match(piece);
+            if (parser == null || parser.skip) {
+                continue;
+            }
+            Matcher header = CONVENTIONAL_HEADER.matcher(header(piece));
+            String scope = null;
+            String description = header(piece);
+            if (header.matches()) {
+                scope = header.group("scope");
+                description = header.group("desc");
+            }
+            entries.add(new CliffEntry(displayGroup(parser.group), scope, description, piece));
+        }
+        return entries;
+    }
+
+    private Parser match(String message) {
+        String trimmed = message.trim();
+        for (Parser parser : parsers) {
+            if (parser.message.matcher(trimmed).find()) {
+                return parser;
+            }
+        }
+        return null;
+    }
+
     record CliffEntry(String group, String scope, String description, String message) { }
 
     record Parser(Pattern message, String group, boolean skip) { }
 
     record Preprocessor(Pattern pattern, String replace, String replaceCommand) {
-
-        String apply(String message) {
-            if (replace != null) {
-                return pattern.matcher(message).replaceAll(replace);
-            }
-            if (replaceCommand == null || !pattern.matcher(message).find()) {
-                return message;
-            }
-            if (!COLLAPSE_COMMAND.trim().equals(replaceCommand.trim())) {
-                throw new IllegalStateException("Unsupported replace_command: " + replaceCommand);
-            }
-            return collapse(message);
-        }
 
         private static String collapse(String message) {
             List<String> lines = new ArrayList<>(Arrays.asList(message.split("\\n", -1)));
@@ -348,6 +345,19 @@ final class CliffPipeline {
                 collapsed.append(lines.get(i));
             }
             return collapsed.toString();
+        }
+
+        String apply(String message) {
+            if (replace != null) {
+                return pattern.matcher(message).replaceAll(replace);
+            }
+            if (replaceCommand == null || !pattern.matcher(message).find()) {
+                return message;
+            }
+            if (!COLLAPSE_COMMAND.trim().equals(replaceCommand.trim())) {
+                throw new IllegalStateException("Unsupported replace_command: " + replaceCommand);
+            }
+            return collapse(message);
         }
 
     }

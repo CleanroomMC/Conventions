@@ -17,14 +17,6 @@ import org.gradle.toolchains.foojay.FoojayToolchainsConventionPlugin;
 
 public class ConventionsSettingsPlugin implements Plugin<Settings> {
 
-    @Override
-    public void apply(Settings settings) {
-        settings.getGradle().getLifecycle().beforeProject(project -> addRepositories(project.getRepositories()));
-        if (ConventionsProperty.PROVISION_JAVA.flag(settings.getProviders(), false)) {
-            settings.getPluginManager().apply(FoojayToolchainsConventionPlugin.class);
-        }
-    }
-
     private static void addRepositories(RepositoryHandler repos) {
         repos.mavenCentral();
         repos.gradlePluginPortal();
@@ -39,6 +31,14 @@ public class ConventionsSettingsPlugin implements Plugin<Settings> {
                 }
             });
         });
+    }
+
+    @Override
+    public void apply(Settings settings) {
+        settings.getGradle().getLifecycle().beforeProject(project -> addRepositories(project.getRepositories()));
+        if (ConventionsProperty.PROVISION_JAVA.flag(settings.getProviders(), false)) {
+            settings.getPluginManager().apply(FoojayToolchainsConventionPlugin.class);
+        }
     }
 
 }

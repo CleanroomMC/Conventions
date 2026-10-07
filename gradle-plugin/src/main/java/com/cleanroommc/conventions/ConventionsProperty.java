@@ -37,6 +37,10 @@ enum ConventionsProperty {
         this.key = key;
     }
 
+    static int javaMajor(Project project) {
+        return Integer.parseInt(JAVA_VERSION.get(project, ConventionsDefaults.JAVA_VERSION));
+    }
+
     Provider<String> provider(ProviderFactory providers) {
         return providers.gradleProperty(key);
     }
@@ -47,10 +51,6 @@ enum ConventionsProperty {
 
     String get(Project project, String defaultValue) {
         return provider(project).getOrElse(defaultValue);
-    }
-
-    static int javaMajor(Project project) {
-        return Integer.parseInt(JAVA_VERSION.get(project, ConventionsDefaults.JAVA_VERSION));
     }
 
     boolean flag(ProviderFactory providers, boolean defaultValue) {

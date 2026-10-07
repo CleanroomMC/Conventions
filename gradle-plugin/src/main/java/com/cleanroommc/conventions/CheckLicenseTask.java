@@ -52,30 +52,6 @@ public abstract class CheckLicenseTask extends DefaultTask {
         project.getTasks().named(LifecycleBasePlugin.CHECK_TASK_NAME).configure(check -> check.dependsOn(NAME));
     }
 
-    @Input
-    public abstract Property<String> getExpected();
-
-    @Input
-    public abstract Property<String> getExpectedName();
-
-    @Internal
-    public abstract DirectoryProperty getStartDirectory();
-
-    @TaskAction
-    public final void check() throws IOException {
-        Path start = getStartDirectory().getAsFile().get().toPath();
-        Path license = findLicense(start);
-        if (license == null) {
-            throw new GradleException(
-                "Missing LICENSE. Run extractConventions, or copy " + getExpectedName().get() + " to the project directory or a parent directory."
-            );
-        }
-        String actual = Files.readString(license, StandardCharsets.UTF_8);
-        if (!sameLicense(getExpected().get(), actual)) {
-            throw new GradleException(license + " does not match " + getExpectedName().get() + ".");
-        }
-    }
-
     static Path findLicense(Path start) {
         Path dir = start.toAbsolutePath().normalize();
         while (dir != null) {
@@ -94,6 +70,31 @@ public abstract class CheckLicenseTask extends DefaultTask {
 
     static String normalize(String text) {
         return text.replace("\r\n", "\n").replace("\r", "\n");
+    }
+
+    @Input
+    public abstract Property<String> getExpected();
+
+    @Input
+    public abstract Property<String> getExpectedName();
+
+    @Internal
+    public abstract DirectoryProperty getStartDirectory();
+
+    @TaskAction
+    public final void check() throws IOException {
+        Path start = getStartDirectory().getAsFile().get().toPath();
+        Path license = findLicense(start);
+        if (license == null) {
+            throw new GradleException(
+                "Missing LICENSE. Run extractConventions, or copy " + getExpectedName().get() +
+                    " to the project directory or a parent directory."
+            );
+        }
+        String actual = Files.readString(license, StandardCharsets.UTF_8);
+        if (!sameLicense(getExpected().get(), actual)) {
+            throw new GradleException(license + " does not match " + getExpectedName().get() + ".");
+        }
     }
 
 }

@@ -39,6 +39,39 @@ public class ConventionsPublishingPlugin implements Plugin<Project> {
     private static final String JAVA_GRADLE_PLUGIN_ID = "java-gradle-plugin";
     private static final String PLUGIN_PUBLISH_ID = "com.gradle.plugin-publish";
 
+    private static String canonicalHttpUrl(String url) {
+        String canonical = url.trim();
+        if (canonical.endsWith(".git")) {
+            canonical = canonical.substring(0, canonical.length() - 4);
+        }
+        if (canonical.startsWith("git@")) {
+            int colon = canonical.indexOf(':');
+            if (colon > 4) {
+                canonical = "https://" + canonical.substring(4, colon) + "/" + canonical.substring(colon + 1);
+            }
+        } else if (canonical.startsWith("ssh://git@")) {
+            canonical = "https://" + canonical.substring("ssh://git@".length());
+        } else if (canonical.startsWith("git://")) {
+            canonical = "https://" + canonical.substring("git://".length());
+        }
+        if (canonical.endsWith("/")) {
+            canonical = canonical.substring(0, canonical.length() - 1);
+        }
+        return canonical;
+    }
+
+    private static String scmDeveloperConnection(String url) {
+        if (url.startsWith("https://")) {
+            String hostAndPath = url.substring("https://".length());
+            int slash = hostAndPath.indexOf('/');
+            if (slash > 0) {
+                return "scm:git:git@" + hostAndPath.substring(0, slash) + ":" + hostAndPath.substring(slash + 1) +
+                    ".git";
+            }
+        }
+        return "scm:git:" + url + ".git";
+    }
+
     @Override
     public void apply(Project project) {
         PluginManager plugins = project.getPluginManager();
@@ -58,11 +91,16 @@ public class ConventionsPublishingPlugin implements Plugin<Project> {
 
         PublishingExtension publishing = project.getExtensions().getByType(PublishingExtension.class);
         project.afterEvaluate(_ -> {
-            if (project.getPluginManager().hasPlugin(JAVA_GRADLE_PLUGIN_ID) || publishing.getPublications().findByName(MAVEN_PUBLICATION) != null) {
+            if (project.getPluginManager().hasPlugin(JAVA_GRADLE_PLUGIN_ID) ||
+                publishing.getPublications().findByName(MAVEN_PUBLICATION) != null) {
                 return;
             }
             publishing.getPublications()
-                .register(MAVEN_PUBLICATION, MavenPublication.class, publication -> publication.from(project.getComponents().getByName("java")));
+                .register(
+                    MAVEN_PUBLICATION,
+                    MavenPublication.class,
+                    publication -> publication.from(project.getComponents().getByName("java"))
+                );
         });
     }
 
@@ -90,7 +128,8 @@ public class ConventionsPublishingPlugin implements Plugin<Project> {
         addCleanroomRepository(publishing);
         configureSigning(project, publishing);
 
-        Provider<String> fromProperty = conventions.getRepositoryUrl().map(ConventionsPublishingPlugin::canonicalHttpUrl);
+        Provider<String> fromProperty = conventions.getRepositoryUrl()
+            .map(ConventionsPublishingPlugin::canonicalHttpUrl);
         Provider<String> fromGit = gitUpstreamUrl(project);
 
         Property<String> repositoryUrl = project.getObjects().property(String.class);
@@ -139,7 +178,8 @@ public class ConventionsPublishingPlugin implements Plugin<Project> {
             pom.scm(scm -> {
                 scm.getUrl().convention(repositoryUrl);
                 scm.getConnection().convention(repositoryUrl.map(url -> "scm:git:" + url + ".git"));
-                scm.getDeveloperConnection().convention(repositoryUrl.map(ConventionsPublishingPlugin::scmDeveloperConnection));
+                scm.getDeveloperConnection()
+                    .convention(repositoryUrl.map(ConventionsPublishingPlugin::scmDeveloperConnection));
             });
         });
     }
@@ -161,7 +201,8 @@ public class ConventionsPublishingPlugin implements Plugin<Project> {
             .filter(ref -> ref.indexOf('/') >= 0)
             .map(ref -> ref.substring(0, ref.indexOf('/')))
             .orElse("origin");
-        return remote.flatMap(name -> git(project, "remote", "get-url", name)).map(ConventionsPublishingPlugin::canonicalHttpUrl);
+        return remote.flatMap(name -> git(project, "remote", "get-url", name))
+            .map(ConventionsPublishingPlugin::canonicalHttpUrl);
     }
 
     private Provider<String> git(Project project, String... args) {
@@ -178,38 +219,6 @@ public class ConventionsPublishingPlugin implements Plugin<Project> {
             .flatMap(_ -> output.getStandardOutput().getAsText())
             .map(String::trim)
             .filter(text -> !text.isEmpty());
-    }
-
-    private static String canonicalHttpUrl(String url) {
-        String canonical = url.trim();
-        if (canonical.endsWith(".git")) {
-            canonical = canonical.substring(0, canonical.length() - 4);
-        }
-        if (canonical.startsWith("git@")) {
-            int colon = canonical.indexOf(':');
-            if (colon > 4) {
-                canonical = "https://" + canonical.substring(4, colon) + "/" + canonical.substring(colon + 1);
-            }
-        } else if (canonical.startsWith("ssh://git@")) {
-            canonical = "https://" + canonical.substring("ssh://git@".length());
-        } else if (canonical.startsWith("git://")) {
-            canonical = "https://" + canonical.substring("git://".length());
-        }
-        if (canonical.endsWith("/")) {
-            canonical = canonical.substring(0, canonical.length() - 1);
-        }
-        return canonical;
-    }
-
-    private static String scmDeveloperConnection(String url) {
-        if (url.startsWith("https://")) {
-            String hostAndPath = url.substring("https://".length());
-            int slash = hostAndPath.indexOf('/');
-            if (slash > 0) {
-                return "scm:git:git@" + hostAndPath.substring(0, slash) + ":" + hostAndPath.substring(slash + 1) + ".git";
-            }
-        }
-        return "scm:git:" + url + ".git";
     }
 
 }

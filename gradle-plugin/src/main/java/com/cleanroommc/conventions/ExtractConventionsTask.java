@@ -70,44 +70,14 @@ public abstract class ExtractConventionsTask extends DefaultTask {
         });
     }
 
-    @Input
-    public abstract MapProperty<String, String> getContents();
-
-    @Input
-    public abstract SetProperty<String> getMergedPaths();
-
-    @Internal
-    public abstract DirectoryProperty getDestinationDirectory();
-
-    @OutputFiles
-    public abstract ConfigurableFileCollection getOutputFiles();
-
-    @TaskAction
-    public final void extract() throws IOException {
-        Path destination = getDestinationDirectory().getAsFile().get().toPath();
-        Set<String> merged = getMergedPaths().get();
-        for (Map.Entry<String, String> entry : getContents().get().entrySet()) {
-            Path target = destination.resolve(entry.getKey());
-            String incoming = entry.getValue();
-            String outgoing = incoming;
-            if (merged.contains(entry.getKey()) && Files.exists(target)) {
-                outgoing = mergeMarkedRegion(Files.readString(target), incoming, entry.getKey());
-            }
-            Path parent = target.getParent();
-            if (parent != null) {
-                Files.createDirectories(parent);
-            }
-            Files.writeString(target, outgoing, StandardCharsets.UTF_8);
-        }
-    }
-
     static String mergeMarkedRegion(String existing, String incoming, String fileName) {
         String block = region(incoming);
         int begin = existing.indexOf(REGION_BEGIN);
         int end = existing.indexOf(REGION_END);
         if (begin >= 0 && end < begin) {
             throw new GradleException(
-                fileName + " opens '" + REGION_BEGIN + "' without a matching '" + REGION_END + "'. Repair or delete the region and run " + NAME + " again."
+                fileName + " opens '" + REGION_BEGIN + "' without a matching '" + REGION_END +
+                    "'. Repair or delete the region and run " + NAME + " again."
             );
         }
         if (begin >= 0) {
@@ -139,6 +109,37 @@ public abstract class ExtractConventionsTask extends DefaultTask {
             after++;
         }
         return content.substring(begin, after);
+    }
+
+    @Input
+    public abstract MapProperty<String, String> getContents();
+
+    @Input
+    public abstract SetProperty<String> getMergedPaths();
+
+    @Internal
+    public abstract DirectoryProperty getDestinationDirectory();
+
+    @OutputFiles
+    public abstract ConfigurableFileCollection getOutputFiles();
+
+    @TaskAction
+    public final void extract() throws IOException {
+        Path destination = getDestinationDirectory().getAsFile().get().toPath();
+        Set<String> merged = getMergedPaths().get();
+        for (Map.Entry<String, String> entry : getContents().get().entrySet()) {
+            Path target = destination.resolve(entry.getKey());
+            String incoming = entry.getValue();
+            String outgoing = incoming;
+            if (merged.contains(entry.getKey()) && Files.exists(target)) {
+                outgoing = mergeMarkedRegion(Files.readString(target), incoming, entry.getKey());
+            }
+            Path parent = target.getParent();
+            if (parent != null) {
+                Files.createDirectories(parent);
+            }
+            Files.writeString(target, outgoing, StandardCharsets.UTF_8);
+        }
     }
 
 }

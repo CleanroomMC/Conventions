@@ -36,13 +36,14 @@ class ConventionsFileTest {
                  * This is visible-source software and is not open-source software.
                  */""".formatted(
                 current
-            )
-        );
+            ));
     }
 
     @Test
     void checkstyleContainsTheLicenseHeaderPlaceholder() {
-        assertThat(ConventionsFile.CHECKSTYLE.read()).contains("<property name=\"header\" value=\"@LICENSE_HEADER@\"/>");
+        assertThat(ConventionsFile.CHECKSTYLE.read()).contains(
+            "<property name=\"header\" value=\"@LICENSE_HEADER@\"/>"
+        );
     }
 
     @ParameterizedTest

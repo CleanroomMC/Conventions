@@ -40,8 +40,7 @@ class PublishedConsumerFunctionalTest {
         "GITHUB_RUN_NUMBER"
     );
 
-    @TempDir
-    Path projectDir;
+    @TempDir Path projectDir;
 
     @Test
     void publishedPluginRunsARealMultiProjectBuildWithConfigurationCache() throws IOException {
@@ -99,7 +98,8 @@ class PublishedConsumerFunctionalTest {
         Files.createDirectories(main.getParent());
         Files.writeString(
             main,
-            header + """
+            header +
+                """
                 package example;
 
                 public final class Calculator {
@@ -117,7 +117,8 @@ class PublishedConsumerFunctionalTest {
         Files.createDirectories(test.getParent());
         Files.writeString(
             test,
-            header + """
+            header +
+                """
                 package example;
 
                 import static org.assertj.core.api.Assertions.assertThat;
@@ -137,13 +138,28 @@ class PublishedConsumerFunctionalTest {
     private BuildResult run(String... arguments) {
         Map<String, String> environment = new HashMap<>(System.getenv());
         GITHUB_ENVIRONMENT.forEach(environment::remove);
-        return GradleRunner.create().withProjectDir(projectDir.toFile()).withArguments(arguments).withEnvironment(environment).forwardOutput().build();
+        return GradleRunner.create()
+            .withProjectDir(projectDir.toFile())
+            .withArguments(arguments)
+            .withEnvironment(environment)
+            .forwardOutput()
+            .build();
     }
 
     private void initRepository() throws IOException {
         git("init", "-b", "master");
         Files.writeString(projectDir.resolve(".git/info/exclude"), "*\n");
-        git("-c", "user.email=conventions@example.com", "-c", "user.name=Conventions", "commit", "--allow-empty", "--no-gpg-sign", "-m", "conventions");
+        git(
+            "-c",
+            "user.email=conventions@example.com",
+            "-c",
+            "user.name=Conventions",
+            "commit",
+            "--allow-empty",
+            "--no-gpg-sign",
+            "-m",
+            "conventions"
+        );
     }
 
     private void git(String... arguments) throws IOException {
@@ -151,7 +167,10 @@ class PublishedConsumerFunctionalTest {
         command.add("git");
         command.addAll(List.of(arguments));
         try {
-            Process process = new ProcessBuilder(command).directory(projectDir.toFile()).redirectErrorStream(true).start();
+            Process process = new ProcessBuilder(command)
+                .directory(projectDir.toFile())
+                .redirectErrorStream(true)
+                .start();
             String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
             if (process.waitFor() != 0) {
                 throw new IOException("git " + String.join(" ", arguments) + " failed: " + output);

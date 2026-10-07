@@ -58,7 +58,8 @@ public class ConventionsStylePlugin implements Plugin<Project> {
             task -> {
                 task.setDescription("Generates Checkstyle configuration for the selected license.");
                 task.getContents().convention(ConventionsFile.checkstyle(project, license));
-                task.getOutputFile().convention(project.getLayout().getBuildDirectory().file("conventions/checkstyle.xml"));
+                task.getOutputFile()
+                    .convention(project.getLayout().getBuildDirectory().file("conventions/checkstyle.xml"));
             }
         );
         // Checkstyle runs on the project toolchain, so older targets borrow the conventions' default Java
@@ -68,14 +69,21 @@ public class ConventionsStylePlugin implements Plugin<Project> {
                     .set(
                         project.getExtensions()
                             .getByType(JavaToolchainService.class)
-                            .launcherFor(spec -> spec.getLanguageVersion().set(JavaLanguageVersion.of(ConventionsDefaults.JAVA_VERSION)))
+                            .launcherFor(spec -> spec.getLanguageVersion()
+                                .set(JavaLanguageVersion.of(ConventionsDefaults.JAVA_VERSION)))
                     ));
         }
-        checkstyle.setConfig(project.getResources().getText().fromFile(generateConfig.flatMap(GenerateCheckstyleConfigTask::getOutputFile)));
+        checkstyle.setConfig(
+            project.getResources()
+                .getText()
+                .fromFile(generateConfig.flatMap(GenerateCheckstyleConfigTask::getOutputFile))
+        );
 
         // ClearSkies expands star imports, FormatJ formats the lines it wrote, Checkstyle judges the result.
-        tasks.named(FormatJPlugin.APPLY_TASK_NAME).configure(task -> task.mustRunAfter(ClearSkiesPlugin.APPLY_TASK_NAME));
-        tasks.named(FormatJPlugin.CHECK_TASK_NAME).configure(task -> task.mustRunAfter(ClearSkiesPlugin.CHECK_TASK_NAME));
+        tasks.named(FormatJPlugin.APPLY_TASK_NAME)
+            .configure(task -> task.mustRunAfter(ClearSkiesPlugin.APPLY_TASK_NAME));
+        tasks.named(FormatJPlugin.CHECK_TASK_NAME)
+            .configure(task -> task.mustRunAfter(ClearSkiesPlugin.CHECK_TASK_NAME));
         tasks.withType(Checkstyle.class)
             .configureEach(task -> task.mustRunAfter(
                 ClearSkiesPlugin.APPLY_TASK_NAME,

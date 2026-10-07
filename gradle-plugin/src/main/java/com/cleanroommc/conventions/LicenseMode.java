@@ -17,7 +17,14 @@ import java.util.Locale;
 
 enum LicenseMode {
 
-    FREE("free", "licenses/free/LICENSE", "licenses/free/HEADER", "MIT License", "https://opensource.org/licenses/MIT", ""),
+    FREE(
+        "free",
+        "licenses/free/LICENSE",
+        "licenses/free/HEADER",
+        "MIT License",
+        "https://opensource.org/licenses/MIT",
+        ""
+    ),
     OPEN(
         "open",
         "licenses/open/LICENSE",
@@ -26,7 +33,14 @@ enum LicenseMode {
         "https://www.gnu.org/licenses/lgpl-3.0.html",
         ""
     ),
-    VISIBLE("visible", "LICENSE", "HEADER", ConventionsDefaults.LICENSE_NAME, ConventionsDefaults.LICENSE_URL, ConventionsDefaults.LICENSE_COMMENTS);
+    VISIBLE(
+        "visible",
+        "LICENSE",
+        "HEADER",
+        ConventionsDefaults.LICENSE_NAME,
+        ConventionsDefaults.LICENSE_URL,
+        ConventionsDefaults.LICENSE_COMMENTS
+    );
 
     private final String propertyValue;
     private final String licenseResource;
@@ -35,7 +49,14 @@ enum LicenseMode {
     private final String url;
     private final String comments;
 
-    LicenseMode(String propertyValue, String licenseResource, String headerResource, String displayName, String url, String comments) {
+    LicenseMode(
+        String propertyValue,
+        String licenseResource,
+        String headerResource,
+        String displayName,
+        String url,
+        String comments
+    ) {
         this.propertyValue = propertyValue;
         this.licenseResource = licenseResource;
         this.headerResource = headerResource;
@@ -75,7 +96,9 @@ enum LicenseMode {
     }
 
     String javaHeaderPattern(String author) {
-        return ConventionsFile.toJavaBlockCommentPattern(ConventionsFile.readResource(headerResource).replace(CopyrightNotice.AUTHOR_TOKEN, author));
+        return ConventionsFile.toJavaBlockCommentPattern(
+            ConventionsFile.readResource(headerResource).replace(CopyrightNotice.AUTHOR_TOKEN, author)
+        );
     }
 
     String displayName() {

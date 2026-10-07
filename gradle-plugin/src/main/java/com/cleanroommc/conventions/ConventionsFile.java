@@ -51,14 +51,6 @@ enum ConventionsFile {
         this.mergeMarkedRegion = mergeMarkedRegion;
     }
 
-    String fileName() {
-        return fileName;
-    }
-
-    boolean mergeMarkedRegion() {
-        return mergeMarkedRegion;
-    }
-
     static Provider<String> checkstyle(Project project, LicenseMode license) {
         return ConventionsExtension.register(project).getAuthor().map(author -> checkstyle(license, author));
     }
@@ -107,19 +99,32 @@ enum ConventionsFile {
         return pattern.toString();
     }
 
-    String read() {
-        return readResource(resourceName);
-    }
-
     static String readResource(String resourceName) {
         try (InputStream stream = ConventionsFile.class.getResourceAsStream(RESOURCE_DIRECTORY + resourceName)) {
             if (stream == null) {
-                throw new GradleException("Convention resource " + resourceName + " is missing from the conventions plugin jar");
+                throw new GradleException(
+                    "Convention resource " + resourceName + " is missing from the conventions plugin jar"
+                );
             }
             return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new UncheckedIOException("Cannot read convention resource " + resourceName + " from the conventions plugin jar", e);
+            throw new UncheckedIOException(
+                "Cannot read convention resource " + resourceName + " from the conventions plugin jar",
+                e
+            );
         }
+    }
+
+    String fileName() {
+        return fileName;
+    }
+
+    boolean mergeMarkedRegion() {
+        return mergeMarkedRegion;
+    }
+
+    String read() {
+        return readResource(resourceName);
     }
 
     @Override

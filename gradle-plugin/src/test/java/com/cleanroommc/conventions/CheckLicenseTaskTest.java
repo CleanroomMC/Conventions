@@ -21,8 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CheckLicenseTaskTest {
 
-    @TempDir
-    Path dir;
+    @TempDir Path dir;
 
     @Test
     void findLicenseWalksToAParent() throws IOException {

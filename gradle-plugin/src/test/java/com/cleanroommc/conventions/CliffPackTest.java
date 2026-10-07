@@ -30,6 +30,29 @@ class CliffPackTest {
         pipeline = CliffPipeline.load();
     }
 
+    private static String cliffBody() {
+        String toml = ConventionsFile.CLIFF.read();
+        String marker = "body = \"\"\"\n";
+        int start = toml.indexOf(marker);
+        assertThat(start).isNotNegative();
+        start += marker.length();
+        int end = toml.indexOf("\"\"\"", start);
+        assertThat(end).isGreaterThan(start);
+        return toml.substring(start, end);
+    }
+
+    private static void assertEntry(CliffEntry entry, String group, String scope, String description) {
+        assertThat(entry.group()).isEqualTo(group);
+        assertThat(entry.scope()).isEqualTo(scope);
+        assertThat(entry.description()).isEqualTo(description);
+    }
+
+    private static void assertParser(Parser parser, String pattern, String group, boolean skip) {
+        assertThat(parser.message().pattern()).isEqualTo(pattern);
+        assertThat(parser.group()).isEqualTo(group);
+        assertThat(parser.skip()).isEqualTo(skip);
+    }
+
     @Test
     void gitSectionMatchesCliffToml() {
         assertThat(pipeline.splitCommits()).isTrue();
@@ -111,8 +134,12 @@ class CliffPackTest {
         String body = cliffBody();
         assertThat(body).contains("{% if not contributor.username %}{% continue %}{% endif -%}");
         assertThat(body).contains("{% if contributor.username == remote.github.owner %}{% continue %}{% endif -%}");
-        assertThat(body).contains("{% if not previous.version and founder.remote.username == contributor.username %}{% continue %}{% endif -%}");
-        assertThat(body).contains("{% if not previous.version and founder.author.name == contributor.username %}{% continue %}{% endif -%}");
+        assertThat(body).contains(
+            "{% if not previous.version and founder.remote.username == contributor.username %}{% continue %}{% endif -%}"
+        );
+        assertThat(body).contains(
+            "{% if not previous.version and founder.author.name == contributor.username %}{% continue %}{% endif -%}"
+        );
     }
 
     @Test
@@ -127,29 +154,6 @@ class CliffPackTest {
         assertThat(entries).hasSize(1);
         assertThat(entries.getFirst().group()).isEqualTo("Other");
         assertThat(entries.getFirst().message()).doesNotContain("\n");
-    }
-
-    private static String cliffBody() {
-        String toml = ConventionsFile.CLIFF.read();
-        String marker = "body = \"\"\"\n";
-        int start = toml.indexOf(marker);
-        assertThat(start).isNotNegative();
-        start += marker.length();
-        int end = toml.indexOf("\"\"\"", start);
-        assertThat(end).isGreaterThan(start);
-        return toml.substring(start, end);
-    }
-
-    private static void assertEntry(CliffEntry entry, String group, String scope, String description) {
-        assertThat(entry.group()).isEqualTo(group);
-        assertThat(entry.scope()).isEqualTo(scope);
-        assertThat(entry.description()).isEqualTo(description);
-    }
-
-    private static void assertParser(Parser parser, String pattern, String group, boolean skip) {
-        assertThat(parser.message().pattern()).isEqualTo(pattern);
-        assertThat(parser.group()).isEqualTo(group);
-        assertThat(parser.skip()).isEqualTo(skip);
     }
 
 }
