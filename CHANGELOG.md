@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0 - 2026-10-07
+
+## Feature
+
+- **formatting**: Update formatj to 1.0.1 and clearskies to 1.0.0 releases *[commit by [@Rongmario](https://github.com/Rongmario) in [df9612d](https://github.com/CleanroomMC/Conventions/commit/df9612da97221b1298ef722be94efd43ccee7d46)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.1.9...1.2.0
+
 ## 1.1.9 - 2026-09-29
 
 ## Feature
