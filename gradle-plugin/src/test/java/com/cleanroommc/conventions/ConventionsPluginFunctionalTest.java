@@ -324,7 +324,7 @@ class ConventionsPluginFunctionalTest {
     }
 
     @ParameterizedTest
-    @EnumSource(LicenseMode.class)
+    @EnumSource(value = LicenseMode.class, mode = EnumSource.Mode.EXCLUDE, names = "NONE")
     void extractConventionsWritesTheSelectedLicense(LicenseMode license) throws IOException {
         project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
         property("conventions.license = " + license.propertyValue());
@@ -1112,10 +1112,35 @@ class ConventionsPluginFunctionalTest {
     }
 
     @Test
+    void theNoneLicenseModeTurnsLicensingOff() throws IOException {
+        project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
+        property("conventions.license = none");
+        Path source = projectDir.resolve("src/main/java/example/Example.java");
+        Files.createDirectories(source.getParent());
+        Files.writeString(source, "package example;\n\npublic class Example {\n}\n");
+
+        String output = run(
+            "checkstyleMain",
+            "extractConventions",
+            "generatePomFileForMavenPublication",
+            "tasks",
+            "--all"
+        ).getOutput();
+
+        assertThat(output).doesNotContain(CheckLicenseTask.NAME, ApplyLicenseHeaderTask.NAME);
+        assertThat(projectDir.resolve("LICENSE")).doesNotExist();
+        assertThat(projectDir.resolve("HEADER")).doesNotExist();
+        assertThat(projectDir.resolve("checkstyle.xml")).content().doesNotContain("RegexpHeader");
+        assertThat(projectDir.resolve("build/publications/maven/pom-default.xml"))
+            .content()
+            .doesNotContain("<licenses>");
+    }
+
+    @Test
     void unknownLicenseModeFailsConfiguration() throws IOException {
         project("id 'java'\n    id 'com.cleanroommc.conventions.license'", "");
         property("conventions.license = proprietary");
-        assertThat(runAndFail("help").getOutput()).contains("Expected free, open or visible");
+        assertThat(runAndFail("help").getOutput()).contains("Expected free, open, visible or none");
     }
 
     @Test

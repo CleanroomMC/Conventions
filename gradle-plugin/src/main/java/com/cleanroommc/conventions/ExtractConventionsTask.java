@@ -63,10 +63,12 @@ public abstract class ExtractConventionsTask extends DefaultTask {
                 }
                 task.getOutputFiles().from(task.getDestinationDirectory().file(file.fileName()));
             }
-            task.getContents().put("LICENSE", notice.map(license::licenseText));
-            task.getContents().put("HEADER", notice.map(license::headerText));
-            task.getOutputFiles().from(task.getDestinationDirectory().file("LICENSE"));
-            task.getOutputFiles().from(task.getDestinationDirectory().file("HEADER"));
+            if (license != LicenseMode.NONE) {
+                task.getContents().put("LICENSE", notice.map(license::licenseText));
+                task.getContents().put("HEADER", notice.map(license::headerText));
+                task.getOutputFiles().from(task.getDestinationDirectory().file("LICENSE"));
+                task.getOutputFiles().from(task.getDestinationDirectory().file("HEADER"));
+            }
         });
     }
 

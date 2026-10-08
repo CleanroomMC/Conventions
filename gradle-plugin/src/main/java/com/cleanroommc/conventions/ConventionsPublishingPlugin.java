@@ -167,14 +167,16 @@ public class ConventionsPublishingPlugin implements Plugin<Project> {
                 organization.getName().convention(ConventionsDefaults.ORGANIZATION_NAME);
                 organization.getUrl().convention(ConventionsDefaults.ORGANIZATION_URL);
             });
-            pom.licenses(licenses -> licenses.license(license -> {
-                license.getName().convention(licenseMode.displayName());
-                license.getUrl().convention(licenseMode.url());
-                license.getDistribution().convention("repo");
-                if (!licenseMode.comments().isEmpty()) {
-                    license.getComments().convention(licenseMode.comments());
-                }
-            }));
+            if (licenseMode != LicenseMode.NONE) {
+                pom.licenses(licenses -> licenses.license(license -> {
+                    license.getName().convention(licenseMode.displayName());
+                    license.getUrl().convention(licenseMode.url());
+                    license.getDistribution().convention("repo");
+                    if (!licenseMode.comments().isEmpty()) {
+                        license.getComments().convention(licenseMode.comments());
+                    }
+                }));
+            }
             pom.scm(scm -> {
                 scm.getUrl().convention(repositoryUrl);
                 scm.getConnection().convention(repositoryUrl.map(url -> "scm:git:" + url + ".git"));

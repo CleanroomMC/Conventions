@@ -40,6 +40,9 @@ public abstract class CheckLicenseTask extends DefaultTask {
             return;
         }
         LicenseMode license = LicenseMode.from(project);
+        if (license == LicenseMode.NONE) {
+            return;
+        }
         Provider<CopyrightNotice> notice = CopyrightNotice.provider(project);
         project.getTasks().register(NAME, CheckLicenseTask.class, task -> {
             task.setGroup(LifecycleBasePlugin.VERIFICATION_GROUP);

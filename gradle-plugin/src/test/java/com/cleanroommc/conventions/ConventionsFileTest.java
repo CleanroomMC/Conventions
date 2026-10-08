@@ -47,7 +47,7 @@ class ConventionsFileTest {
     }
 
     @ParameterizedTest
-    @EnumSource(LicenseMode.class)
+    @EnumSource(value = LicenseMode.class, mode = EnumSource.Mode.EXCLUDE, names = "NONE")
     void checkstyleRendersEveryLicenseHeader(LicenseMode license) {
         assertThat(ConventionsFile.checkstyle(license, ConventionsDefaults.AUTHOR)).doesNotContain("@LICENSE_HEADER@");
         assertThat(ConventionsFile.checkstyle(license, ConventionsDefaults.AUTHOR)).contains(
@@ -56,7 +56,7 @@ class ConventionsFileTest {
     }
 
     @ParameterizedTest
-    @EnumSource(LicenseMode.class)
+    @EnumSource(value = LicenseMode.class, mode = EnumSource.Mode.EXCLUDE, names = "NONE")
     void theHeaderPatternMatchesEveryYearForm(LicenseMode license) {
         List<String> patterns = license.javaHeaderPattern(ConventionsDefaults.AUTHOR).lines().toList();
         for (int begin = 2021; begin <= 2031; begin++) {

@@ -68,7 +68,7 @@ extension block below evaluates.
 
 | Property                        | Default    | Behaviour                                         |
 |---------------------------------|------------|---------------------------------------------------|
-| `conventions.license`           | `visible`  | `free` (MIT), `open` (LGPLv3), or `visible`       |
+| `conventions.license`           | `visible`  | `free` (MIT), `open` (LGPLv3), `visible`, `none`  |
 | `conventions.javaMajor`         | `25`       | Java toolchain language version                   |
 | `conventions.provisionJava`     | `false`    | Settings plugin applies Foojay toolchain resolver |
 | `conventions.modPublishing`     | detected   | Forces the mod conventions on or off              |
@@ -152,8 +152,11 @@ Set one license mode in `gradle.properties`:
 | `free`                      | MIT License                                  | `MIT`            |
 | `open`                      | GNU Lesser General Public License version 3  | `LGPL-3.0-only`  |
 | `visible`                   | CleanroomMC License Version 1.0              | Custom           |
+| `none`                      | No license                                   | None             |
 
 `visible` is the default. The selected mode controls `checkLicense`, `extractConventions`, the Java header required by Checkstyle, and Maven POM license metadata. The license conventions apply `lifecycle-base`, so `checkLicense` is attached to `check` even without the `java` plugin, and it accepts a matching `LICENSE` in the project directory or a parent directory.
+
+`none` turns licensing off. `checkLicense` and `applyLicenseHeader` are not registered, Checkstyle requires no header, `extractConventions` writes no `LICENSE` or `HEADER`, and the Maven POM declares no license.
 
 `conventions.beginFrom` optionally sets the first copyright year. The generated notice uses only the current year when it is unset and no existing notice is present. With an earlier starting year, it uses `StartingYear-CurrentYear`, for example `2021-2026`. When the year changes, `extractConventions` reads the starting year already stored in `HEADER` or `LICENSE`, preserves it, and advances the ending year. An explicit `beginFrom` value takes precedence. In `open` mode only `HEADER` carries the year: the LGPL license body is the unmodified FSF text and holds no project copyright line. Year preservation only matches notices naming the configured `conventions.author`; renaming the holder starts a new range from the current year.
 

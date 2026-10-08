@@ -37,7 +37,6 @@ public class ConventionsStylePlugin implements Plugin<Project> {
     public void apply(Project project) {
         ExtractConventionsTask.register(project);
         LicenseMode license = LicenseMode.from(project);
-        ApplyLicenseHeaderTask.register(project, license);
 
         PluginManager plugins = project.getPluginManager();
         TaskContainer tasks = project.getTasks();
@@ -87,14 +86,18 @@ public class ConventionsStylePlugin implements Plugin<Project> {
 
         // The header lands first, ClearSkies expands star imports, FormatJ formats the lines it wrote,
         // Checkstyle judges the result.
-        tasks.named(ClearSkiesPlugin.APPLY_TASK_NAME).configure(task -> task.mustRunAfter(ApplyLicenseHeaderTask.NAME));
+        if (license != LicenseMode.NONE) {
+            ApplyLicenseHeaderTask.register(project, license);
+            tasks.named(ClearSkiesPlugin.APPLY_TASK_NAME)
+                .configure(task -> task.mustRunAfter(ApplyLicenseHeaderTask.NAME));
+            tasks.withType(Checkstyle.class).configureEach(task -> task.mustRunAfter(ApplyLicenseHeaderTask.NAME));
+        }
         tasks.named(FormatJPlugin.APPLY_TASK_NAME)
             .configure(task -> task.mustRunAfter(ClearSkiesPlugin.APPLY_TASK_NAME));
         tasks.named(FormatJPlugin.CHECK_TASK_NAME)
             .configure(task -> task.mustRunAfter(ClearSkiesPlugin.CHECK_TASK_NAME));
         tasks.withType(Checkstyle.class)
             .configureEach(task -> task.mustRunAfter(
-                ApplyLicenseHeaderTask.NAME,
                 ClearSkiesPlugin.APPLY_TASK_NAME,
                 ClearSkiesPlugin.CHECK_TASK_NAME,
                 FormatJPlugin.APPLY_TASK_NAME,

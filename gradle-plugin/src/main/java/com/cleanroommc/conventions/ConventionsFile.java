@@ -35,6 +35,9 @@ enum ConventionsFile {
     private static final String RESOURCE_DIRECTORY = "/resources/";
     private static final Pattern REGEX_METACHARACTER = Pattern.compile("[\\\\.\\[\\]{}()*+?^$|]");
     private static final String HEADER_MODULE = "<module name=\"RegexpHeader\">";
+    private static final Pattern HEADER_CHECK = Pattern.compile(
+        "(?s)(\\s*<!--[^>]*-->)?\\s*" + HEADER_MODULE + ".*?</module>"
+    );
     private static final String YEAR_PATTERN = "\\d{4}(?:-(?:\\d{4}|present))?";
 
     private final String fileName;
@@ -60,6 +63,9 @@ enum ConventionsFile {
     }
 
     static String checkstyle(LicenseMode license, String author) {
+        if (license == LicenseMode.NONE) {
+            return HEADER_CHECK.matcher(CHECKSTYLE.read()).replaceFirst("");
+        }
         String header = escapeXml(license.javaHeaderPattern(author)).replace("\n", "\\n");
         return CHECKSTYLE.read().replace("@LICENSE_HEADER@", header);
     }

@@ -40,7 +40,9 @@ enum LicenseMode {
         ConventionsDefaults.LICENSE_NAME,
         ConventionsDefaults.LICENSE_URL,
         ConventionsDefaults.LICENSE_COMMENTS
-    );
+    ),
+    // Carries no license, so callers skip every license feature instead of reading its resources.
+    NONE("none", null, null, "", "", "");
 
     private final String propertyValue;
     private final String licenseResource;
@@ -76,7 +78,7 @@ enum LicenseMode {
                 return mode;
             }
         }
-        throw new GradleException("Unknown license mode '" + value + "'. Expected free, open or visible.");
+        throw new GradleException("Unknown license mode '" + value + "'. Expected free, open, visible or none.");
     }
 
     String propertyValue() {
