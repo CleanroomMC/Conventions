@@ -161,6 +161,16 @@
       <property name="query" value="//METHOD_DEF[./MODIFIERS/ANNOTATION/IDENT[@text='Shadow'] or ./MODIFIERS/ANNOTATION/DOT/IDENT[@text='Shadow']]/IDENT"/>
     </module>
 
+    <!-- Native bindings keep the names of the library they mirror: members of JNA binding types, and JNI methods. -->
+    <module name="SuppressionXpathSingleFilter">
+      <property name="checks" value="TypeName|MethodName|MemberName|ParameterName"/>
+      <property name="query" value="/COMPILATION_UNIT[./IMPORT//IDENT[@text='jna']]//*[self::INTERFACE_DEF or self::CLASS_DEF][./EXTENDS_CLAUSE/IDENT[@text='Library' or @text='StdCallLibrary' or @text='Structure' or @text='Union'] or ./EXTENDS_CLAUSE/DOT/IDENT[@text='Library' or @text='StdCallLibrary' or @text='Structure' or @text='Union']]/OBJBLOCK//IDENT"/>
+    </module>
+    <module name="SuppressionXpathSingleFilter">
+      <property name="checks" value="MethodName|ParameterName"/>
+      <property name="query" value="//METHOD_DEF[./MODIFIERS/LITERAL_NATIVE]//IDENT"/>
+    </module>
+
     <!-- Suppress with // CHECKSTYLE:OFF ... // CHECKSTYLE:ON when a rule is genuinely wrong. -->
     <module name="SuppressionCommentFilter"/>
   </module>

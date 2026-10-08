@@ -622,6 +622,68 @@ class ConventionsPluginFunctionalTest {
     }
 
     @Test
+    void checkstyleLeavesNativeBindingNamesAlone() throws IOException {
+        project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
+        javaFile("src/main/java/com/sun/jna/Library.java", "package com.sun.jna;\n\npublic interface Library {}\n");
+        javaFile(
+            "src/main/java/example/DwmApi.java",
+            """
+                package example;
+
+                import com.sun.jna.Library;
+
+                public interface DwmApi extends Library {
+
+                    int DwmSetWindowAttribute(long hwnd, int DwAttribute);
+
+                    enum DWM_SYSTEMBACKDROP_TYPE {
+                        DWMSBT_AUTO
+                    }
+
+                }
+                """
+        );
+        javaFile(
+            "src/main/java/example/Jni.java",
+            """
+                package example;
+
+                public final class Jni {
+
+                    private Jni() {}
+
+                    public static native int Native_call(int Value);
+
+                }
+                """
+        );
+        assertThat(run("checkstyleMain").getOutput()).contains("BUILD SUCCESSFUL");
+    }
+
+    @Test
+    void checkstyleStillNamesOrdinaryCodeBesideNativeBindings() throws IOException {
+        project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
+        javaFile("src/main/java/com/sun/jna/Library.java", "package com.sun.jna;\n\npublic interface Library {}\n");
+        javaFile(
+            "src/main/java/example/Caller.java",
+            """
+                package example;
+
+                import com.sun.jna.Library;
+
+                public final class Caller {
+
+                    private Caller() {}
+
+                    public static void Bad_name(Library library) {}
+
+                }
+                """
+        );
+        assertThat(runAndFail("checkstyleMain").getOutput()).contains("Bad_name");
+    }
+
+    @Test
     void toolchainDefaultsTo25() throws IOException {
         project("id 'java'\n    id 'com.cleanroommc.conventions.base'", printToolchain());
         assertThat(run("printToolchain").getOutput()).contains("toolchain=25");
