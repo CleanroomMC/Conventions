@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.3.0 - 2026-10-08
+
+## Feature
+
+- **checkstyle**: Demote empty catch blocks to a warning *[commit by [@Rongmario](https://github.com/Rongmario) in [32f20fc](https://github.com/CleanroomMC/Conventions/commit/32f20fc4477df90972650ac0aa275e40656a18f0)]*
+- **license**: Add the none license mode *[commit by [@Rongmario](https://github.com/Rongmario) in [389d5cf](https://github.com/CleanroomMC/Conventions/commit/389d5cf392824e5566c5c3049469f2d0db8fb72e)]*
+- **license**: Add applyLicenseHeader task with a source filter *[commit by [@Rongmario](https://github.com/Rongmario) in [aa27a7e](https://github.com/CleanroomMC/Conventions/commit/aa27a7e7d4a04a5a9592a2286543011cc035948e)]*
+- **checkstyle**: Leave native binding names alone *[commit by [@Rongmario](https://github.com/Rongmario) in [16c47a8](https://github.com/CleanroomMC/Conventions/commit/16c47a8edcec5dac5f1c7e280e327ff5cb841f7d)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.2.1...1.3.0
+
 ## 1.2.1 - 2026-10-08
 
 ## Feature
