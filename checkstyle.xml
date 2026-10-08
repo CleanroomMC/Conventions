@@ -45,7 +45,14 @@
     <module name="NeedBraces"/>
     <module name="EmptyBlock">
       <property name="option" value="TEXT"/>
-      <property name="tokens" value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH, LITERAL_WHILE, LITERAL_FOR, LITERAL_DO"/>
+      <property name="tokens" value="LITERAL_TRY, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH, LITERAL_WHILE, LITERAL_FOR, LITERAL_DO"/>
+    </module>
+    <!-- Advisory: a swallowed exception is sometimes the intent. -->
+    <module name="EmptyBlock">
+      <property name="id" value="EmptyCatch"/>
+      <property name="option" value="TEXT"/>
+      <property name="tokens" value="LITERAL_CATCH"/>
+      <property name="severity" value="warning"/>
     </module>
     <module name="OneStatementPerLine"/>
     <module name="MultipleVariableDeclarations"/>

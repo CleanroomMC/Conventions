@@ -622,6 +622,31 @@ class ConventionsPluginFunctionalTest {
     }
 
     @Test
+    void checkstyleWarnsAboutAnEmptyCatchBlock() throws IOException {
+        project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
+        javaFile(
+            "src/main/java/example/Example.java",
+            """
+                package example;
+
+                public class Example {
+
+                    public void run() {
+                        try {
+                            run();
+                        } catch (RuntimeException e) {
+                        }
+                    }
+
+                }
+                """
+        );
+        String output = run("checkstyleMain").getOutput();
+        assertThat(output).contains("Empty catch block");
+        assertThat(output).contains("BUILD SUCCESSFUL");
+    }
+
+    @Test
     void checkstyleLeavesNativeBindingNamesAlone() throws IOException {
         project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
         javaFile("src/main/java/com/sun/jna/Library.java", "package com.sun.jna;\n\npublic interface Library {}\n");
