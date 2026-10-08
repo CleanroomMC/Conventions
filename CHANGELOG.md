@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.1 - 2026-10-08
+
+## Feature
+
+- **formatting**: Update formatj to 1.0.2 *[commit by [@Rongmario](https://github.com/Rongmario) in [00be366](https://github.com/CleanroomMC/Conventions/commit/00be3662d532a72b35350137b09260b47fe1613f)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.2.0...1.2.1
+
 ## 1.2.0 - 2026-10-07
 
 ## Feature
