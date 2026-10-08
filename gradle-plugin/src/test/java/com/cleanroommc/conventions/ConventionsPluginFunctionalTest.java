@@ -970,6 +970,21 @@ class ConventionsPluginFunctionalTest {
     }
 
     @Test
+    void checkstyleSkipsSourcesUnderTheBuildDirectory() throws IOException {
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions.style'",
+            "sourceSets.main.java.srcDir layout.buildDirectory.dir('generated')\n"
+        );
+        javaFile("src/main/java/example/Example.java", "package example;\n\npublic class Example {\n}\n");
+        Path generated = projectDir.resolve("build/generated/example/Bad_name.java");
+        Files.createDirectories(generated.getParent());
+        Files.writeString(generated, "package example;\r\n\r\npublic class Bad_name {\r\n}");
+
+        run("--configuration-cache", "checkstyleMain");
+        assertThat(run("--configuration-cache", "checkstyleMain").getOutput()).contains("Reusing configuration cache.");
+    }
+
+    @Test
     void checkstyleAcceptsThePackedLicenseHeader() throws IOException {
         project("id 'java'\n    id 'com.cleanroommc.conventions.style'", "");
         Path source = projectDir.resolve("src/main/java/example/Example.java");

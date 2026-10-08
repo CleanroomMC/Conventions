@@ -25,6 +25,8 @@ import org.gradle.api.tasks.TaskProvider;
 import org.gradle.jvm.toolchain.JavaLanguageVersion;
 import org.gradle.jvm.toolchain.JavaToolchainService;
 
+import java.io.File;
+
 /**
  * Style Conventions plugin.
  */
@@ -78,6 +80,10 @@ public class ConventionsStylePlugin implements Plugin<Project> {
                                 .set(JavaLanguageVersion.of(ConventionsDefaults.JAVA_VERSION)))
                     ));
         }
+        tasks.withType(Checkstyle.class).configureEach(task -> {
+            File buildDirectory = project.getLayout().getBuildDirectory().get().getAsFile();
+            task.exclude(element -> element.getFile().toPath().startsWith(buildDirectory.toPath()));
+        });
         checkstyle.setConfig(
             project.getResources()
                 .getText()

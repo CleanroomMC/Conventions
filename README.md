@@ -174,6 +174,7 @@ conventions {
 - Applies [FormatJ](https://github.com/Rongmario/FormatJ) with `formatj.toml`.
 - Applies Checkstyle with `checkstyle.xml`.
   - Checkstyle needs Java 21, so a lower `conventions.javaMajor` runs it on a Java 25 toolchain.
+  - Checkstyle skips every source under the build directory, since those are generated.
 
 The three run in a fixed order, since each one judges what the previous one wrote:
 - ClearSkies > FormatJ > Checkstyle
