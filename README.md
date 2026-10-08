@@ -179,6 +179,20 @@ Checkstyle requires the selected license header from `HEADER` as a Java block co
 It is matched line by line as a regular expression, with the copyright year left as a pattern, so a new year never
 invalidates the header already written into every source file.
 
+`applyLicenseHeader` prepends that header to every Java source that does not already start with it. It never removes
+an existing comment, and it skips the build directory. Checkstyle does not require the header on any file the task
+skips, and still runs every other check on it. Select what the task covers the same way FormatJ does:
+
+```groovy
+conventions {
+    header {
+        sourceSets('main', 'test')          // default: every source set
+        include('com/example/**')           // relative to the source directories, default: every file
+        exclude('**/vendor/**')
+    }
+}
+```
+
 The `checkstyle.xml` on disk holds an `@LICENSE_HEADER@` placeholder rather than a
 usable header. The plugin generates the resolved configuration at
 `build/conventions/checkstyle.xml`; point IDE Checkstyle integrations at the generated file.

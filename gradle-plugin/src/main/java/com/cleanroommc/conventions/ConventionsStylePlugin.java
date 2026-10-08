@@ -37,6 +37,7 @@ public class ConventionsStylePlugin implements Plugin<Project> {
     public void apply(Project project) {
         ExtractConventionsTask.register(project);
         LicenseMode license = LicenseMode.from(project);
+        ApplyLicenseHeaderTask.register(project, license);
 
         PluginManager plugins = project.getPluginManager();
         TaskContainer tasks = project.getTasks();
@@ -58,6 +59,11 @@ public class ConventionsStylePlugin implements Plugin<Project> {
             task -> {
                 task.setDescription("Generates Checkstyle configuration for the selected license.");
                 task.getContents().convention(ConventionsFile.checkstyle(project, license));
+                task.getHeaderExempt()
+                    .from(project.provider(() -> ApplyLicenseHeaderTask.skipped(
+                        project,
+                        ConventionsExtension.register(project).getHeader()
+                    )));
                 task.getOutputFile()
                     .convention(project.getLayout().getBuildDirectory().file("conventions/checkstyle.xml"));
             }
@@ -79,13 +85,16 @@ public class ConventionsStylePlugin implements Plugin<Project> {
                 .fromFile(generateConfig.flatMap(GenerateCheckstyleConfigTask::getOutputFile))
         );
 
-        // ClearSkies expands star imports, FormatJ formats the lines it wrote, Checkstyle judges the result.
+        // The header lands first, ClearSkies expands star imports, FormatJ formats the lines it wrote,
+        // Checkstyle judges the result.
+        tasks.named(ClearSkiesPlugin.APPLY_TASK_NAME).configure(task -> task.mustRunAfter(ApplyLicenseHeaderTask.NAME));
         tasks.named(FormatJPlugin.APPLY_TASK_NAME)
             .configure(task -> task.mustRunAfter(ClearSkiesPlugin.APPLY_TASK_NAME));
         tasks.named(FormatJPlugin.CHECK_TASK_NAME)
             .configure(task -> task.mustRunAfter(ClearSkiesPlugin.CHECK_TASK_NAME));
         tasks.withType(Checkstyle.class)
             .configureEach(task -> task.mustRunAfter(
+                ApplyLicenseHeaderTask.NAME,
                 ClearSkiesPlugin.APPLY_TASK_NAME,
                 ClearSkiesPlugin.CHECK_TASK_NAME,
                 FormatJPlugin.APPLY_TASK_NAME,

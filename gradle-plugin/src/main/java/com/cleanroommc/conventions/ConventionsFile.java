@@ -14,11 +14,14 @@ import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.provider.Provider;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 enum ConventionsFile {
 
@@ -31,6 +34,7 @@ enum ConventionsFile {
 
     private static final String RESOURCE_DIRECTORY = "/resources/";
     private static final Pattern REGEX_METACHARACTER = Pattern.compile("[\\\\.\\[\\]{}()*+?^$|]");
+    private static final String HEADER_MODULE = "<module name=\"RegexpHeader\">";
     private static final String YEAR_PATTERN = "\\d{4}(?:-(?:\\d{4}|present))?";
 
     private final String fileName;
@@ -56,13 +60,30 @@ enum ConventionsFile {
     }
 
     static String checkstyle(LicenseMode license, String author) {
-        String header = license.javaHeaderPattern(author)
-            .replace("&", "&amp;")
-            .replace("\"", "&quot;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
-            .replace("\n", "\\n");
+        String header = escapeXml(license.javaHeaderPattern(author)).replace("\n", "\\n");
         return CHECKSTYLE.read().replace("@LICENSE_HEADER@", header);
+    }
+
+    /**
+     * Suppresses the header check for the given files and leaves every other check on them in force.
+     */
+    static String exemptFromHeader(String checkstyle, Collection<File> files) {
+        if (files.isEmpty()) {
+            return checkstyle;
+        }
+        String paths = files.stream()
+            .map(file -> Pattern.quote(file.getAbsolutePath()))
+            .collect(Collectors.joining("|"));
+        return checkstyle.replace(
+            HEADER_MODULE,
+            "<module name=\"SuppressionSingleFilter\">\n" + "    <property name=\"checks\" value=\"RegexpHeader\"/>\n" +
+                "    <property name=\"files\" value=\"" + escapeXml(paths) + "\"/>\n" + "  </module>\n  " +
+                HEADER_MODULE
+        );
+    }
+
+    private static String escapeXml(String text) {
+        return text.replace("&", "&amp;").replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;");
     }
 
     static String toJavaBlockComment(String text) {

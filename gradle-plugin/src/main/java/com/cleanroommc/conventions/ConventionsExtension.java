@@ -18,8 +18,12 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.plugins.ExtensionContainer;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
+import org.gradle.api.provider.SetProperty;
+import org.gradle.api.tasks.Nested;
 
+import java.util.List;
 import javax.inject.Inject;
 
 public abstract class ConventionsExtension {
@@ -91,6 +95,13 @@ public abstract class ConventionsExtension {
 
     public abstract Property<String> getAuthor();
 
+    @Nested
+    public abstract HeaderExtension getHeader();
+
+    public void header(Action<? super HeaderExtension> action) {
+        action.execute(getHeader());
+    }
+
     public ModsExtension getMods() {
         return ((ExtensionAware) this).getExtensions().getByType(ModsExtension.class);
     }
@@ -101,6 +112,34 @@ public abstract class ConventionsExtension {
 
     ModsExtension registerMods(ModPublishExtension publishMods) {
         return ((ExtensionAware) this).getExtensions().create(ModsExtension.NAME, ModsExtension.class, publishMods);
+    }
+
+    /**
+     * Selects the Java sources {@code applyLicenseHeader} writes to.
+     */
+    public abstract static class HeaderExtension {
+
+        /** Names of the source sets to cover. Defaults to every source set in the project. */
+        public abstract ListProperty<String> getSourceSets();
+
+        /** Ant-style patterns of the files to cover, relative to each source directory. Defaults to every file. */
+        public abstract SetProperty<String> getIncludes();
+
+        /** Ant-style patterns of the files to leave alone, relative to each source directory. */
+        public abstract SetProperty<String> getExcludes();
+
+        public void sourceSets(String... names) {
+            getSourceSets().set(List.of(names));
+        }
+
+        public void include(String... patterns) {
+            getIncludes().addAll(patterns);
+        }
+
+        public void exclude(String... patterns) {
+            getExcludes().addAll(patterns);
+        }
+
     }
 
     public abstract static class ModsExtension {

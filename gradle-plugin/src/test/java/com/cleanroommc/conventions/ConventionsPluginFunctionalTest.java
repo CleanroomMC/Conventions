@@ -954,6 +954,49 @@ class ConventionsPluginFunctionalTest {
     }
 
     @Test
+    void applyLicenseHeaderStampsOnlyTheSelectedSources() throws IOException {
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions.style'",
+            "conventions {\n    header {\n        sourceSets('main')\n        exclude('**/vendor/**')\n    }\n}\n"
+        );
+        String body = "package example;\n\npublic class Example {\n}\n";
+        Path stamped = projectDir.resolve("src/main/java/example/Example.java");
+        Path excluded = projectDir.resolve("src/main/java/example/vendor/Example.java");
+        Path otherSourceSet = projectDir.resolve("src/test/java/example/Example.java");
+        for (Path source : List.of(stamped, excluded, otherSourceSet)) {
+            Files.createDirectories(source.getParent());
+            Files.writeString(source, body);
+        }
+        run("applyLicenseHeader");
+        // A second run finds the header in place and leaves the file alone.
+        run("applyLicenseHeader");
+        assertThat(stamped).hasContent(javaSource(body));
+        assertThat(excluded).hasContent(body);
+        assertThat(otherSourceSet).hasContent(body);
+    }
+
+    @Test
+    void checkstyleExemptsTheSourcesTheHeaderFilterSkips() throws IOException {
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions.style'",
+            "conventions {\n    header {\n        exclude('**/vendor/**')\n    }\n}\n"
+        );
+        Path vendor = Files.createDirectories(projectDir.resolve("src/main/java/example/vendor"));
+        Files.writeString(vendor.resolve("Example.java"), "package example.vendor;\n\npublic class Example {\n}\n");
+        run("--configuration-cache", "checkstyleMain");
+
+        // A file added after the configuration cache entry was stored is still exempt.
+        Files.writeString(vendor.resolve("Other.java"), "package example.vendor;\n\npublic class Other {\n}\n");
+        assertThat(run("--configuration-cache", "checkstyleMain").getOutput()).contains(
+            "Reusing configuration cache.",
+            "BUILD SUCCESSFUL"
+        );
+
+        Files.writeString(vendor.resolveSibling("Bare.java"), "package example;\n\npublic class Bare {\n}\n");
+        assertThat(runAndFail("checkstyleMain").getOutput()).contains("Bare.java", "Missing a header");
+    }
+
+    @Test
     void checkstyleAcceptsAHeaderFromAnotherYear() throws IOException {
         project("id 'java'\n    id 'com.cleanroommc.conventions.style'", "");
         Path source = projectDir.resolve("src/main/java/example/Example.java");
