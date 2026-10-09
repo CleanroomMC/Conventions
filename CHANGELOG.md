@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.1 - 2026-10-08
+
+## Feature
+
+- **checkstyle**: Skip checkstyle on generated sources *[commit by [@Rongmario](https://github.com/Rongmario) in [8bde060](https://github.com/CleanroomMC/Conventions/commit/8bde0609692e7cb5f53a914846e7d974d51c6ab8)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.3.0...1.3.1
+
 ## 1.3.0 - 2026-10-08
 
 ## Feature
