@@ -7,7 +7,8 @@
 # and GITHUB_REPO. Commits whose email is not linked to a GitHub account
 # have an empty username. The first-time contributor section skips those,
 # the GitHub owner (often an organization), bot accounts, and the founder
-# on the first release.
+# on the first release. Bot logins end in [bot], except the Copilot coding
+# agent, which the API reports as plain Copilot.
 #
 # Set CLIFF_INCLUDE_DATE=1 when generating CHANGELOG.md
 # Each entry has a date for version heading, GitHub links for commits.
@@ -108,6 +109,7 @@ https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}
 {% if not contributor.username %}{% continue %}{% endif -%}
 {% if contributor.username == remote.github.owner %}{% continue %}{% endif -%}
 {% if contributor.username is ending_with("[bot]") %}{% continue %}{% endif -%}
+{% if contributor.username == "Copilot" %}{% continue %}{% endif -%}
 {% if not previous.version and founder.remote.username == contributor.username %}{% continue %}{% endif -%}
 {% if not previous.version and founder.author.name == contributor.username %}{% continue %}{% endif -%}
 {% if not first_timer_heading %}
