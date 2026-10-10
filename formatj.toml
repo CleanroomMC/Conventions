@@ -27,8 +27,8 @@ blank-lines = false
 
 [wrapping]
 max-line-length = 120
-method-parameters = "chop-down-if-long"
-method-arguments = "chop-down-if-long"
+method-parameters = "wrap-if-long"
+method-arguments = "wrap-if-long"
 chained-calls = "break-all-when-too-long"
 chain-threshold = 2
 binary-operators = "wrap-if-long"
@@ -51,6 +51,7 @@ throws-clause = "wrap-if-long"
 type-parameters = "never"
 annotation-arguments = "wrap-if-long"
 closing-delimiter = "own-line"
+break-after-open-paren = false
 enum-constants = "chop-down-always"
 require-enum-constant-semicolon = false
 for-statement = "chop-down-if-long"
