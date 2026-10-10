@@ -83,7 +83,7 @@ https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}
 > This version has breaking changes! More details below.
 {% endif -%}
 {% if commits | filter(attribute="breaking", value=true) | length != 0 %}
-## Breaking Changes
+##{% if include_date %}#{% endif %} Breaking Changes
 
 {% for commit in commits | filter(attribute="breaking", value=true) -%}
 {{ self::print_commit(commit=commit, commits=all_commits) }}
@@ -95,7 +95,7 @@ https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}
 {% for commit in commits -%}
 {% if commit.breaking %}{% continue %}{% endif -%}
 {% if not shown %}
-## {{ group | striptags | trim }}
+##{% if include_date %}#{% endif %} {{ group | striptags | trim }}
 
 {% set_global shown = true -%}
 {% endif -%}
@@ -111,7 +111,7 @@ https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}
 {% if not previous.version and founder.remote.username == contributor.username %}{% continue %}{% endif -%}
 {% if not previous.version and founder.author.name == contributor.username %}{% continue %}{% endif -%}
 {% if not first_timer_heading %}
-## First-time Contributors
+##{% if include_date %}#{% endif %} First-time Contributors
 
 {% set_global first_timer_heading = true -%}
 {% endif -%}
