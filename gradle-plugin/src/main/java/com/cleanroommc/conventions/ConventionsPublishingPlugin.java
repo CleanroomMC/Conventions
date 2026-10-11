@@ -96,9 +96,7 @@ public class ConventionsPublishingPlugin implements Plugin<Project> {
                 return;
             }
             publishing.getPublications()
-                .register(
-                    MAVEN_PUBLICATION,
-                    MavenPublication.class,
+                .register(MAVEN_PUBLICATION, MavenPublication.class,
                     publication -> publication.from(project.getComponents().getByName("java"))
                 );
         });
@@ -152,12 +150,8 @@ public class ConventionsPublishingPlugin implements Plugin<Project> {
             .configureEach(publication -> configurePom(project, publication, homepageUrl, repositoryUrl, license));
     }
 
-    private void configurePom(
-        Project project,
-        MavenPublication publication,
-        Provider<String> homepageUrl,
-        Provider<String> repositoryUrl,
-        LicenseMode licenseMode
+    private void configurePom(Project project, MavenPublication publication, Provider<String> homepageUrl,
+        Provider<String> repositoryUrl, LicenseMode licenseMode
     ) {
         publication.pom(pom -> {
             pom.getName().convention(project.provider(project::getName));

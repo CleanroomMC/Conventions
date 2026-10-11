@@ -59,8 +59,7 @@ public abstract class ApplyLicenseHeaderTask extends DefaultTask {
         Path buildDirectory = project.getLayout().getBuildDirectory().get().getAsFile().toPath();
         for (SourceSet sourceSet : java.getSourceSets()) {
             if (selected.isEmpty() || selected.contains(sourceSet.getName())) {
-                files = files.plus(
-                    sourceSet.getAllJava()
+                files = files.plus(sourceSet.getAllJava()
                         .matching(patterns -> patterns.include(header.getIncludes().get())
                             .exclude(header.getExcludes().get()))
                         .filter(file -> file.getName().endsWith(".java") && !file.toPath().startsWith(buildDirectory))

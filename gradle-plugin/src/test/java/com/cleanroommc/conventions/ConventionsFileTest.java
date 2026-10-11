@@ -34,15 +34,13 @@ class ConventionsFileTest {
                  * for the full licence terms.
                  *
                  * This is visible-source software and is not open-source software.
-                 */""".formatted(
-                current
+                 */""".formatted(current
             ));
     }
 
     @Test
     void checkstyleContainsTheLicenseHeaderPlaceholder() {
-        assertThat(ConventionsFile.CHECKSTYLE.read()).contains(
-            "<property name=\"header\" value=\"@LICENSE_HEADER@\"/>"
+        assertThat(ConventionsFile.CHECKSTYLE.read()).contains("<property name=\"header\" value=\"@LICENSE_HEADER@\"/>"
         );
     }
 
@@ -50,9 +48,8 @@ class ConventionsFileTest {
     @EnumSource(value = LicenseMode.class, mode = EnumSource.Mode.EXCLUDE, names = "NONE")
     void checkstyleRendersEveryLicenseHeader(LicenseMode license) {
         assertThat(ConventionsFile.checkstyle(license, ConventionsDefaults.AUTHOR)).doesNotContain("@LICENSE_HEADER@");
-        assertThat(ConventionsFile.checkstyle(license, ConventionsDefaults.AUTHOR)).contains(
-            license.javaHeaderPattern(ConventionsDefaults.AUTHOR).lines().findFirst().orElseThrow()
-        );
+        assertThat(ConventionsFile.checkstyle(license, ConventionsDefaults.AUTHOR
+        )).contains(license.javaHeaderPattern(ConventionsDefaults.AUTHOR).lines().findFirst().orElseThrow());
     }
 
     @ParameterizedTest

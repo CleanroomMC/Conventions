@@ -64,19 +64,20 @@ public class ConventionsModPlugin implements Plugin<Project> {
         publishing.getModLoaders().convention(List.of("forge"));
         // Apply the reobfuscated archive as the publishing file by default, falling back to "jar"
         project.getPlugins()
-            .withType(
-                JavaPlugin.class,
+            .withType(JavaPlugin.class,
                 _ -> project.afterEvaluate(evaluated -> publishing.getFile().convention(modArchive(evaluated)))
             );
         // Set 5 retries as default
         publishing.getMaxRetries().convention(5);
         // Set release type as the one gotten from Cleanroom Versioning
-        publishing.getType().convention(
-            project.getExtensions().getByType(VersioningExtension.class).getStage().map(stage -> switch (stage) {
-                case ALPHA -> ReleaseType.ALPHA;
-                case BETA, RC -> ReleaseType.BETA;
-                case RELEASE -> ReleaseType.STABLE;
-            })
+        publishing.getType().convention(project.getExtensions()
+                .getByType(VersioningExtension.class)
+                .getStage()
+                .map(stage -> switch (stage) {
+                    case ALPHA -> ReleaseType.ALPHA;
+                    case BETA, RC -> ReleaseType.BETA;
+                    case RELEASE -> ReleaseType.STABLE;
+                })
         );
 
         // Apply "1.12.2" as default mc version, token env var: "CURSEFORGE_TOKEN"

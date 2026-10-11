@@ -50,12 +50,10 @@ public class ConventionsBenchmarkingPlugin implements Plugin<Project> {
 
         DependencyHandler dependencies = project.getDependencies();
         benchmark.configure(sourceSet -> {
-            dependencies.addProvider(
-                sourceSet.getImplementationConfigurationName(),
+            dependencies.addProvider(sourceSet.getImplementationConfigurationName(),
                 conventions.getJmhVersion().map(version -> "org.openjdk.jmh:jmh-core:" + version)
             );
-            dependencies.addProvider(
-                sourceSet.getAnnotationProcessorConfigurationName(),
+            dependencies.addProvider(sourceSet.getAnnotationProcessorConfigurationName(),
                 conventions.getJmhVersion().map(version -> "org.openjdk.jmh:jmh-generator-annprocess:" + version)
             );
         });

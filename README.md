@@ -73,7 +73,7 @@ extension block below evaluates.
 | `conventions.provisionJava`     | `false`    | Settings plugin applies Foojay toolchain resolver |
 | `conventions.modPublishing`     | detected   | Forces the mod conventions on or off              |
 | `conventions.benchmarking`      | `false`    | Applies the benchmarking conventions              |
-| `conventions.checkstyleVersion` | `14.0.0`   | Checkstyle version                                |
+| `conventions.checkstyleVersion` | `14.3.0`   | Checkstyle version                                |
 
 Project-level dependency, publishing and copyright values belong to the managed `conventions` extension:
 
@@ -85,7 +85,7 @@ conventions {
     mockitoVersion = '5.23.0'
     assertjVersion = '3.27.7'
     jmhVersion = '1.37'
-    jspecifyVersion = '1.0.0'
+    jspecifyVersion = '1.0.1'
     jetbrainsAnnotationsVersion = '26.1.0'
     anoneVersion = '1.0.0'
 }
