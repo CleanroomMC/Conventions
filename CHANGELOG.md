@@ -1,8 +1,25 @@
 # Changelog
 
+## 1.4.0 - 2026-10-11
+
+### Feature
+
+- **formatj**: Fill arguments from the opening parenthesis *[commit by [@Rongmario](https://github.com/Rongmario) in [e386d01](https://github.com/CleanroomMC/Conventions/commit/e386d01f3d76524856912dcc4a689fe796f26899)]*
+
+### Bug Fix
+
+- **changelog**: Skip Copilot in first-time contributors *[commit by [@Rongmario](https://github.com/Rongmario) in [db1ceac](https://github.com/CleanroomMC/Conventions/commit/db1ceacaef2d61ca3c2579f33fe6a1358cb73530)]*
+- **changelog**: Nest group headings under the version heading in CHANGELOG.md *[commit by [@Rongmario](https://github.com/Rongmario) in [5f833bc](https://github.com/CleanroomMC/Conventions/commit/5f833bc06f9aebc4a120af6b845509e106721b7d)]*
+
+### Build and Dependencies
+
+- **deps**: Bump dependencies and reformat with formatj 1.1.0 *[commit by [@Rongmario](https://github.com/Rongmario) in [a63d96d](https://github.com/CleanroomMC/Conventions/commit/a63d96d5676f49ce91eb19869b8a71bd72e15e53)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.3.1...1.4.0
+
 ## 1.3.1 - 2026-10-08
 
-## Feature
+### Feature
 
 - **checkstyle**: Skip checkstyle on generated sources *[commit by [@Rongmario](https://github.com/Rongmario) in [8bde060](https://github.com/CleanroomMC/Conventions/commit/8bde0609692e7cb5f53a914846e7d974d51c6ab8)]*
 
@@ -10,7 +27,7 @@
 
 ## 1.3.0 - 2026-10-08
 
-## Feature
+### Feature
 
 - **checkstyle**: Demote empty catch blocks to a warning *[commit by [@Rongmario](https://github.com/Rongmario) in [32f20fc](https://github.com/CleanroomMC/Conventions/commit/32f20fc4477df90972650ac0aa275e40656a18f0)]*
 - **license**: Add the none license mode *[commit by [@Rongmario](https://github.com/Rongmario) in [389d5cf](https://github.com/CleanroomMC/Conventions/commit/389d5cf392824e5566c5c3049469f2d0db8fb72e)]*
@@ -21,7 +38,7 @@
 
 ## 1.2.1 - 2026-10-08
 
-## Feature
+### Feature
 
 - **formatting**: Update formatj to 1.0.2 *[commit by [@Rongmario](https://github.com/Rongmario) in [00be366](https://github.com/CleanroomMC/Conventions/commit/00be3662d532a72b35350137b09260b47fe1613f)]*
 
@@ -29,7 +46,7 @@
 
 ## 1.2.0 - 2026-10-07
 
-## Feature
+### Feature
 
 - **formatting**: Update formatj to 1.0.1 and clearskies to 1.0.0 releases *[commit by [@Rongmario](https://github.com/Rongmario) in [df9612d](https://github.com/CleanroomMC/Conventions/commit/df9612da97221b1298ef722be94efd43ccee7d46)]*
 
@@ -37,11 +54,11 @@
 
 ## 1.1.9 - 2026-09-29
 
-## Feature
+### Feature
 
 - Custom authorship for licensing *[commit by [@Rongmario](https://github.com/Rongmario) in [2e5a255](https://github.com/CleanroomMC/Conventions/commit/2e5a2551811b2a647e92aad301bd896a6ffc436c)]*
 
-## Bug Fix
+### Bug Fix
 
 - Add junit launcher to testImplementation config *[commit by [@Rongmario](https://github.com/Rongmario) in [abd6bcb](https://github.com/CleanroomMC/Conventions/commit/abd6bcb603d73941a7e9dd66cc7e23c9cfa7baa5)]*
 
@@ -49,7 +66,7 @@
 
 ## 1.1.8 - 2026-09-28
 
-## Bug Fix
+### Bug Fix
 
 - Stop bot accounts being flagged as first-time contributors *[commit by [@Rongmario](https://github.com/Rongmario) in [9c1b0c0](https://github.com/CleanroomMC/Conventions/commit/9c1b0c0c84cbcb8f928706711ad2071ac55a2c1e)]*
 
@@ -57,7 +74,7 @@
 
 ## 1.1.7 - 2026-09-24
 
-## Feature
+### Feature
 
 - FormatJ indents wrapped lines by 4 instead of 8, every rule spelled out *[commit by [@Rongmario](https://github.com/Rongmario) in [48746b3](https://github.com/CleanroomMC/Conventions/commit/48746b33afdd219dc65d2e94c89ba3b99e37a652)]*
 - Java 8 projects build with the aggregate plugin *[commit by [@Rongmario](https://github.com/Rongmario) in [f0e504c](https://github.com/CleanroomMC/Conventions/commit/f0e504c97ff17ac940358a4a43df857e37a569c9)]*
@@ -66,7 +83,7 @@
 
 ## 1.1.6 - 2026-09-24
 
-## Feature
+### Feature
 
 - Submodules input for the build and release workflows *[commit by [@Rongmario](https://github.com/Rongmario) in [5b34e90](https://github.com/CleanroomMC/Conventions/commit/5b34e90967788ba51af1232d37c5ab78d9930c6c)]*
 
@@ -74,17 +91,17 @@
 
 ## 1.1.5 - 2026-09-21
 
-## Feature
+### Feature
 
 - Auto-detect mod publishing, use reobfJar task when present *[commit by [@Rongmario](https://github.com/Rongmario) in [ee3cf26](https://github.com/CleanroomMC/Conventions/commit/ee3cf26532e1b493e975a4626267c8382c12eca8)]*
 - Group and order imports *[commit by [@Rongmario](https://github.com/Rongmario) in [ad3321e](https://github.com/CleanroomMC/Conventions/commit/ad3321ec927f2547311a5764a7d110199b979f64)]*
 - Render empty class, method and record bodies spaced *[commit by [@Rongmario](https://github.com/Rongmario) in [2817e7f](https://github.com/CleanroomMC/Conventions/commit/2817e7fcee8cd4d2b817736dfb2e4c1a2250f223)]*
 
-## Bug Fix
+### Bug Fix
 
 - Make issue references more elegant in changelog & release notes *[commit by [@Rongmario](https://github.com/Rongmario) in [249a3a3](https://github.com/CleanroomMC/Conventions/commit/249a3a31eedee4094b8d7aea0b2f64f4e479dab6)]*
 
-## Build and Dependencies
+### Build and Dependencies
 
 - Update formatj to 0.5.2 *[commit by [@Rongmario](https://github.com/Rongmario) in [80e7835](https://github.com/CleanroomMC/Conventions/commit/80e78359ab29839d2b580cfa4c4a7784b2adae7f)]*
 
@@ -92,7 +109,7 @@
 
 ## 1.1.4 - 2026-09-20
 
-## Build and Dependencies
+### Build and Dependencies
 
 - Update formatj *[commit by [@Rongmario](https://github.com/Rongmario) in [de69bea](https://github.com/CleanroomMC/Conventions/commit/de69bea1c823f73793478716a1d502351d7f141a)]*
 
@@ -100,7 +117,7 @@
 
 ## 1.1.3 - 2026-09-14
 
-## Bug Fix
+### Bug Fix
 
 - **changelog**: Extract BREAKING CHANGE footer text as sub-bullet *[commit by [@Rongmario](https://github.com/Rongmario) in [5d4c767](https://github.com/CleanroomMC/Conventions/commit/5d4c767b1b74410df6b30faf6d44cf7f3a257557)]*
 - **changelog**: Drop version heading duplicated by GitHub release title *[commit by [@Rongmario](https://github.com/Rongmario) in [50d491e](https://github.com/CleanroomMC/Conventions/commit/50d491e1b3c0349b0e3051f82f441337a01809ee)]*
@@ -109,7 +126,7 @@
 
 ## 1.1.2 - 2026-09-12
 
-## Bug Fix
+### Bug Fix
 
 - Turn off "topo order" for git cliff *[commit by [@Rongmario](https://github.com/Rongmario) in [5b06e34](https://github.com/CleanroomMC/Conventions/commit/5b06e345c35aa5caa088d3cae1715ab67e2ffea0)]*
 
@@ -117,7 +134,7 @@
 
 ## 1.1.1 - 2026-09-11
 
-## Feature
+### Feature
 
 - Bump FormatJ to 0.4.2 *[commit by [@Rongmario](https://github.com/Rongmario) in [6472ea2](https://github.com/CleanroomMC/Conventions/commit/6472ea2759f8242b3e308b82dac360623208f0eb)]*
 
@@ -125,7 +142,7 @@
 
 ## 1.1.0 - 2026-09-11
 
-## Feature
+### Feature
 
 - Update token envoy to 2.0.0 *[commit by [@Rongmario](https://github.com/Rongmario) in [d71c6c2](https://github.com/CleanroomMC/Conventions/commit/d71c6c2c01a971d33678d83cf50e27657ca18fdb)]*
 - **changelog**: Embed link for author + commit *[commit by [@Rongmario](https://github.com/Rongmario) in [aedab6d](https://github.com/CleanroomMC/Conventions/commit/aedab6da0c027ba73d36ae6fc799b46a304150db)]*
@@ -134,7 +151,7 @@
 
 ## 1.0.1 - 2026-09-08
 
-## Bug Fix
+### Bug Fix
 
 - First time contributor issues *[commit by [@Rongmario](https://github.com/Rongmario) in [5790458](https://github.com/CleanroomMC/Conventions/commit/5790458cd7d91b942f2584962cac306e718dca00)]*
 
@@ -142,7 +159,7 @@
 
 ## 1.0.0 - 2026-09-08
 
-## Feature
+### Feature
 
 - **conventions**: Add annotations conventions plugin *[commit by [@Rongmario](https://github.com/Rongmario) in [468041e](https://github.com/CleanroomMC/Conventions/commit/468041e24e2f18af38fec66a9fb4439d0a3ee540)]*
 - **plugin**: Apply TokenEnvoy *[commit by [@Rongmario](https://github.com/Rongmario) in [026abef](https://github.com/CleanroomMC/Conventions/commit/026abef8359e8e5920b11088dae79844b489f856)]*
@@ -171,7 +188,7 @@
 - Enforce UTF-8 encoding and apply Java toolchain *[commit by [@Rongmario](https://github.com/Rongmario) in [9d8f614](https://github.com/CleanroomMC/Conventions/commit/9d8f61446bd4f85705a9cc68f96853361b39e320)]*
 - Add conventions Gradle plugin *[commit by [@Rongmario](https://github.com/Rongmario) in [ba189db](https://github.com/CleanroomMC/Conventions/commit/ba189dbaea3f7992a9dae95621a01b84b09902ac)]*
 
-## Bug Fix
+### Bug Fix
 
 - Using old Convention repo name *[commit by [@Rongmario](https://github.com/Rongmario) in [481f07d](https://github.com/CleanroomMC/Conventions/commit/481f07d91ea1a6ddc14a4a1bd149dc9d08c58a4b)]*
 - Tests, anone, actions fallback, subproject license checks *[commit by [@Rongmario](https://github.com/Rongmario) in [ae05225](https://github.com/CleanroomMC/Conventions/commit/ae0522516c933ce9499e7bff63ba6ffd7be5a170)]*
@@ -187,12 +204,12 @@
 - Mute missing Javadoc warnings *[commit by [@Rongmario](https://github.com/Rongmario) in [ba7eb0e](https://github.com/CleanroomMC/Conventions/commit/ba7eb0eba5751958240fd04afc19fdbbf6516848)]*
 - Correct plugin display name *[commit by [@Rongmario](https://github.com/Rongmario) in [fae31e1](https://github.com/CleanroomMC/Conventions/commit/fae31e15973302818ccba135c13c3ede2f8babc6)]*
 
-## Refactor
+### Refactor
 
 - **license**: Refine convention defaults *[commit by [@Rongmario](https://github.com/Rongmario) in [bb7a7a9](https://github.com/CleanroomMC/Conventions/commit/bb7a7a96a4dc60f9491597cb2ac8f905e11cc0a1)]*
 - **config**: Expose managed settings *[commit by [@Rongmario](https://github.com/Rongmario) in [26eda5e](https://github.com/CleanroomMC/Conventions/commit/26eda5eeb85be323580cdd79c58c9ee09b2e3c40)]*
 
-## Documentation
+### Documentation
 
 - Describe the license property rename and header matching *[commit by [@Rongmario](https://github.com/Rongmario) in [78b7345](https://github.com/CleanroomMC/Conventions/commit/78b7345b3e972b384c79057b4732cd2150cedfa1)]*
 - Clarify convention behavior *[commit by [@Rongmario](https://github.com/Rongmario) in [46b8d65](https://github.com/CleanroomMC/Conventions/commit/46b8d65ed27da55a12e0c33a2d0edb1bbafb210c)]*
@@ -201,21 +218,21 @@
 - Update README with more explanations *[commit by [@Rongmario](https://github.com/Rongmario) in [8326f21](https://github.com/CleanroomMC/Conventions/commit/8326f21d03c70d66aba29a7bafd5aa583d5610e1)]*
 - Update README with base/mod plugin explanations *[commit by [@Rongmario](https://github.com/Rongmario) in [b40dfba](https://github.com/CleanroomMC/Conventions/commit/b40dfbabe9881ca26caab1e3600ceedff7f8b3e5)]*
 
-## Testing
+### Testing
 
 - Cleanups & physical consumer testing *[commit by [@Rongmario](https://github.com/Rongmario) in [654644e](https://github.com/CleanroomMC/Conventions/commit/654644ec943387a4c7c70f9caa32248bcc4ce986)]*
 - Cover configurable conventions *[commit by [@Rongmario](https://github.com/Rongmario) in [a1f598f](https://github.com/CleanroomMC/Conventions/commit/a1f598fcf1cdd6b9b8df37d968dacc8d111665ba)]*
 - **conventions**: Cover expanded plugin suite *[commit by [@Rongmario](https://github.com/Rongmario) in [d39fe85](https://github.com/CleanroomMC/Conventions/commit/d39fe858c0929afe623748fca482440a7255c71b)]*
 - Update tests *[commit by [@Rongmario](https://github.com/Rongmario) in [0d5a311](https://github.com/CleanroomMC/Conventions/commit/0d5a311678bd597b6153af7fb0757d2c01ce78b2)]*
 
-## Build and Dependencies
+### Build and Dependencies
 
 - **deps**: Upgrade Cleanroom Versioning to 3.2.0 *[commit by [@Rongmario](https://github.com/Rongmario) in [c62d2ff](https://github.com/CleanroomMC/Conventions/commit/c62d2ff90b5c2a05c318cecd6e40aec62b126016)]*
 - Centralize and deduplicate logic *[commit by [@Rongmario](https://github.com/Rongmario) in [7716b0b](https://github.com/CleanroomMC/Conventions/commit/7716b0b223db03a0e63b4c1eabee44ffddc09d10)]*
 - **plugin**: Centralize packed resources *[commit by [@Rongmario](https://github.com/Rongmario) in [0cc9e52](https://github.com/CleanroomMC/Conventions/commit/0cc9e524e79defd0041e826c63f24fb9ac748665)]*
 - Apply conventions to this project and bump FormatJ to 0.3.0 *[commit by [@Rongmario](https://github.com/Rongmario) in [0e89d07](https://github.com/CleanroomMC/Conventions/commit/0e89d07d0ad45f0c7aa1628f452ffd104e88504d)]*
 
-## CI
+### CI
 
 - Skip release-branch merges and duplicate branch builds *[commit by [@Rongmario](https://github.com/Rongmario) in [7ee1b96](https://github.com/CleanroomMC/Conventions/commit/7ee1b96f335767d80e577c86bf6d24911c4b0451)]*
 - Support optional mod publishing *[commit by [@Rongmario](https://github.com/Rongmario) in [91f51be](https://github.com/CleanroomMC/Conventions/commit/91f51be5096ea50e3f35ecaf02e4cb1a6adcd99e)]*
