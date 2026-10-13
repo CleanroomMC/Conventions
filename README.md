@@ -391,7 +391,7 @@ A guard job skips a merge commit pushed to `release-branch`. It sits between the
 
 ### Release
 
-[`.github/workflows/release.yml`](.github/workflows/release.yml) builds the tag, generates release notes and `CHANGELOG.md` through git-cliff, then optionally publishes. For tags on the default branch, the generated `CHANGELOG.md` is committed there after the release.
+[`.github/workflows/release.yml`](.github/workflows/release.yml) builds the tag, generates release notes and `CHANGELOG.md` through git-cliff, then optionally publishes. For tags on the default branch, the generated `CHANGELOG.md` is committed there after the release. A tag build fails before it builds when another tag names the same number, so `0.5.0-beta` cannot follow `0.5.0-alpha`.
 
 ```yaml filename=".github/workflows/publish.yml"
 name: Publish

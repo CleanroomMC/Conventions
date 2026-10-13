@@ -83,6 +83,26 @@ jobs:
           persist-credentials: false
           submodules: ${{ inputs.submodules }}
 
+      - name: Check Tag Number
+        if: github.ref_type == 'tag'
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          shopt -s nocasematch
+          # A stage suffix does not make a new number, so 0.5.0-beta after 0.5.0-alpha would release 0.5.0 twice.
+          number() {
+            local name="${1#[vV]}"
+            echo "${name%%-*}"
+          }
+          while read -r other; do
+            [[ "${other}" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+(-(alpha|beta|rc|release))?$ ]] || continue
+            if [ "${other}" != "${TAG}" ] && [ "$(number "${other}")" = "$(number "${TAG}")" ]; then
+              echo "::error::Tag '${TAG}' releases $(number "${TAG}"), which tag '${other}' already released."
+              exit 1
+            fi
+          done < <(git tag --list)
+
       - name: Setup Java
         uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
