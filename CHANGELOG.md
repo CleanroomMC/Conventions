@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.4.1 - 2026-10-13
+
+### Feature
+
+- **release**: Reject a tag whose number another tag already released *[commit by [@Rongmario](https://github.com/Rongmario) in [446c851](https://github.com/CleanroomMC/Conventions/commit/446c851035992841a266ed79d73fba857f8cd775)]*
+
+### Documentation
+
+- **agents**: Facilitate migration & updating *[commit by [@Rongmario](https://github.com/Rongmario) in [23d3b2d](https://github.com/CleanroomMC/Conventions/commit/23d3b2d7947f91f771f7e0fe57351ac8ccaa085e)]*
+
+### Build and Dependencies
+
+- **deps**: Update versioning to 3.4.0 *[commit by [@Rongmario](https://github.com/Rongmario) in [2027dfe](https://github.com/CleanroomMC/Conventions/commit/2027dfebe145b00b1a8259fe85e396e54aaf3227)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.4.0...1.4.1
+
 ## 1.4.0 - 2026-10-11
 
 ### Feature
