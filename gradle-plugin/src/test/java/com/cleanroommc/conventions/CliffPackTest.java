@@ -61,13 +61,15 @@ class CliffPackTest {
         );
 
         List<Preprocessor> preprocessors = pipeline.preprocessors();
-        assertThat(preprocessors).hasSize(3);
+        assertThat(preprocessors).hasSize(4);
         assertThat(preprocessors.get(0).pattern().pattern()).isEqualTo("\\s*\\((\\w+\\s)?#([0-9]+)\\)");
         assertThat(preprocessors.get(0).replace()).isEmpty();
-        assertThat(preprocessors.get(1).pattern().pattern()).isEqualTo("(?m)^[ \\t]*[-*][ \\t]+");
+        assertThat(preprocessors.get(1).pattern().pattern()).isEqualTo("(?m)^[ \\t]*[-*_]{3,}[ \\t]*\\n?");
         assertThat(preprocessors.get(1).replace()).isEmpty();
-        assertThat(preprocessors.get(2).pattern().pattern()).isEqualTo("(?s)^.*\\n");
-        assertThat(preprocessors.get(2).replaceCommand()).isEqualTo(CliffPipeline.COLLAPSE_COMMAND);
+        assertThat(preprocessors.get(2).pattern().pattern()).isEqualTo("(?m)^[ \\t]*[-*][ \\t]+");
+        assertThat(preprocessors.get(2).replace()).isEmpty();
+        assertThat(preprocessors.get(3).pattern().pattern()).isEqualTo("(?s)^.*\\n");
+        assertThat(preprocessors.get(3).replaceCommand()).isEqualTo(CliffPipeline.COLLAPSE_COMMAND);
 
         List<Parser> parsers = pipeline.parsers();
         assertThat(parsers).hasSize(17);
@@ -106,6 +108,27 @@ class CliffPackTest {
         assertEntry(entries.get(0), "Comprehensive", null, "implemented large surface PR");
         assertEntry(entries.get(1), "Bug Fix", "inventory", "shift-click from the hotbar");
         assertEntry(entries.get(2), "Feature", "inventory", "add extra slots");
+        assertEntry(entries.get(3), "Co-authors", null, "Example <example@example.com>");
+    }
+
+    @Test
+    void packDropsSquashMergeHorizontalRules() {
+        List<
+            CliffEntry> entries = pipeline.process("""
+                pack: rework the renderer (#606)
+
+                - feat(render): batch the quads
+                - fix(render): clamp the light value
+
+                ---------
+
+                Co-authored-by: Example <example@example.com>
+                """
+        );
+        assertThat(entries).hasSize(4);
+        assertEntry(entries.get(0), "Comprehensive", null, "rework the renderer");
+        assertEntry(entries.get(1), "Feature", "render", "batch the quads");
+        assertEntry(entries.get(2), "Bug Fix", "render", "clamp the light value");
         assertEntry(entries.get(3), "Co-authors", null, "Example <example@example.com>");
     }
 
