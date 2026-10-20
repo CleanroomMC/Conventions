@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.4.2 - 2026-10-20
+
+### Bug Fix
+
+- **changelog**: Drop squash-merge horizontal rules from pack commits *[commit by [@Rongmario](https://github.com/Rongmario) in [688bb19](https://github.com/CleanroomMC/Conventions/commit/688bb19b13e662699130d1c98a4843f75f1be422)]*
+
+### Build and Dependencies
+
+- **deps**: Update formatj to 1.3.1 *[commit by [@Rongmario](https://github.com/Rongmario) in [b1ea362](https://github.com/CleanroomMC/Conventions/commit/b1ea36296c17ff29c50ea45c68af4deafd51ff2d)]*
+- **deps**: Update formatj to 1.2.0 *[commit by [@Rongmario](https://github.com/Rongmario) in [53f6b1a](https://github.com/CleanroomMC/Conventions/commit/53f6b1a16bab1f93f24fe9e221c09febe0ff553e)]*
+
+### CI
+
+- **workflows**: Install the toolchain JDKs a project declares *[commit by [@Rongmario](https://github.com/Rongmario) in [046bad1](https://github.com/CleanroomMC/Conventions/commit/046bad1b4c1f7ac8533591ce44547ce46b006546)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.4.1...1.4.2
+
 ## 1.4.1 - 2026-10-13
 
 ### Feature
