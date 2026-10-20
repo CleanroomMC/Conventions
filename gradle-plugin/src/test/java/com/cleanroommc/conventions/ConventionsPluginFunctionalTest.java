@@ -32,8 +32,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ConventionsPluginFunctionalTest {
 
-    private static final List<String> GITHUB_ENVIRONMENT = List.of("GITHUB_ACTIONS", "GITHUB_REF_TYPE",
-        "GITHUB_REF_NAME", "GITHUB_HEAD_REF", "GITHUB_RUN_NUMBER"
+    private static final List<String> GITHUB_ENVIRONMENT = List.of(
+        "GITHUB_ACTIONS", "GITHUB_REF_TYPE", "GITHUB_REF_NAME", "GITHUB_HEAD_REF", "GITHUB_RUN_NUMBER"
     );
 
     @TempDir Path projectDir;
@@ -52,126 +52,125 @@ class ConventionsPluginFunctionalTest {
 
     private static String printToolchain() {
         return """
-                tasks.register('printToolchain') {
-                    def version = java.toolchain.languageVersion.get().asInt()
-                    doLast { println "toolchain=$version" }
-                }
-                """;
+               tasks.register('printToolchain') {
+                   def version = java.toolchain.languageVersion.get().asInt()
+                   doLast { println "toolchain=$version" }
+               }
+               """;
     }
 
     private static String printTestDependencies() {
         return """
-                tasks.register('printTestDependencies') {
-                    def coordinates = configurations.testImplementation.dependencies.collect {
-                        [it.group, it.name, it.version].findAll { part -> part != null }.join(':')
-                    }
-                    doLast { coordinates.each { println "dependency=$it" } }
-                }
-                """;
+               tasks.register('printTestDependencies') {
+                   def coordinates = configurations.testImplementation.dependencies.collect {
+                       [it.group, it.name, it.version].findAll { part -> part != null }.join(':')
+                   }
+                   doLast { coordinates.each { println "dependency=$it" } }
+               }
+               """;
     }
 
     private static String printBenchmarking() {
         return """
-                tasks.register('printBenchmarking') {
-                    def sourceSet = sourceSets.findByName('benchmark')
-                    def benchmarkTask = tasks.findByName('benchmark')
-                    def present = sourceSet != null && benchmarkTask != null ? 'present' : 'absent'
-                    doLast { println "benchmarking=$present" }
-                }
-                """;
+               tasks.register('printBenchmarking') {
+                   def sourceSet = sourceSets.findByName('benchmark')
+                   def benchmarkTask = tasks.findByName('benchmark')
+                   def present = sourceSet != null && benchmarkTask != null ? 'present' : 'absent'
+                   doLast { println "benchmarking=$present" }
+               }
+               """;
     }
 
     private static String printBenchmarkDependencies() {
         return """
-                tasks.register('printBenchmarkDependencies') {
-                    def implementation = configurations.benchmarkImplementation.dependencies
-                    def annotationProcessor = configurations.benchmarkAnnotationProcessor.dependencies
-                    def coordinates = (implementation + annotationProcessor).collect {
-                        [it.group, it.name, it.version].findAll { part -> part != null }.join(':')
-                    }
-                    doLast { coordinates.each { println "dependency=$it" } }
-                }
-                """;
+               tasks.register('printBenchmarkDependencies') {
+                   def implementation = configurations.benchmarkImplementation.dependencies
+                   def annotationProcessor = configurations.benchmarkAnnotationProcessor.dependencies
+                   def coordinates = (implementation + annotationProcessor).collect {
+                       [it.group, it.name, it.version].findAll { part -> part != null }.join(':')
+                   }
+                   doLast { coordinates.each { println "dependency=$it" } }
+               }
+               """;
     }
 
     private static String printPublications() {
         return """
-                tasks.register('printPublications') {
-                    def names = publishing.publications.names.join(',')
-                    doLast { println "publications=[$names]" }
-                }
-                """;
+               tasks.register('printPublications') {
+                   def names = publishing.publications.names.join(',')
+                   doLast { println "publications=[$names]" }
+               }
+               """;
     }
 
     private static String printMods() {
         return """
-                tasks.register('printMods') {
-                    def present = conventions.extensions.findByName('mods') != null ? 'present' : 'absent'
-                    doLast { println "mods=$present" }
-                }
-                """;
+               tasks.register('printMods') {
+                   def present = conventions.extensions.findByName('mods') != null ? 'present' : 'absent'
+                   doLast { println "mods=$present" }
+               }
+               """;
     }
 
     private static String printModFile() {
         return """
-                tasks.register('printModFile') {
-                    def file = publishMods.file
-                    // The real publish task takes the file as an input, which is what carries the producing task with it.
-                    inputs.files(file)
-                    doLast { println "modFile=${file.get().asFile.name}" }
-                }
-                """;
+               tasks.register('printModFile') {
+                   def file = publishMods.file
+                   // The real publish task takes the file as an input, which is what carries the producing task with it.
+                   inputs.files(file)
+                   doLast { println "modFile=${file.get().asFile.name}" }
+               }
+               """;
     }
 
     private static String printGroup() {
         return """
-                tasks.register('printGroup') {
-                    def value = project.group
-                    doLast { println "group=$value" }
-                }
-                """;
+               tasks.register('printGroup') {
+                   def value = project.group
+                   doLast { println "group=$value" }
+               }
+               """;
     }
 
     private static String printCompileOnly() {
         return """
-                tasks.register('printCompileOnly') {
-                    def coordinates = configurations.compileOnly.dependencies.collect {
-                        [it.group, it.name, it.version].findAll { part -> part != null }.join(':')
-                    }
-                    doLast { coordinates.each { println "dependency=$it" } }
-                }
-                """;
+               tasks.register('printCompileOnly') {
+                   def coordinates = configurations.compileOnly.dependencies.collect {
+                       [it.group, it.name, it.version].findAll { part -> part != null }.join(':')
+                   }
+                   doLast { coordinates.each { println "dependency=$it" } }
+               }
+               """;
     }
 
     private static String printManifest() {
         return """
-                tasks.named('jar').configure {
-                    doLast {
-                        def file = archiveFile.get().asFile
-                        def attrs = new java.util.jar.JarFile(file).manifest.mainAttributes
-                        println "title=${attrs.getValue('Implementation-Title')}"
-                        println "version=${attrs.getValue('Implementation-Version')}"
-                        println "vendor=${attrs.getValue('Implementation-Vendor')}"
-                        println "vendorId=${attrs.getValue('Implementation-Vendor-Id')}"
-                        println "specVendor=${attrs.getValue('Specification-Vendor')}"
-                    }
-                }
-                """;
+               tasks.named('jar').configure {
+                   doLast {
+                       def file = archiveFile.get().asFile
+                       def attrs = new java.util.jar.JarFile(file).manifest.mainAttributes
+                       println "title=${attrs.getValue('Implementation-Title')}"
+                       println "version=${attrs.getValue('Implementation-Version')}"
+                       println "vendor=${attrs.getValue('Implementation-Vendor')}"
+                       println "vendorId=${attrs.getValue('Implementation-Vendor-Id')}"
+                       println "specVendor=${attrs.getValue('Specification-Vendor')}"
+                   }
+               }
+               """;
     }
 
     private static String printSettings(String what) {
         return """
-                plugins {
-                    id 'com.cleanroommc.conventions.settings'
-                }
-                rootProject.name = 'conventions-under-test'
-                gradle.settingsEvaluated { s ->
-                    if ('foojay'.equals('%s')) {
-                        println "foojay=${s.pluginManager.hasPlugin('org.gradle.toolchains.foojay-resolver-convention')}"
-                    }
-                }
-                """.formatted(what
-        );
+               plugins {
+                   id 'com.cleanroommc.conventions.settings'
+               }
+               rootProject.name = 'conventions-under-test'
+               gradle.settingsEvaluated { s ->
+                   if ('foojay'.equals('%s')) {
+                       println "foojay=${s.pluginManager.hasPlugin('org.gradle.toolchains.foojay-resolver-convention')}"
+                   }
+               }
+               """.formatted(what);
     }
 
     @Test
@@ -179,8 +178,8 @@ class ConventionsPluginFunctionalTest {
         project("id 'java'\n    id 'com.cleanroommc.conventions.style'", "");
         Path source = projectDir.resolve("src/main/java/example/Example.java");
         Files.createDirectories(source.getParent());
-        Files.writeString(source,
-            "package example;\n\npublic class Example {\n            void run() {\n            }\n}\n"
+        Files.writeString(
+            source, "package example;\n\npublic class Example {\n            void run() {\n            }\n}\n"
         );
 
         run("formatJavaApply");
@@ -207,12 +206,13 @@ class ConventionsPluginFunctionalTest {
 
     @Test
     void aggregatePluginAppliesTokenEnvoy() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions'",
             """
-                tokenEnvoy {
-                    set 'VERSION', '1.2.3'
-                }
-                """
+            tokenEnvoy {
+                set 'VERSION', '1.2.3'
+            }
+            """
         );
         Path resource = projectDir.resolve("src/main/resources/version.txt");
         Files.createDirectories(resource.getParent());
@@ -220,20 +220,23 @@ class ConventionsPluginFunctionalTest {
 
         run("processResources");
 
-        assertThat(Files.readString(projectDir.resolve("build/resources/main/version.txt"))).isEqualTo("version=1.2.3\n"
+        assertThat(Files.readString(projectDir.resolve("build/resources/main/version.txt"))).isEqualTo(
+            "version=1.2.3\n"
         );
     }
 
     @Test
     void tokenEnvoyReplacesTokensInCompiledClasses() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions'",
             """
-                tokenEnvoy {
-                    set 'VERSION', '1.2.3'
-                }
-                """
+            tokenEnvoy {
+                set 'VERSION', '1.2.3'
+            }
+            """
         );
-        javaFile("src/main/java/example/Example.java",
+        javaFile(
+            "src/main/java/example/Example.java",
             "package example;\n\npublic class Example {\n\n    public static final String VERSION = \"@{VERSION}\";\n\n}\n"
         );
 
@@ -247,35 +250,38 @@ class ConventionsPluginFunctionalTest {
 
     @Test
     void java8ProjectsCompileTestAndCheckWithTokenEnvoy() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions'",
             """
-                tokenEnvoy {
-                    set 'VERSION', '1.2.3'
-                }
-                """ +
+            tokenEnvoy {
+                set 'VERSION', '1.2.3'
+            }
+            """ +
                 printTestDependencies()
         );
         property("conventions.javaMajor = 8");
-        javaFile("src/main/java/example/Example.java",
+        javaFile(
+            "src/main/java/example/Example.java",
             "package example;\n\npublic final class Example {\n\n    public static final String VERSION = \"@{VERSION}\";\n\n    private Example() { }\n\n}\n"
         );
-        javaFile("src/test/java/example/ExampleTest.java",
+        javaFile(
+            "src/test/java/example/ExampleTest.java",
             """
-                package example;
+            package example;
 
-                import org.junit.jupiter.api.Test;
+            import org.junit.jupiter.api.Test;
 
-                import static org.assertj.core.api.Assertions.assertThat;
+            import static org.assertj.core.api.Assertions.assertThat;
 
-                class ExampleTest {
+            class ExampleTest {
 
-                    @Test
-                    void replacesTheToken() {
-                        assertThat(Example.VERSION).isEqualTo("1.2.3");
-                    }
-
+                @Test
+                void replacesTheToken() {
+                    assertThat(Example.VERSION).isEqualTo("1.2.3");
                 }
-                """
+
+            }
+            """
         );
 
         String output = run("printTestDependencies", "test", "checkstyleMain", "checkstyleTest").getOutput();
@@ -288,7 +294,8 @@ class ConventionsPluginFunctionalTest {
     @Test
     void extractConventionsWritesPackedFiles() throws IOException {
         project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
-        Files.writeString(projectDir.resolve(".gitignore"),
+        Files.writeString(
+            projectDir.resolve(".gitignore"),
             "# >>> cleanroom-conventions\nold/\n# <<< cleanroom-conventions\nmine.iml\n"
         );
 
@@ -332,11 +339,11 @@ class ConventionsPluginFunctionalTest {
 
         run("extractConventions");
 
-        assertThat(Files.readString(projectDir.resolve("HEADER"))).contains("Copyright (c) 2001-" + current +
-                " CleanroomMC contributors"
+        assertThat(Files.readString(projectDir.resolve("HEADER"))).contains(
+            "Copyright (c) 2001-" + current + " CleanroomMC contributors"
         );
-        assertThat(Files.readString(projectDir.resolve("LICENSE"))).contains("Copyright © 2001-" + current +
-                " CleanroomMC contributors"
+        assertThat(Files.readString(projectDir.resolve("LICENSE"))).contains(
+            "Copyright © 2001-" + current + " CleanroomMC contributors"
         );
     }
 
@@ -349,11 +356,11 @@ class ConventionsPluginFunctionalTest {
 
         run("extractConventions");
 
-        assertThat(Files.readString(projectDir.resolve("HEADER"))).contains("Copyright (c) " + previous + "-" +
-                current + " Jane Doe (jane.doe)"
+        assertThat(Files.readString(projectDir.resolve("HEADER"))).contains(
+            "Copyright (c) " + previous + "-" + current + " Jane Doe (jane.doe)"
         );
-        assertThat(Files.readString(projectDir.resolve("LICENSE"))).contains("Copyright © " + previous + "-" + current +
-                " Jane Doe (jane.doe)"
+        assertThat(Files.readString(projectDir.resolve("LICENSE"))).contains(
+            "Copyright © " + previous + "-" + current + " Jane Doe (jane.doe)"
         );
         assertThat(Files.readString(projectDir.resolve("checkstyle.xml"))).contains("Jane Doe \\(jane\\.doe\\)");
     }
@@ -363,17 +370,17 @@ class ConventionsPluginFunctionalTest {
         int current = Year.now().getValue();
         int previous = current - 1;
         project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
-        Files.writeString(projectDir.resolve("HEADER"),
-            LicenseMode.VISIBLE.headerText(CopyrightNotice.of(previous, previous))
+        Files.writeString(
+            projectDir.resolve("HEADER"), LicenseMode.VISIBLE.headerText(CopyrightNotice.of(previous, previous))
         );
 
         run("extractConventions");
 
-        assertThat(Files.readString(projectDir.resolve("HEADER"))).contains("Copyright (c) " + previous + "-" +
-                current + " CleanroomMC contributors"
+        assertThat(Files.readString(projectDir.resolve("HEADER"))).contains(
+            "Copyright (c) " + previous + "-" + current + " CleanroomMC contributors"
         );
-        assertThat(Files.readString(projectDir.resolve("LICENSE"))).contains("Copyright © " + previous + "-" + current +
-                " CleanroomMC contributors"
+        assertThat(Files.readString(projectDir.resolve("LICENSE"))).contains(
+            "Copyright © " + previous + "-" + current + " CleanroomMC contributors"
         );
     }
 
@@ -384,14 +391,14 @@ class ConventionsPluginFunctionalTest {
         Path parent = projectDir;
         projectDir = Files.createDirectory(parent.resolve("consumer"));
         project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
-        Files.writeString(parent.resolve("HEADER"),
-            LicenseMode.VISIBLE.headerText(CopyrightNotice.of(begin, current - 1))
+        Files.writeString(
+            parent.resolve("HEADER"), LicenseMode.VISIBLE.headerText(CopyrightNotice.of(begin, current - 1))
         );
 
         run("extractConventions");
 
-        assertThat(Files.readString(projectDir.resolve("HEADER"))).contains("Copyright (c) " + begin + "-" + current +
-                " CleanroomMC contributors"
+        assertThat(Files.readString(projectDir.resolve("HEADER"))).contains(
+            "Copyright (c) " + begin + "-" + current + " CleanroomMC contributors"
         );
     }
 
@@ -401,14 +408,15 @@ class ConventionsPluginFunctionalTest {
         int begin = current - 3;
         project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
         run("--configuration-cache", "extractConventions");
-        Files.writeString(projectDir.resolve("HEADER"), LicenseMode.VISIBLE.headerText(CopyrightNotice.of(begin, begin))
+        Files.writeString(
+            projectDir.resolve("HEADER"), LicenseMode.VISIBLE.headerText(CopyrightNotice.of(begin, begin))
         );
 
         BuildResult second = run("--configuration-cache", "extractConventions");
 
         assertThat(second.getOutput()).contains("Reusing configuration cache.");
-        assertThat(Files.readString(projectDir.resolve("HEADER"))).contains("Copyright (c) " + begin + "-" + current +
-                " CleanroomMC contributors"
+        assertThat(Files.readString(projectDir.resolve("HEADER"))).contains(
+            "Copyright (c) " + begin + "-" + current + " CleanroomMC contributors"
         );
     }
 
@@ -416,8 +424,9 @@ class ConventionsPluginFunctionalTest {
     void beginFromRejectsAFutureYear() throws IOException {
         int future = Year.now().getValue() + 1;
         project("id 'java'\n    id 'com.cleanroommc.conventions'", "conventions { beginFrom = " + future + " }");
-        assertThat(runAndFail("extractConventions").getOutput()
-        ).contains("beginFrom must not be later than the current year");
+        assertThat(runAndFail("extractConventions").getOutput()).contains(
+            "beginFrom must not be later than the current year"
+        );
     }
 
     @Test
@@ -443,7 +452,8 @@ class ConventionsPluginFunctionalTest {
 
     @Test
     void anoneCanBeDisabledThroughTheExtension() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions.annotations'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions.annotations'",
             "conventions { anoneVersion = '' }\n\n" + printCompileOnly()
         );
         assertThat(run("printCompileOnly").getOutput()).doesNotContain("com.cleanroommc:anone");
@@ -451,7 +461,8 @@ class ConventionsPluginFunctionalTest {
 
     @Test
     void annotationVersionsCanBeConfiguredThroughTheExtension() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions.annotations'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions.annotations'",
             "conventions {\n    jspecifyVersion = '0.3.0'\n    jetbrainsAnnotationsVersion = '26.0.2'\n    anoneVersion = '0.9.0'\n}\n\n" +
                 printCompileOnly()
         );
@@ -494,25 +505,26 @@ class ConventionsPluginFunctionalTest {
 
     @Test
     void settingsPluginKeepsConventionRepositoriesWhenTheProjectAddsMore() throws IOException {
-        settingsProject("""
-                plugins {
-                    id 'com.cleanroommc.conventions.settings'
-                }
-                rootProject.name = 'conventions-under-test'
-                """,
+        settingsProject(
             """
-                plugins { id 'java' }
-                repositories {
-                    maven {
-                        name = 'Extra'
-                        url = 'https://example.invalid'
-                    }
+            plugins {
+                id 'com.cleanroommc.conventions.settings'
+            }
+            rootProject.name = 'conventions-under-test'
+            """,
+            """
+            plugins { id 'java' }
+            repositories {
+                maven {
+                    name = 'Extra'
+                    url = 'https://example.invalid'
                 }
-                tasks.register('printRepos') {
-                    def names = repositories.collect { it.name }.join(',')
-                    doLast { println "repos=[$names]" }
-                }
-                """
+            }
+            tasks.register('printRepos') {
+                def names = repositories.collect { it.name }.join(',')
+                doLast { println "repos=[$names]" }
+            }
+            """
         );
         String output = run("printRepos").getOutput();
         assertThat(output).contains("MavenRepo");
@@ -537,32 +549,32 @@ class ConventionsPluginFunctionalTest {
 
     @Test
     void checkstyleWarnsAboutImportedForeignNullness() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions'",
             """
-                dependencies {
-                    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
-                }
-                """
+            dependencies {
+                compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+            }
+            """
         );
         Path source = projectDir.resolve("src/main/java/example/Example.java");
         Files.createDirectories(source.getParent());
-        Files.writeString(source,
-            javaSource(
-                """
-                        package example;
+        Files.writeString(
+            source,
+            javaSource("""
+                       package example;
 
-                        %s
+                       %s
 
-                        public class Example {
+                       public class Example {
 
-                            @Nullable
-                            public String name() {
-                                return null;
-                            }
+                           @Nullable
+                           public String name() {
+                               return null;
+                           }
 
-                        }
-                        """.formatted("import javax.annotation.Nullable;"
-                ))
+                       }
+                       """.formatted("import javax.annotation.Nullable;"))
         );
         String output = run("checkstyleMain").getOutput();
         assertThat(output).contains("Prefer org.jspecify.annotations for nullness");
@@ -574,21 +586,23 @@ class ConventionsPluginFunctionalTest {
         project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
         Path source = projectDir.resolve("src/main/java/example/Example.java");
         Files.createDirectories(source.getParent());
-        Files.writeString(source,
-            javaSource("""
-                        package example;
+        Files.writeString(
+            source,
+            javaSource(
+                """
+                package example;
 
-                        import org.jspecify.annotations.Nullable;
+                import org.jspecify.annotations.Nullable;
 
-                        public class Example {
+                public class Example {
 
-                            @Nullable
-                            public String name() {
-                                return null;
-                            }
+                    @Nullable
+                    public String name() {
+                        return null;
+                    }
 
-                        }
-                        """
+                }
+                """
             )
         );
         assertThat(run("checkstyleMain").getOutput()).contains("BUILD SUCCESSFUL");
@@ -597,21 +611,22 @@ class ConventionsPluginFunctionalTest {
     @Test
     void checkstyleWarnsAboutAnEmptyCatchBlock() throws IOException {
         project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
-        javaFile("src/main/java/example/Example.java",
+        javaFile(
+            "src/main/java/example/Example.java",
             """
-                package example;
+            package example;
 
-                public class Example {
+            public class Example {
 
-                    public void run() {
-                        try {
-                            run();
-                        } catch (RuntimeException e) {
-                        }
+                public void run() {
+                    try {
+                        run();
+                    } catch (RuntimeException e) {
                     }
-
                 }
-                """
+
+            }
+            """
         );
         String output = run("checkstyleMain").getOutput();
         assertThat(output).contains("Empty catch block");
@@ -622,35 +637,37 @@ class ConventionsPluginFunctionalTest {
     void checkstyleLeavesNativeBindingNamesAlone() throws IOException {
         project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
         javaFile("src/main/java/com/sun/jna/Library.java", "package com.sun.jna;\n\npublic interface Library {}\n");
-        javaFile("src/main/java/example/DwmApi.java",
+        javaFile(
+            "src/main/java/example/DwmApi.java",
             """
-                package example;
+            package example;
 
-                import com.sun.jna.Library;
+            import com.sun.jna.Library;
 
-                public interface DwmApi extends Library {
+            public interface DwmApi extends Library {
 
-                    int DwmSetWindowAttribute(long hwnd, int DwAttribute);
+                int DwmSetWindowAttribute(long hwnd, int DwAttribute);
 
-                    enum DWM_SYSTEMBACKDROP_TYPE {
-                        DWMSBT_AUTO
-                    }
-
+                enum DWM_SYSTEMBACKDROP_TYPE {
+                    DWMSBT_AUTO
                 }
-                """
+
+            }
+            """
         );
-        javaFile("src/main/java/example/Jni.java",
+        javaFile(
+            "src/main/java/example/Jni.java",
             """
-                package example;
+            package example;
 
-                public final class Jni {
+            public final class Jni {
 
-                    private Jni() {}
+                private Jni() {}
 
-                    public static native int Native_call(int Value);
+                public static native int Native_call(int Value);
 
-                }
-                """
+            }
+            """
         );
         assertThat(run("checkstyleMain").getOutput()).contains("BUILD SUCCESSFUL");
     }
@@ -659,20 +676,21 @@ class ConventionsPluginFunctionalTest {
     void checkstyleStillNamesOrdinaryCodeBesideNativeBindings() throws IOException {
         project("id 'java'\n    id 'com.cleanroommc.conventions'", "");
         javaFile("src/main/java/com/sun/jna/Library.java", "package com.sun.jna;\n\npublic interface Library {}\n");
-        javaFile("src/main/java/example/Caller.java",
+        javaFile(
+            "src/main/java/example/Caller.java",
             """
-                package example;
+            package example;
 
-                import com.sun.jna.Library;
+            import com.sun.jna.Library;
 
-                public final class Caller {
+            public final class Caller {
 
-                    private Caller() {}
+                private Caller() {}
 
-                    public static void Bad_name(Library library) {}
+                public static void Bad_name(Library library) {}
 
-                }
-                """
+            }
+            """
         );
         assertThat(runAndFail("checkstyleMain").getOutput()).contains("Bad_name");
     }
@@ -706,15 +724,16 @@ class ConventionsPluginFunctionalTest {
 
     @Test
     void testingVersionsCanBeConfiguredThroughTheExtension() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions.testing'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions.testing'",
             """
-                conventions {
-                    junitVersion = '5.11.4'
-                    mockitoVersion = '5.14.2'
-                    assertjVersion = '3.26.3'
-                }
+            conventions {
+                junitVersion = '5.11.4'
+                mockitoVersion = '5.14.2'
+                assertjVersion = '3.26.3'
+            }
 
-                """ +
+            """ +
                 printTestDependencies()
         );
         String output = run("printTestDependencies").getOutput();
@@ -738,7 +757,8 @@ class ConventionsPluginFunctionalTest {
 
     @Test
     void jmhVersionCanBeConfiguredThroughTheExtension() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions.benchmarking'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions.benchmarking'",
             "conventions { jmhVersion = '1.36' }\n\n" + printBenchmarkDependencies()
         );
         String output = run("printBenchmarkDependencies").getOutput();
@@ -748,50 +768,54 @@ class ConventionsPluginFunctionalTest {
 
     @Test
     void benchmarkRunsJmhWithoutCompilingTests() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions.benchmarking'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions.benchmarking'",
             """
-                tasks.named('benchmark') {
-                    args 'example.BenchmarkSmoke', '-wi', '0', '-i', '1', '-f', '1', '-r', '10ms'
-                }
-                """
+            tasks.named('benchmark') {
+                args 'example.BenchmarkSmoke', '-wi', '0', '-i', '1', '-f', '1', '-r', '10ms'
+            }
+            """
         );
-        javaFile("src/main/java/example/Subject.java",
+        javaFile(
+            "src/main/java/example/Subject.java",
             """
-                package example;
+            package example;
 
-                public final class Subject {
+            public final class Subject {
 
-                    public static int value() {
-                        return 42;
-                    }
-
+                public static int value() {
+                    return 42;
                 }
-                """
+
+            }
+            """
         );
-        javaFile("src/benchmark/java/example/BenchmarkSmoke.java",
+        javaFile(
+            "src/benchmark/java/example/BenchmarkSmoke.java",
             """
-                package example;
+            package example;
 
-                import org.openjdk.jmh.annotations.Benchmark;
+            import org.openjdk.jmh.annotations.Benchmark;
 
-                public class BenchmarkSmoke {
+            public class BenchmarkSmoke {
 
-                    @Benchmark
-                    public int measure() {
-                        return Subject.value();
-                    }
-
+                @Benchmark
+                public int measure() {
+                    return Subject.value();
                 }
-                """
+
+            }
+            """
         );
-        javaFile("src/test/java/example/BrokenTest.java",
+        javaFile(
+            "src/test/java/example/BrokenTest.java",
             """
-                package example;
+            package example;
 
-                public class BrokenTest {
-                    this deliberately does not compile
-                }
-                """
+            public class BrokenTest {
+                this deliberately does not compile
+            }
+            """
         );
 
         String output = run("--configuration-cache", "benchmark").getOutput();
@@ -810,7 +834,8 @@ class ConventionsPluginFunctionalTest {
 
     @Test
     void repositoryUrlCanBeConfiguredThroughTheExtension() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions.publishing'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions.publishing'",
             "conventions { repositoryUrl = 'https://example.com/cleanroom/project' }"
         );
         run("generatePomFileForMavenPublication");
@@ -846,44 +871,47 @@ class ConventionsPluginFunctionalTest {
 
     @Test
     void readingTheModsExtensionRegistersNoPlatform() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions.mod'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions.mod'",
             """
-                conventions.mods { }
+            conventions.mods { }
 
-                tasks.register('printPlatforms') {
-                    def platforms = publishMods.platforms.names.join(',')
-                    doLast { println "platforms=[$platforms]" }
-                }
-                """
+            tasks.register('printPlatforms') {
+                def platforms = publishMods.platforms.names.join(',')
+                doLast { println "platforms=[$platforms]" }
+            }
+            """
         );
         assertThat(run("printPlatforms").getOutput()).contains("platforms=[]");
     }
 
     @Test
     void configuresTheCurseforgePlatformFromTheDsl() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions.mod'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions.mod'",
             """
-                conventions.mods {
-                    curseforge = '123456'
-                }
+            conventions.mods {
+                curseforge = '123456'
+            }
 
-                tasks.register('printPlatforms') {
-                    def platforms = publishMods.platforms.names.join(',')
-                    doLast { println "platforms=[$platforms]" }
-                }
-                """
+            tasks.register('printPlatforms') {
+                def platforms = publishMods.platforms.names.join(',')
+                doLast { println "platforms=[$platforms]" }
+            }
+            """
         );
         assertThat(run("printPlatforms").getOutput()).contains("platforms=[curseforge]");
     }
 
     @Test
     void publishesTheReobfuscatedArchiveWhenTheToolchainDeclaresOne() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions.mod'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions.mod'",
             """
-                tasks.register('reobfJar') {
-                    outputs.file(layout.buildDirectory.file('reobf/example-srg.jar'))
-                }
-                """ +
+            tasks.register('reobfJar') {
+                outputs.file(layout.buildDirectory.file('reobf/example-srg.jar'))
+            }
+            """ +
                 printModFile()
         );
         assertThat(run("printModFile").getOutput()).contains("modFile=example-srg.jar");
@@ -891,7 +919,8 @@ class ConventionsPluginFunctionalTest {
 
     @Test
     void publishesTheJarWhenReobfuscationRenamesItInPlace() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions.mod'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions.mod'",
             "tasks.register('reobfJar') { }\n\n" + printModFile()
         );
         assertThat(run("printModFile").getOutput()).contains("modFile=conventions-under-test");
@@ -899,7 +928,8 @@ class ConventionsPluginFunctionalTest {
 
     @Test
     void modPublishingFollowsAModToolchainPlugin() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions'\n    id 'com.gtnewhorizons.retrofuturagradle'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions'\n    id 'com.gtnewhorizons.retrofuturagradle'",
             printMods()
         );
         modToolchainPlugin("com.gtnewhorizons.retrofuturagradle");
@@ -908,7 +938,8 @@ class ConventionsPluginFunctionalTest {
 
     @Test
     void anExplicitOptOutBeatsTheModToolchainScan() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions'\n    id 'com.gtnewhorizons.retrofuturagradle'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions'\n    id 'com.gtnewhorizons.retrofuturagradle'",
             printMods()
         );
         modToolchainPlugin("com.gtnewhorizons.retrofuturagradle");
@@ -927,7 +958,8 @@ class ConventionsPluginFunctionalTest {
 
     @Test
     void checkstyleSkipsSourcesUnderTheBuildDirectory() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions.style'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions.style'",
             "sourceSets.main.java.srcDir layout.buildDirectory.dir('generated')\n"
         );
         javaFile("src/main/java/example/Example.java", "package example;\n\npublic class Example {\n}\n");
@@ -950,7 +982,8 @@ class ConventionsPluginFunctionalTest {
 
     @Test
     void applyLicenseHeaderStampsOnlyTheSelectedSources() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions.style'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions.style'",
             "conventions {\n    header {\n        sourceSets('main')\n        exclude('**/vendor/**')\n    }\n}\n"
         );
         String body = "package example;\n\npublic class Example {\n}\n";
@@ -971,7 +1004,8 @@ class ConventionsPluginFunctionalTest {
 
     @Test
     void checkstyleExemptsTheSourcesTheHeaderFilterSkips() throws IOException {
-        project("id 'java'\n    id 'com.cleanroommc.conventions.style'",
+        project(
+            "id 'java'\n    id 'com.cleanroommc.conventions.style'",
             "conventions {\n    header {\n        exclude('**/vendor/**')\n    }\n}\n"
         );
         Path vendor = Files.createDirectories(projectDir.resolve("src/main/java/example/vendor"));
@@ -980,8 +1014,8 @@ class ConventionsPluginFunctionalTest {
 
         // A file added after the configuration cache entry was stored is still exempt.
         Files.writeString(vendor.resolve("Other.java"), "package example.vendor;\n\npublic class Other {\n}\n");
-        assertThat(run("--configuration-cache", "checkstyleMain").getOutput()).contains("Reusing configuration cache.",
-            "BUILD SUCCESSFUL"
+        assertThat(run("--configuration-cache", "checkstyleMain").getOutput()).contains(
+            "Reusing configuration cache.", "BUILD SUCCESSFUL"
         );
 
         Files.writeString(vendor.resolveSibling("Bare.java"), "package example;\n\npublic class Bare {\n}\n");
@@ -993,8 +1027,10 @@ class ConventionsPluginFunctionalTest {
         project("id 'java'\n    id 'com.cleanroommc.conventions.style'", "");
         Path source = projectDir.resolve("src/main/java/example/Example.java");
         Files.createDirectories(source.getParent());
-        Files.writeString(source,
-            javaSource(LicenseMode.VISIBLE, CopyrightNotice.of(2021, 2022),
+        Files.writeString(
+            source,
+            javaSource(
+                LicenseMode.VISIBLE, CopyrightNotice.of(2021, 2022),
                 "package example;\n\npublic class Example {\n}\n"
             )
         );
@@ -1027,7 +1063,8 @@ class ConventionsPluginFunctionalTest {
         int begin = current - 5;
         project("id 'java'", "");
         Path child = childProject("id 'java'\n    id 'com.cleanroommc.conventions.license'", "");
-        Files.writeString(child.resolve("LICENSE"), LicenseMode.VISIBLE.licenseText(CopyrightNotice.of(begin, current))
+        Files.writeString(
+            child.resolve("LICENSE"), LicenseMode.VISIBLE.licenseText(CopyrightNotice.of(begin, current))
         );
 
         assertThat(projectDir.resolve("LICENSE")).doesNotExist();
@@ -1054,11 +1091,11 @@ class ConventionsPluginFunctionalTest {
 
         run(":child:extractConventions");
 
-        assertThat(Files.readString(projectDir.resolve("HEADER"))).contains("Copyright (c) 2001-" + current +
-                " CleanroomMC contributors"
+        assertThat(Files.readString(projectDir.resolve("HEADER"))).contains(
+            "Copyright (c) 2001-" + current + " CleanroomMC contributors"
         );
-        assertThat(Files.readString(projectDir.resolve("LICENSE"))).contains("Copyright © 2001-" + current +
-                " CleanroomMC contributors"
+        assertThat(Files.readString(projectDir.resolve("LICENSE"))).contains(
+            "Copyright © 2001-" + current + " CleanroomMC contributors"
         );
     }
 
@@ -1069,20 +1106,20 @@ class ConventionsPluginFunctionalTest {
         int childBegin = current - 2;
         project("id 'java'", "");
         Path child = childProject("id 'java'\n    id 'com.cleanroommc.conventions'", "");
-        Files.writeString(projectDir.resolve("HEADER"),
-            LicenseMode.VISIBLE.headerText(CopyrightNotice.of(rootBegin, current - 1))
+        Files.writeString(
+            projectDir.resolve("HEADER"), LicenseMode.VISIBLE.headerText(CopyrightNotice.of(rootBegin, current - 1))
         );
-        Files.writeString(child.resolve("HEADER"),
-            LicenseMode.VISIBLE.headerText(CopyrightNotice.of(childBegin, childBegin))
+        Files.writeString(
+            child.resolve("HEADER"), LicenseMode.VISIBLE.headerText(CopyrightNotice.of(childBegin, childBegin))
         );
 
         run(":child:extractConventions");
 
-        assertThat(Files.readString(projectDir.resolve("HEADER"))).contains("Copyright (c) " + rootBegin + "-" +
-                current + " CleanroomMC contributors"
+        assertThat(Files.readString(projectDir.resolve("HEADER"))).contains(
+            "Copyright (c) " + rootBegin + "-" + current + " CleanroomMC contributors"
         );
-        assertThat(Files.readString(projectDir.resolve("HEADER"))).doesNotContain("Copyright (c) " + childBegin + "-" +
-                current + " CleanroomMC contributors"
+        assertThat(Files.readString(projectDir.resolve("HEADER"))).doesNotContain(
+            "Copyright (c) " + childBegin + "-" + current + " CleanroomMC contributors"
         );
     }
 
@@ -1104,8 +1141,8 @@ class ConventionsPluginFunctionalTest {
         Files.createDirectories(source.getParent());
         Files.writeString(source, "package example;\n\npublic class Example {\n}\n");
 
-        String output = run("checkstyleMain", "extractConventions", "generatePomFileForMavenPublication", "tasks",
-            "--all"
+        String output = run(
+            "checkstyleMain", "extractConventions", "generatePomFileForMavenPublication", "tasks", "--all"
         ).getOutput();
 
         assertThat(output).doesNotContain(CheckLicenseTask.NAME, ApplyLicenseHeaderTask.NAME);
@@ -1135,13 +1172,14 @@ class ConventionsPluginFunctionalTest {
     }
 
     private void project(String plugins, String body) throws IOException {
-        Files.writeString(projectDir.resolve("settings.gradle"),
+        Files.writeString(
+            projectDir.resolve("settings.gradle"),
             """
-                plugins {
-                    id 'com.cleanroommc.conventions.settings'
-                }
-                rootProject.name = 'conventions-under-test'
-                """
+            plugins {
+                id 'com.cleanroommc.conventions.settings'
+            }
+            rootProject.name = 'conventions-under-test'
+            """
         );
         Files.writeString(projectDir.resolve("build.gradle"), "plugins {\n    " + plugins + "\n}\n\n" + body);
         Files.writeString(projectDir.resolve("gradle.properties"), "");
@@ -1149,14 +1187,15 @@ class ConventionsPluginFunctionalTest {
     }
 
     private Path childProject(String plugins, String body) throws IOException {
-        Files.writeString(projectDir.resolve("settings.gradle"),
+        Files.writeString(
+            projectDir.resolve("settings.gradle"),
             """
-                plugins {
-                    id 'com.cleanroommc.conventions.settings'
-                }
-                rootProject.name = 'conventions-under-test'
-                include 'child'
-                """
+            plugins {
+                id 'com.cleanroommc.conventions.settings'
+            }
+            rootProject.name = 'conventions-under-test'
+            include 'child'
+            """
         );
         Files.writeString(projectDir.resolve("build.gradle"), "");
         Path child = Files.createDirectories(projectDir.resolve("child"));
@@ -1170,7 +1209,8 @@ class ConventionsPluginFunctionalTest {
         // Everything the build writes stays untracked and excluded, so the worktree never flips dirty mid-test
         // and the version stays a stable configuration cache input.
         Files.writeString(projectDir.resolve(".git/info/exclude"), "*\n");
-        git("-c", "user.email=conventions@example.com", "-c", "user.name=Conventions", "commit", "--allow-empty",
+        git(
+            "-c", "user.email=conventions@example.com", "-c", "user.name=Conventions", "commit", "--allow-empty",
             "--no-gpg-sign", "-m", "conventions"
         );
     }
@@ -1179,26 +1219,27 @@ class ConventionsPluginFunctionalTest {
     private void modToolchainPlugin(String id) throws IOException {
         Path buildSrc = Files.createDirectories(projectDir.resolve("buildSrc"));
         Files.writeString(buildSrc.resolve("settings.gradle"), "rootProject.name = 'stub-toolchain'\n");
-        Files.writeString(buildSrc.resolve("build.gradle"),
+        Files.writeString(
+            buildSrc.resolve("build.gradle"),
             """
-                plugins {
-                    id 'java-gradle-plugin'
-                }
+            plugins {
+                id 'java-gradle-plugin'
+            }
 
-                gradlePlugin {
-                    plugins {
-                        stub {
-                            id = '%s'
-                            implementationClass = 'StubToolchain'
-                        }
+            gradlePlugin {
+                plugins {
+                    stub {
+                        id = '%s'
+                        implementationClass = 'StubToolchain'
                     }
                 }
-                """.formatted(id
-            )
+            }
+            """.formatted(id)
         );
         Path source = buildSrc.resolve("src/main/java/StubToolchain.java");
         Files.createDirectories(source.getParent());
-        Files.writeString(source,
+        Files.writeString(
+            source,
             "public class StubToolchain implements org.gradle.api.Plugin<org.gradle.api.Project> {\n\n    @Override\n    public void apply(org.gradle.api.Project project) { }\n\n}\n"
         );
     }

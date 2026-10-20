@@ -49,26 +49,6 @@ public abstract class ApplyLicenseHeaderTask extends DefaultTask {
         });
     }
 
-    private static FileCollection sources(Project project, ConventionsExtension.HeaderExtension header) {
-        FileCollection files = project.files();
-        JavaPluginExtension java = project.getExtensions().findByType(JavaPluginExtension.class);
-        if (java == null) {
-            return files;
-        }
-        List<String> selected = header.getSourceSets().get();
-        Path buildDirectory = project.getLayout().getBuildDirectory().get().getAsFile().toPath();
-        for (SourceSet sourceSet : java.getSourceSets()) {
-            if (selected.isEmpty() || selected.contains(sourceSet.getName())) {
-                files = files.plus(sourceSet.getAllJava()
-                        .matching(patterns -> patterns.include(header.getIncludes().get())
-                            .exclude(header.getExcludes().get()))
-                        .filter(file -> file.getName().endsWith(".java") && !file.toPath().startsWith(buildDirectory))
-                );
-            }
-        }
-        return files;
-    }
-
     static FileCollection skipped(Project project, ConventionsExtension.HeaderExtension header) {
         FileCollection files = project.files();
         JavaPluginExtension java = project.getExtensions().findByType(JavaPluginExtension.class);
@@ -79,6 +59,27 @@ public abstract class ApplyLicenseHeaderTask extends DefaultTask {
             files = files.plus(sourceSet.getAllJava().matching(patterns -> patterns.include("**/*.java")));
         }
         return files.minus(sources(project, header));
+    }
+
+    private static FileCollection sources(Project project, ConventionsExtension.HeaderExtension header) {
+        FileCollection files = project.files();
+        JavaPluginExtension java = project.getExtensions().findByType(JavaPluginExtension.class);
+        if (java == null) {
+            return files;
+        }
+        List<String> selected = header.getSourceSets().get();
+        Path buildDirectory = project.getLayout().getBuildDirectory().get().getAsFile().toPath();
+        for (SourceSet sourceSet : java.getSourceSets()) {
+            if (selected.isEmpty() || selected.contains(sourceSet.getName())) {
+                files = files.plus(
+                    sourceSet.getAllJava()
+                        .matching(patterns -> patterns.include(header.getIncludes().get())
+                            .exclude(header.getExcludes().get()))
+                        .filter(file -> file.getName().endsWith(".java") && !file.toPath().startsWith(buildDirectory))
+                );
+            }
+        }
+        return files;
     }
 
     @Internal

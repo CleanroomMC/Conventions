@@ -23,8 +23,8 @@ final class ConventionsDefaults {
     static final String LICENSE_COMMENTS = "Visible-source software and is not open-source software.";
     static final String MAVEN_REPOSITORY_NAME = "Cleanroom";
     static final String MAVEN_REPOSITORY_URL = "https://maven.cleanroommc.com";
-    static final List<String> MAVEN_GROUPS = List.of("com.cleanroommc", "top.outlands", "zone.rong",
-        "net.minecraftforge", "de.oceanlabs.mcp"
+    static final List<String> MAVEN_GROUPS = List.of(
+        "com.cleanroommc", "top.outlands", "zone.rong", "net.minecraftforge", "de.oceanlabs.mcp"
     );
     static final String JUNIT_VERSION = "6.1.3";
     // JUnit 6 needs Java 17 and Mockito 5 needs Java 11, these are their last lines below that

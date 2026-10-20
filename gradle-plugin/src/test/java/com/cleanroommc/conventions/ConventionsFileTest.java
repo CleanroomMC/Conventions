@@ -24,23 +24,22 @@ class ConventionsFileTest {
     @Test
     void javaHeaderWrapsTheHeaderFile() {
         int current = Year.now().getValue();
-        assertThat(LicenseMode.VISIBLE.javaHeader(CopyrightNotice.current())).isEqualTo(
-            """
-                /*
-                 * Copyright (c) %d CleanroomMC contributors
-                 *
-                 * This file is licensed under the CleanroomMC License Version 1.0.
-                 * See the applicable LICENSE file in this directory or a parent directory
-                 * for the full licence terms.
-                 *
-                 * This is visible-source software and is not open-source software.
-                 */""".formatted(current
-            ));
+        assertThat(LicenseMode.VISIBLE.javaHeader(CopyrightNotice.current())).isEqualTo("""
+                                                                                        /*
+                                                                                         * Copyright (c) %d CleanroomMC contributors
+                                                                                         *
+                                                                                         * This file is licensed under the CleanroomMC License Version 1.0.
+                                                                                         * See the applicable LICENSE file in this directory or a parent directory
+                                                                                         * for the full licence terms.
+                                                                                         *
+                                                                                         * This is visible-source software and is not open-source software.
+                                                                                         */""".formatted(current));
     }
 
     @Test
     void checkstyleContainsTheLicenseHeaderPlaceholder() {
-        assertThat(ConventionsFile.CHECKSTYLE.read()).contains("<property name=\"header\" value=\"@LICENSE_HEADER@\"/>"
+        assertThat(ConventionsFile.CHECKSTYLE.read()).contains(
+            "<property name=\"header\" value=\"@LICENSE_HEADER@\"/>"
         );
     }
 
@@ -48,8 +47,9 @@ class ConventionsFileTest {
     @EnumSource(value = LicenseMode.class, mode = EnumSource.Mode.EXCLUDE, names = "NONE")
     void checkstyleRendersEveryLicenseHeader(LicenseMode license) {
         assertThat(ConventionsFile.checkstyle(license, ConventionsDefaults.AUTHOR)).doesNotContain("@LICENSE_HEADER@");
-        assertThat(ConventionsFile.checkstyle(license, ConventionsDefaults.AUTHOR
-        )).contains(license.javaHeaderPattern(ConventionsDefaults.AUTHOR).lines().findFirst().orElseThrow());
+        assertThat(ConventionsFile.checkstyle(license, ConventionsDefaults.AUTHOR)).contains(
+            license.javaHeaderPattern(ConventionsDefaults.AUTHOR).lines().findFirst().orElseThrow()
+        );
     }
 
     @ParameterizedTest

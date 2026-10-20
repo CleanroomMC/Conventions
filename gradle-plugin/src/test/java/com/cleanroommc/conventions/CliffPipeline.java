@@ -22,7 +22,8 @@ final class CliffPipeline {
     static final String COLLAPSE_COMMAND = "awk 'NR==1 && /^pack[(!:]/ {pack=1} {printf \"%s%s\", " +
         "(NR==1 ? \"\" : (pack || tolower($0) ~ /^co-authored-by:/ ? \"\\n\" : \"\\f\")), $0}' ";
 
-    private static final Pattern CONVENTIONAL_HEADER = Pattern.compile("^(?<type>[^\\s(:!]+)(?:\\((?<scope>[^)]*)\\))?(?<breaking>!)?:\\s*(?<desc>.*)$"
+    private static final Pattern CONVENTIONAL_HEADER = Pattern.compile(
+        "^(?<type>[^\\s(:!]+)(?:\\((?<scope>[^)]*)\\))?(?<breaking>!)?:\\s*(?<desc>.*)$"
     );
     private static final Pattern PACK_HEADER = Pattern.compile("^pack[(!:]");
     private static final Pattern TOML_STRING = Pattern.compile("(?:'([^']*)'|\"((?:\\\\.|[^\"])*)\")");
@@ -33,9 +34,8 @@ final class CliffPipeline {
     private final List<Preprocessor> preprocessors;
     private final List<Parser> parsers;
 
-    private CliffPipeline(boolean splitCommits, List<String> processingOrder, List<Preprocessor> preprocessors,
-        List<Parser> parsers
-    ) {
+    private CliffPipeline(
+        boolean splitCommits, List<String> processingOrder, List<Preprocessor> preprocessors, List<Parser> parsers) {
         this.splitCommits = splitCommits;
         this.processingOrder = List.copyOf(processingOrder);
         this.preprocessors = List.copyOf(preprocessors);
@@ -48,7 +48,8 @@ final class CliffPipeline {
 
     static CliffPipeline parse(String toml) {
         String git = section(toml, "git");
-        return new CliffPipeline(booleanValue(git, "split_commits"), stringArray(git, "processing_order"),
+        return new CliffPipeline(
+            booleanValue(git, "split_commits"), stringArray(git, "processing_order"),
             parsePreprocessors(bracketArray(git, "commit_preprocessors")),
             parseParsers(bracketArray(git, "commit_parsers"))
         );

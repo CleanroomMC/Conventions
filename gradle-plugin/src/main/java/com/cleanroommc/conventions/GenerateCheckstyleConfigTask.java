@@ -47,7 +47,8 @@ public abstract class GenerateCheckstyleConfigTask extends DefaultTask {
     public final void generate() throws IOException {
         Path output = getOutputFile().getAsFile().get().toPath();
         Files.createDirectories(output.getParent());
-        Files.writeString(output, ConventionsFile.exemptFromHeader(getContents().get(), getHeaderExempt().getFiles()),
+        Files.writeString(
+            output, ConventionsFile.exemptFromHeader(getContents().get(), getHeaderExempt().getFiles()),
             StandardCharsets.UTF_8
         );
     }

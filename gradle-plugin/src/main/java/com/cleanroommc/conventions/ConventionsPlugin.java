@@ -23,8 +23,9 @@ import java.util.List;
  */
 public class ConventionsPlugin implements Plugin<Project> {
 
-    private static final List<String> MOD_DEVELOPMENT_PLUGIN_IDS = List.of("com.cleanroommc.cleanroomgradle",
-        "com.gtnewhorizons.retrofuturagradle", "top.outlands.gradle", "net.minecraftforge.gradle"
+    private static final List<String> MOD_DEVELOPMENT_PLUGIN_IDS = List.of(
+        "com.cleanroommc.cleanroomgradle", "com.gtnewhorizons.retrofuturagradle", "top.outlands.gradle",
+        "net.minecraftforge.gradle"
     );
 
     @Override

@@ -41,6 +41,11 @@ enum ConventionsProperty {
         return Integer.parseInt(JAVA_VERSION.get(project, ConventionsDefaults.JAVA_VERSION));
     }
 
+    @Override
+    public String toString() {
+        return key;
+    }
+
     Provider<String> provider(ProviderFactory providers) {
         return providers.gradleProperty(key);
     }
@@ -55,11 +60,6 @@ enum ConventionsProperty {
 
     boolean flag(ProviderFactory providers, boolean defaultValue) {
         return provider(providers).map(Boolean::parseBoolean).getOrElse(defaultValue);
-    }
-
-    @Override
-    public String toString() {
-        return key;
     }
 
 }

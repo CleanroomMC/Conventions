@@ -57,8 +57,8 @@ final class CopyrightNotice {
         Provider<String> author = conventions.getAuthor();
         Provider<Integer> begin = conventions.getBeginFrom().orElse(beginProvider(persistedProject, author));
         Provider<Integer> current = currentYear(project.getProviders());
-        return author.flatMap(holder -> current.zip(begin,
-            (currentYear, firstYear) -> new CopyrightNotice(firstYear, currentYear, holder)
+        return author.flatMap(holder -> current.zip(
+            begin, (currentYear, firstYear) -> new CopyrightNotice(firstYear, currentYear, holder)
         ));
     }
 
@@ -128,7 +128,8 @@ final class CopyrightNotice {
 
         @Override
         public Integer obtain() {
-            Pattern copyright = Pattern.compile("(?m)^Copyright (?:\\(c\\)|©) (\\d{4})(?:-(?:\\d{4}|present))? " +
+            Pattern copyright = Pattern.compile(
+                "(?m)^Copyright (?:\\(c\\)|©) (\\d{4})(?:-(?:\\d{4}|present))? " +
                     Pattern.quote(getParameters().getAuthor().get()) + "$"
             );
             Path cursor = getParameters().getStartDirectory().getAsFile().get().toPath().toAbsolutePath().normalize();
