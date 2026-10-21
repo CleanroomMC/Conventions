@@ -55,8 +55,12 @@ public abstract class ApplyLicenseHeaderTask extends DefaultTask {
         if (java == null) {
             return files;
         }
+        Path buildDirectory = project.getLayout().getBuildDirectory().get().getAsFile().toPath();
         for (SourceSet sourceSet : java.getSourceSets()) {
-            files = files.plus(sourceSet.getAllJava().matching(patterns -> patterns.include("**/*.java")));
+            files = files.plus(
+                sourceSet.getAllJava()
+                    .filter(file -> file.getName().endsWith(".java") && !file.toPath().startsWith(buildDirectory))
+            );
         }
         return files.minus(sources(project, header));
     }
