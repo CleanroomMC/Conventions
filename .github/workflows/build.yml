@@ -16,9 +16,11 @@ on:
         type: string
         default: warn
       java-version:
-        description: Temurin JDK used to launch Gradle. The project toolchain can still request a different language version.
+        description: Temurin JDKs to install, one per line. The last one launches Gradle.
         type: string
-        default: '25'
+        default: |-
+          8
+          25
       submodules:
         description: Whether to check out submodules. true, recursive or false, passed to actions/checkout.
         type: string
@@ -91,25 +93,11 @@ jobs:
           persist-credentials: false
           submodules: ${{ inputs.submodules }}
 
-      - name: Detect toolchains
-        id: toolchains
-        env:
-          JAVA_VERSION: ${{ inputs.java-version }}
-        run: |
-          versions=$(git grep -hoE 'conventions\.javaMajor *= *[0-9]+' | grep -oE '[0-9]+$' | sort -un | grep -vx "${JAVA_VERSION}" || true)
-          {
-            echo 'versions<<EOF'
-            echo "${versions}"
-            echo 'EOF'
-          } >> "${GITHUB_OUTPUT}"
-
       - name: Set up Java
         uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
           distribution: temurin
-          java-version: |
-            ${{ steps.toolchains.outputs.versions }}
-            ${{ inputs.java-version }}
+          java-version: ${{ inputs.java-version }}
 
       - name: Locate Gradle wrapper
         id: gradle

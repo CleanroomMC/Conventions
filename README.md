@@ -368,7 +368,9 @@ jobs:
     uses: CleanroomMC/Conventions/.github/workflows/build.yml@master
     # with:
     #   working-directory: gradle-plugin
-    #   java-version: '25'
+    #   java-version: |
+    #     8
+    #     25
 ```
 
 | Input                | Default         | Purpose                                                                |
@@ -376,7 +378,7 @@ jobs:
 | `working-directory`  | `.`             | Directory that contains `gradlew`, or a unique wrapper two levels down |
 | `artifact-path`      | `**/build/libs` | Paths uploaded after a successful build                                |
 | `if-no-files-found`  | `warn`          | `warn`, `error` or `ignore` when nothing matches                       |
-| `java-version`       | `25`            | Temurin JDK used to launch Gradle                                      |
+| `java-version`       | `8` and `25`    | Temurin JDKs to install, one per line. The last one launches Gradle    |
 | `submodules`         | `true`          | `true`, `recursive` or `false`, passed to `actions/checkout`           |
 | `release-branch`     | `master`        | Branch merges are skipped on, matching `versioning.releaseBranch`      |
 | `timeout-minutes`    | `15`            | Job timeout                                                            |
@@ -426,7 +428,7 @@ A library typically enables `publish-maven`. A Gradle plugin also sets `publish-
 | `artifact-path`         | `**/build/libs/*.jar` | Jars attached to the GitHub Release                                       |
 | `submodules`            | `true`                | `true`, `recursive` or `false`, passed to `actions/checkout`              |
 | `cliff-config`          | `cliff.toml`          | Local override. If missing, the workflow fetches this repo's `cliff.toml` |
-| `java-version`          | `25`                  | Temurin JDK used to launch Gradle                                         |
+| `java-version`          | `8` and `25`          | Temurin JDKs to install, one per line. The last one launches Gradle       |
 | `timeout-minutes`       | `30`                  | Job timeout                                                               |
 | `cache-provider`        | `basic`               | Gradle User Home cache                                                    |
 | `publish-maven`         | `true`                | `publishAllPublicationsToCleanroomRepository`                             |
