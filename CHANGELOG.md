@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.4 - 2026-10-21
+
+### Bug Fix
+
+- **style**: Keep build directory sources out of the Checkstyle header exemptions *[commit by [@Rongmario](https://github.com/Rongmario) in [bdc1ff0](https://github.com/CleanroomMC/Conventions/commit/bdc1ff0eb9286453dfbb5091ae68a04452ac8a4d)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.4.3...1.4.4
+
 ## 1.4.3 - 2026-10-21
 
 ### Bug Fix
