@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.4.3 - 2026-10-21
+
+### Bug Fix
+
+- Removed empty gradle plugin portal tag *[commit by [@Rongmario](https://github.com/Rongmario) in [3908f45](https://github.com/CleanroomMC/Conventions/commit/3908f454ad157cfaa95017fa714c5dee10011d5f)]*
+- JDK 8 & 25 as defaults to setup for workflows *[commit by [@Rongmario](https://github.com/Rongmario) in [b22df49](https://github.com/CleanroomMC/Conventions/commit/b22df49ff316ee411757bd76a5929f8f6170ecf2)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.4.2...1.4.3
+
 ## 1.4.2 - 2026-10-20
 
 ### Bug Fix
