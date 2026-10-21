@@ -129,7 +129,7 @@ gradlePlugin {
             description = 'Sets settings conventions for CleanroomMC projects.'
         }
         configureEach {
-            tags.set(['minecraft', 'conventions', '1.12', 'cleanroom', 'format', ''])
+            tags.set(['minecraft', 'conventions', '1.12', 'cleanroom', 'format'])
             compatibility {
                 features {
                     configurationCache = true
