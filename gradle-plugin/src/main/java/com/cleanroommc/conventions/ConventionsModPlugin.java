@@ -20,6 +20,7 @@ import me.modmuss50.mpp.platforms.modrinth.Modrinth;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.file.Directory;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.file.RegularFile;
@@ -70,6 +71,12 @@ public class ConventionsModPlugin implements Plugin<Project> {
             );
         // Set 5 retries as default
         publishing.getMaxRetries().convention(5);
+        Directory projectDirectory = project.getLayout().getProjectDirectory();
+        Provider<RegularFile> releaseNotes = project.getProviders()
+            .environmentVariable("CHANGELOG_FILE")
+            .orElse("RELEASE_NOTES.md")
+            .map(projectDirectory::file);
+        publishing.getChangelog().convention(project.getProviders().fileContents(releaseNotes).getAsText().orElse(""));
         // Set release type as the one gotten from Cleanroom Versioning
         publishing.getType().convention(
             project.getExtensions().getByType(VersioningExtension.class).getStage().map(stage -> switch (stage) {

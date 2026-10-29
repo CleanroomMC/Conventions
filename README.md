@@ -304,6 +304,7 @@ This exposes the [mod-publish-plugin's](https://modmuss50.github.io/mod-publish-
 > - Version Type: (Alpha/Beta/Stable) applied via Cleanroom's Versioning module
 > - CurseForge Access Token: `CURSEFORGE_TOKEN` environment variable
 > - Modrinth Access Token: `MODRINTH_TOKEN` environment variable
+> - Changelog: contents of the file named by the `CHANGELOG_FILE` environment variable, otherwise `RELEASE_NOTES.md` in the project directory, and empty when the file does not exist. The release workflow points it at its git-cliff release notes
 
 > [!TIP]
 > Any value can be overridden through the upstream DSL. A distribution is only configured when it is named here. Check out the [plugin's wiki](https://modmuss50.github.io/mod-publish-plugin/)
@@ -435,17 +436,22 @@ A library typically enables `publish-maven`. A Gradle plugin also sets `publish-
 | `publish-plugin-portal` | `false`               | `publishPlugins`                                                          |
 | `publish-mods`          | `false`               | `publishMods` (CurseForge / Modrinth)                                     |
 
-| Secret                  | Used when               |
-|-------------------------|-------------------------|
-| `MAVEN_NAME`            | `publish-maven`         |
-| `MAVEN_PASSWORD`        | `publish-maven`         |
-| `GRADLE_PUBLISH_KEY`    | `publish-plugin-portal` |
-| `GRADLE_PUBLISH_SECRET` | `publish-plugin-portal` |
-| `SIGNING_KEY`           | `publish-plugin-portal` |
-| `SIGNING_PASSWORD`      | `publish-plugin-portal` |
-| `CURSEFORGE_TOKEN`      | `publish-mods`          |
-| `MODRINTH_TOKEN`        | `publish-mods`          |
+| Secret                  | Used when                |
+|-------------------------|--------------------------|
+| `MAVEN_NAME`            | `publish-maven`          |
+| `MAVEN_PASSWORD`        | `publish-maven`          |
+| `GRADLE_PUBLISH_KEY`    | `publish-plugin-portal`  |
+| `GRADLE_PUBLISH_SECRET` | `publish-plugin-portal`  |
+| `SIGNING_KEY`           | `publish-plugin-portal`  |
+| `SIGNING_PASSWORD`      | `publish-plugin-portal`  |
+| `CURSEFORGE_TOKEN`      | `publish-mods`           |
+| `MODRINTH_TOKEN`        | `publish-mods`           |
+| `CHANGELOG_TOKEN`       | Protected default branch |
 
 `publish-mods` needs at least one of the two store tokens. A tag always creates a GitHub Release with the matched jars, even when every publish input is false. The generated `CHANGELOG.md` is committed to the default branch when the tag is on that branch.
+The commit is pushed with `CHANGELOG_TOKEN` when it is set, otherwise with `GITHUB_TOKEN`.
+
+> [!IMPORTANT]
+> `CHANGELOG_TOKEN` must be set when the default branch is protected, since `GITHUB_TOKEN` cannot push past required reviews or push restrictions. Use a token whose owner may push to that branch, or the changelog commit fails after the release has already published.
 
 git-cliff uses the first of: the path in `cliff-config`, that file at the repository root, then `cliff.toml` from this Conventions ref.

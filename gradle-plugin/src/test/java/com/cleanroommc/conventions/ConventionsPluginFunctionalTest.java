@@ -123,6 +123,15 @@ class ConventionsPluginFunctionalTest {
                """;
     }
 
+    private static String printChangelog() {
+        return """
+               tasks.register('printChangelog') {
+                   def changelog = publishMods.changelog
+                   doLast { println "changelog=${changelog.get()}" }
+               }
+               """;
+    }
+
     private static String printGroup() {
         return """
                tasks.register('printGroup') {
@@ -927,6 +936,27 @@ class ConventionsPluginFunctionalTest {
     }
 
     @Test
+    void readsTheChangelogFromTheReleaseNotesByDefault() throws IOException {
+        project("id 'java'\n    id 'com.cleanroommc.conventions.mod'", printChangelog());
+        Files.writeString(projectDir.resolve("RELEASE_NOTES.md"), "Fixed a bug");
+        assertThat(run("printChangelog").getOutput()).contains("changelog=Fixed a bug");
+    }
+
+    @Test
+    void leavesTheChangelogEmptyWithoutReleaseNotes() throws IOException {
+        project("id 'java'\n    id 'com.cleanroommc.conventions.mod'", printChangelog());
+        assertThat(run("printChangelog").getOutput()).containsPattern("(?m)^changelog=$");
+    }
+
+    @Test
+    void readsTheChangelogFromTheFileNamedByTheEnvironment() throws IOException {
+        project("id 'java'\n    id 'com.cleanroommc.conventions.mod'", printChangelog());
+        Files.writeString(projectDir.resolve("NOTES.md"), "Fixed a bug");
+        String output = runner(Map.of("CHANGELOG_FILE", "NOTES.md"), "printChangelog").build().getOutput();
+        assertThat(output).contains("changelog=Fixed a bug");
+    }
+
+    @Test
     void modPublishingFollowsAModToolchainPlugin() throws IOException {
         project(
             "id 'java'\n    id 'com.cleanroommc.conventions'\n    id 'com.gtnewhorizons.retrofuturagradle'",
@@ -1297,9 +1327,14 @@ class ConventionsPluginFunctionalTest {
     }
 
     private GradleRunner runner(String... arguments) {
+        return runner(Map.of(), arguments);
+    }
+
+    private GradleRunner runner(Map<String, String> extraEnvironment, String... arguments) {
         // Under Actions the test project would be versioned as the outer repository's branch or release tag
         Map<String, String> environment = new HashMap<>(System.getenv());
         GITHUB_ENVIRONMENT.forEach(environment::remove);
+        environment.putAll(extraEnvironment);
         return GradleRunner.create()
             .withProjectDir(projectDir.toFile())
             .withPluginClasspath()
