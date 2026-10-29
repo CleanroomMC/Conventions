@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.5 - 2026-10-29
+
+### Bug Fix
+
+- Don't crash when publishing if the changelog is empty *[commit by [@Rongmario](https://github.com/Rongmario) in [40be7f9](https://github.com/CleanroomMC/Conventions/commit/40be7f93ae955112e3c15a56f126c9976aca76fc)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.4.4...1.4.5
+
 ## 1.4.4 - 2026-10-21
 
 ### Bug Fix
