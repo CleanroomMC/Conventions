@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.0 - 2026-10-30
+
+### Feature
+
+- **formatting**: Changed a few defaults *[commit by [@Rongmario](https://github.com/Rongmario) in [648ea8f](https://github.com/CleanroomMC/Conventions/commit/648ea8f788f6c6107002ec19c45df449795f2c84)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.4.5...1.5.0
+
 ## 1.4.5 - 2026-10-29
 
 ### Bug Fix
