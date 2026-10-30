@@ -56,9 +56,8 @@ class CliffPackTest {
     @Test
     void gitSectionMatchesCliffToml() {
         assertThat(pipeline.splitCommits()).isTrue();
-        assertThat(pipeline.processingOrder()).containsExactly(
-            "commit_preprocessors", "split_commits", "conventional_commits", "commit_parsers", "link_parsers"
-        );
+        assertThat(pipeline.processingOrder()).containsExactly("commit_preprocessors", "split_commits",
+                "conventional_commits", "commit_parsers", "link_parsers");
 
         List<Preprocessor> preprocessors = pipeline.preprocessors();
         assertThat(preprocessors).hasSize(4);
@@ -94,16 +93,14 @@ class CliffPackTest {
 
     @Test
     void packSplitsNestedConventionalCommits() {
-        List<CliffEntry> entries = pipeline.process(
-            """
-            pack: implemented large surface PR (#123)
+        List<CliffEntry> entries = pipeline.process("""
+                                                    pack: implemented large surface PR (#123)
 
-            - fix(inventory): shift-click from the hotbar
-            - feat(inventory): add extra slots
-            - chore: tweak comments
-            Co-authored-by: Example <example@example.com>
-            """
-        );
+                                                    - fix(inventory): shift-click from the hotbar
+                                                    - feat(inventory): add extra slots
+                                                    - chore: tweak comments
+                                                    Co-authored-by: Example <example@example.com>
+                                                    """);
         assertThat(entries).hasSize(4);
         assertEntry(entries.get(0), "Comprehensive", null, "implemented large surface PR");
         assertEntry(entries.get(1), "Bug Fix", "inventory", "shift-click from the hotbar");
@@ -113,18 +110,16 @@ class CliffPackTest {
 
     @Test
     void packDropsSquashMergeHorizontalRules() {
-        List<CliffEntry> entries = pipeline.process(
-            """
-            pack: rework the renderer (#606)
+        List<CliffEntry> entries = pipeline.process("""
+                                                    pack: rework the renderer (#606)
 
-            - feat(render): batch the quads
-            - fix(render): clamp the light value
+                                                    - feat(render): batch the quads
+                                                    - fix(render): clamp the light value
 
-            ---------
+                                                    ---------
 
-            Co-authored-by: Example <example@example.com>
-            """
-        );
+                                                    Co-authored-by: Example <example@example.com>
+                                                    """);
         assertThat(entries).hasSize(4);
         assertEntry(entries.get(0), "Comprehensive", null, "rework the renderer");
         assertEntry(entries.get(1), "Feature", "render", "batch the quads");
@@ -134,14 +129,12 @@ class CliffPackTest {
 
     @Test
     void regularCommitsStayOneCollapsedEntry() {
-        List<CliffEntry> entries = pipeline.process(
-            """
-            feat(example): example multiline commit (#389)
+        List<CliffEntry> entries = pipeline.process("""
+                                                    feat(example): example multiline commit (#389)
 
-            - feature(another): implemented another feature
-            Fixes #12
-            """
-        );
+                                                    - feature(another): implemented another feature
+                                                    Fixes #12
+                                                    """);
         assertThat(entries).hasSize(1);
         assertEntry(entries.getFirst(), "Feature", "example", "example multiline commit");
         assertThat(entries.getFirst().message()).contains("Fixes #12");
@@ -153,23 +146,17 @@ class CliffPackTest {
         String body = cliffBody();
         assertThat(body).contains("{% if not contributor.username %}{% continue %}{% endif -%}");
         assertThat(body).contains("{% if contributor.username == remote.github.owner %}{% continue %}{% endif -%}");
-        assertThat(body).contains(
-            "{% if not previous.version and founder.remote.username == contributor.username %}{% continue %}{% endif -%}"
-        );
-        assertThat(body).contains(
-            "{% if not previous.version and founder.author.name == contributor.username %}{% continue %}{% endif -%}"
-        );
+        assertThat(body).contains("{% if not previous.version and founder.remote.username == contributor.username %}{% continue %}{% endif -%}");
+        assertThat(body).contains("{% if not previous.version and founder.author.name == contributor.username %}{% continue %}{% endif -%}");
     }
 
     @Test
     void packageIsNotAPackCommit() {
-        List<CliffEntry> entries = pipeline.process(
-            """
-            package: bump the wrapper
+        List<CliffEntry> entries = pipeline.process("""
+                                                    package: bump the wrapper
 
-            - feat(core): should not split
-            """
-        );
+                                                    - feat(core): should not split
+                                                    """);
         assertThat(entries).hasSize(1);
         assertThat(entries.getFirst().group()).isEqualTo("Other");
         assertThat(entries.getFirst().message()).doesNotContain("\n");

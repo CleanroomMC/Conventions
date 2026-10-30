@@ -54,57 +54,50 @@ public class ConventionsStylePlugin implements Plugin<Project> {
         plugins.apply(CheckstylePlugin.class);
         CheckstyleExtension checkstyle = project.getExtensions().getByType(CheckstyleExtension.class);
         checkstyle.setToolVersion(ConventionsProperty.CHECKSTYLE_VERSION.get(project, CHECKSTYLE_VERSION));
-        TaskProvider<GenerateCheckstyleConfigTask> generateConfig = tasks.register(
-            GenerateCheckstyleConfigTask.NAME, GenerateCheckstyleConfigTask.class,
-            task -> {
-                task.setDescription("Generates Checkstyle configuration for the selected license.");
-                task.getContents().convention(ConventionsFile.checkstyle(project, license));
-                task.getHeaderExempt()
-                    .from(project.provider(() -> ApplyLicenseHeaderTask.skipped(
-                        project, ConventionsExtension.register(project).getHeader()
-                    )));
-                task.getOutputFile()
-                    .convention(project.getLayout().getBuildDirectory().file("conventions/checkstyle.xml"));
-            }
-        );
+        TaskProvider<GenerateCheckstyleConfigTask> generateConfig = tasks.register(GenerateCheckstyleConfigTask.NAME,
+                GenerateCheckstyleConfigTask.class,
+                task -> {
+                    task.setDescription("Generates Checkstyle configuration for the selected license.");
+                    task.getContents().convention(ConventionsFile.checkstyle(project, license));
+                    task.getHeaderExempt()
+                            .from(project.provider(() -> ApplyLicenseHeaderTask.skipped(project,
+                                    ConventionsExtension.register(project).getHeader())));
+                    task.getOutputFile()
+                            .convention(project.getLayout().getBuildDirectory().file("conventions/checkstyle.xml"));
+                });
         // Checkstyle runs on the project toolchain, so older targets borrow the conventions' default Java
         if (ConventionsProperty.javaMajor(project) < CHECKSTYLE_JAVA) {
             tasks.withType(Checkstyle.class)
-                .configureEach(task -> task.getJavaLauncher()
-                    .set(
-                        project.getExtensions()
-                            .getByType(JavaToolchainService.class)
-                            .launcherFor(spec -> spec.getLanguageVersion()
-                                .set(JavaLanguageVersion.of(ConventionsDefaults.JAVA_VERSION)))
-                    ));
+                    .configureEach(task -> task.getJavaLauncher()
+                            .set(project.getExtensions()
+                                            .getByType(JavaToolchainService.class)
+                                            .launcherFor(spec -> spec.getLanguageVersion()
+                                                    .set(JavaLanguageVersion.of(ConventionsDefaults.JAVA_VERSION)))));
         }
         tasks.withType(Checkstyle.class).configureEach(task -> {
             File buildDirectory = project.getLayout().getBuildDirectory().get().getAsFile();
             task.exclude(element -> element.getFile().toPath().startsWith(buildDirectory.toPath()));
         });
-        checkstyle.setConfig(
-            project.getResources()
-                .getText()
-                .fromFile(generateConfig.flatMap(GenerateCheckstyleConfigTask::getOutputFile))
-        );
+        checkstyle.setConfig(project.getResources()
+                        .getText()
+                        .fromFile(generateConfig.flatMap(GenerateCheckstyleConfigTask::getOutputFile)));
 
         // The header lands first, ClearSkies expands star imports, FormatJ formats the lines it wrote,
         // Checkstyle judges the result.
         if (license != LicenseMode.NONE) {
             ApplyLicenseHeaderTask.register(project, license);
             tasks.named(ClearSkiesPlugin.APPLY_TASK_NAME)
-                .configure(task -> task.mustRunAfter(ApplyLicenseHeaderTask.NAME));
+                    .configure(task -> task.mustRunAfter(ApplyLicenseHeaderTask.NAME));
             tasks.withType(Checkstyle.class).configureEach(task -> task.mustRunAfter(ApplyLicenseHeaderTask.NAME));
         }
         tasks.named(FormatJPlugin.APPLY_TASK_NAME)
-            .configure(task -> task.mustRunAfter(ClearSkiesPlugin.APPLY_TASK_NAME));
+                .configure(task -> task.mustRunAfter(ClearSkiesPlugin.APPLY_TASK_NAME));
         tasks.named(FormatJPlugin.CHECK_TASK_NAME)
-            .configure(task -> task.mustRunAfter(ClearSkiesPlugin.CHECK_TASK_NAME));
+                .configure(task -> task.mustRunAfter(ClearSkiesPlugin.CHECK_TASK_NAME));
         tasks.withType(Checkstyle.class)
-            .configureEach(task -> task.mustRunAfter(
-                ClearSkiesPlugin.APPLY_TASK_NAME, ClearSkiesPlugin.CHECK_TASK_NAME, FormatJPlugin.APPLY_TASK_NAME,
-                FormatJPlugin.CHECK_TASK_NAME
-            ));
+                .configureEach(task -> task.mustRunAfter(ClearSkiesPlugin.APPLY_TASK_NAME,
+                        ClearSkiesPlugin.CHECK_TASK_NAME, FormatJPlugin.APPLY_TASK_NAME,
+                        FormatJPlugin.CHECK_TASK_NAME));
     }
 
 }

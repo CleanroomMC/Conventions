@@ -23,10 +23,8 @@ import java.util.List;
  */
 public class ConventionsPlugin implements Plugin<Project> {
 
-    private static final List<String> MOD_DEVELOPMENT_PLUGIN_IDS = List.of(
-        "com.cleanroommc.cleanroomgradle", "com.gtnewhorizons.retrofuturagradle", "top.outlands.gradle",
-        "net.minecraftforge.gradle"
-    );
+    private static final List<String> MOD_DEVELOPMENT_PLUGIN_IDS = List.of("com.cleanroommc.cleanroomgradle",
+            "com.gtnewhorizons.retrofuturagradle", "top.outlands.gradle", "net.minecraftforge.gradle");
 
     @Override
     public void apply(Project project) {
@@ -47,7 +45,7 @@ public class ConventionsPlugin implements Plugin<Project> {
             }
         } else {
             MOD_DEVELOPMENT_PLUGIN_IDS.forEach(id -> project.getPluginManager()
-                .withPlugin(id, _ -> project.getPluginManager().apply(ConventionsModPlugin.class)));
+                    .withPlugin(id, _ -> project.getPluginManager().apply(ConventionsModPlugin.class)));
         }
     }
 

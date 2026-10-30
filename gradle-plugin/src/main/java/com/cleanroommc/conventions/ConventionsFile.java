@@ -35,9 +35,8 @@ enum ConventionsFile {
     private static final String RESOURCE_DIRECTORY = "/resources/";
     private static final Pattern REGEX_METACHARACTER = Pattern.compile("[\\\\.\\[\\]{}()*+?^$|]");
     private static final String HEADER_MODULE = "<module name=\"RegexpHeader\">";
-    private static final Pattern HEADER_CHECK = Pattern.compile(
-        "(?s)(\\s*<!--[^>]*-->)?\\s*" + HEADER_MODULE + ".*?</module>"
-    );
+    private static final Pattern HEADER_CHECK = Pattern.compile("(?s)(\\s*<!--[^>]*-->)?\\s*" + HEADER_MODULE
+                    + ".*?</module>");
     private static final String YEAR_PATTERN = "\\d{4}(?:-(?:\\d{4}|present))?";
 
     private final String fileName;
@@ -78,14 +77,13 @@ enum ConventionsFile {
             return checkstyle;
         }
         String paths = files.stream()
-            .map(file -> Pattern.quote(file.getAbsolutePath()))
-            .collect(Collectors.joining("|"));
-        return checkstyle.replace(
-            HEADER_MODULE,
-            "<module name=\"SuppressionSingleFilter\">\n" + "    <property name=\"checks\" value=\"RegexpHeader\"/>\n" +
-                "    <property name=\"files\" value=\"" + escapeXml(paths) + "\"/>\n" + "  </module>\n  " +
-                HEADER_MODULE
-        );
+                .map(file -> Pattern.quote(file.getAbsolutePath()))
+                .collect(Collectors.joining("|"));
+        return checkstyle.replace(HEADER_MODULE,
+                "<module name=\"SuppressionSingleFilter\">\n"
+                        + "    <property name=\"checks\" value=\"RegexpHeader\"/>\n"
+                        + "    <property name=\"files\" value=\"" + escapeXml(paths) + "\"/>\n" + "  </module>\n  "
+                        + HEADER_MODULE);
     }
 
     static String toJavaBlockComment(String text) {
@@ -125,15 +123,14 @@ enum ConventionsFile {
     static String readResource(String resourceName) {
         try (InputStream stream = ConventionsFile.class.getResourceAsStream(RESOURCE_DIRECTORY + resourceName)) {
             if (stream == null) {
-                throw new GradleException(
-                    "Convention resource " + resourceName + " is missing from the conventions plugin jar"
-                );
+                throw new GradleException("Convention resource " + resourceName
+                                + " is missing from the conventions plugin jar");
             }
             return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new UncheckedIOException(
-                "Cannot read convention resource " + resourceName + " from the conventions plugin jar", e
-            );
+            throw new UncheckedIOException("Cannot read convention resource " + resourceName
+                            + " from the conventions plugin jar",
+                    e);
         }
     }
 

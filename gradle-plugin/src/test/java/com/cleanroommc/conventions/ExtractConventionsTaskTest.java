@@ -23,9 +23,8 @@ class ExtractConventionsTaskTest {
     void mergeReplacesTheMarkedRegionAndKeepsTheRest() {
         String existing = "# >>> cleanroom-conventions\nold/\n# <<< cleanroom-conventions\nmine.iml\n";
         String incoming = "# >>> cleanroom-conventions\nnew/\n# <<< cleanroom-conventions\n";
-        assertThat(ExtractConventionsTask.mergeMarkedRegion(existing, incoming, ".gitignore")).isEqualTo(
-            "# >>> cleanroom-conventions\nnew/\n# <<< cleanroom-conventions\nmine.iml\n"
-        );
+        assertThat(ExtractConventionsTask.mergeMarkedRegion(existing, incoming,
+                ".gitignore")).isEqualTo("# >>> cleanroom-conventions\nnew/\n# <<< cleanroom-conventions\nmine.iml\n");
     }
 
     @Test
@@ -33,17 +32,16 @@ class ExtractConventionsTaskTest {
         String existing = "# >>> cleanroom-conventions\nold/\nmine.iml\n";
         String incoming = "# >>> cleanroom-conventions\nnew/\n# <<< cleanroom-conventions\n";
         assertThatThrownBy(() -> ExtractConventionsTask.mergeMarkedRegion(existing, incoming, ".gitignore"))
-            .isInstanceOf(GradleException.class)
-            .hasMessageContaining(".gitignore opens");
+                .isInstanceOf(GradleException.class)
+                .hasMessageContaining(".gitignore opens");
     }
 
     @Test
     void mergePrependsWhenTheExistingFileHasNoMarkers() {
         String existing = "mine.iml\n";
         String incoming = "# >>> cleanroom-conventions\nnew/\n# <<< cleanroom-conventions\n";
-        assertThat(ExtractConventionsTask.mergeMarkedRegion(existing, incoming, ".gitignore")).isEqualTo(
-            "# >>> cleanroom-conventions\nnew/\n# <<< cleanroom-conventions\nmine.iml\n"
-        );
+        assertThat(ExtractConventionsTask.mergeMarkedRegion(existing, incoming,
+                ".gitignore")).isEqualTo("# >>> cleanroom-conventions\nnew/\n# <<< cleanroom-conventions\nmine.iml\n");
     }
 
 }

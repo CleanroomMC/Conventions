@@ -10,9 +10,11 @@ trim_trailing_whitespace = true
 indent_style = space
 indent_size = 4
 max_line_length = 160
+ij_continuation_indent_size = 8
 
 [*.{java,gradle,groovy,kt,kts}]
 indent_size = 4
+ij_java_binary_operation_sign_on_next_line = true
 
 [*.{json,json5,yml,yaml,toml,xml}]
 indent_size = 2

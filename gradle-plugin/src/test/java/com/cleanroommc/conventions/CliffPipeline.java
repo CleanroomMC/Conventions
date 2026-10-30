@@ -19,12 +19,10 @@ import java.util.regex.Pattern;
 
 final class CliffPipeline {
 
-    static final String COLLAPSE_COMMAND = "awk 'NR==1 && /^pack[(!:]/ {pack=1} {printf \"%s%s\", " +
-        "(NR==1 ? \"\" : (pack || tolower($0) ~ /^co-authored-by:/ ? \"\\n\" : \"\\f\")), $0}' ";
+    static final String COLLAPSE_COMMAND = "awk 'NR==1 && /^pack[(!:]/ {pack=1} {printf \"%s%s\", "
+            + "(NR==1 ? \"\" : (pack || tolower($0) ~ /^co-authored-by:/ ? \"\\n\" : \"\\f\")), $0}' ";
 
-    private static final Pattern CONVENTIONAL_HEADER = Pattern.compile(
-        "^(?<type>[^\\s(:!]+)(?:\\((?<scope>[^)]*)\\))?(?<breaking>!)?:\\s*(?<desc>.*)$"
-    );
+    private static final Pattern CONVENTIONAL_HEADER = Pattern.compile("^(?<type>[^\\s(:!]+)(?:\\((?<scope>[^)]*)\\))?(?<breaking>!)?:\\s*(?<desc>.*)$");
     private static final Pattern PACK_HEADER = Pattern.compile("^pack[(!:]");
     private static final Pattern TOML_STRING = Pattern.compile("(?:'([^']*)'|\"((?:\\\\.|[^\"])*)\")");
     private static final Pattern GROUP_PREFIX = Pattern.compile("^<!--\\s*\\d+\\s*-->");
@@ -34,8 +32,8 @@ final class CliffPipeline {
     private final List<Preprocessor> preprocessors;
     private final List<Parser> parsers;
 
-    private CliffPipeline(
-        boolean splitCommits, List<String> processingOrder, List<Preprocessor> preprocessors, List<Parser> parsers) {
+    private CliffPipeline(boolean splitCommits, List<String> processingOrder, List<Preprocessor> preprocessors,
+            List<Parser> parsers) {
         this.splitCommits = splitCommits;
         this.processingOrder = List.copyOf(processingOrder);
         this.preprocessors = List.copyOf(preprocessors);
@@ -48,11 +46,9 @@ final class CliffPipeline {
 
     static CliffPipeline parse(String toml) {
         String git = section(toml, "git");
-        return new CliffPipeline(
-            booleanValue(git, "split_commits"), stringArray(git, "processing_order"),
-            parsePreprocessors(bracketArray(git, "commit_preprocessors")),
-            parseParsers(bracketArray(git, "commit_parsers"))
-        );
+        return new CliffPipeline(booleanValue(git, "split_commits"), stringArray(git, "processing_order"),
+                parsePreprocessors(bracketArray(git, "commit_preprocessors")),
+                parseParsers(bracketArray(git, "commit_parsers")));
     }
 
     private static String header(String message) {
@@ -219,8 +215,8 @@ final class CliffPipeline {
                 return null;
             }
             return delimiter.charAt(0) == '\''
-                ? object.substring(matcher.end() + 3, end)
-                : unescape(object.substring(matcher.end() + 3, end));
+                    ? object.substring(matcher.end() + 3, end)
+                    : unescape(object.substring(matcher.end() + 3, end));
         }
         Matcher quoted = TOML_STRING.matcher(object);
         if (!quoted.find(matcher.end()) || quoted.start() != matcher.end()) {

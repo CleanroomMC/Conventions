@@ -17,18 +17,12 @@ import java.util.Locale;
 
 enum LicenseMode {
 
-    FREE(
-        "free", "licenses/free/LICENSE", "licenses/free/HEADER", "MIT License", "https://opensource.org/licenses/MIT",
-        ""
-    ),
-    OPEN(
-        "open", "licenses/open/LICENSE", "licenses/open/HEADER", "GNU Lesser General Public License v3.0 only",
-        "https://www.gnu.org/licenses/lgpl-3.0.html", ""
-    ),
-    VISIBLE(
-        "visible", "LICENSE", "HEADER", ConventionsDefaults.LICENSE_NAME, ConventionsDefaults.LICENSE_URL,
-        ConventionsDefaults.LICENSE_COMMENTS
-    ),
+    FREE("free", "licenses/free/LICENSE", "licenses/free/HEADER", "MIT License", "https://opensource.org/licenses/MIT",
+            ""),
+    OPEN("open", "licenses/open/LICENSE", "licenses/open/HEADER", "GNU Lesser General Public License v3.0 only",
+            "https://www.gnu.org/licenses/lgpl-3.0.html", ""),
+    VISIBLE("visible", "LICENSE", "HEADER", ConventionsDefaults.LICENSE_NAME, ConventionsDefaults.LICENSE_URL,
+            ConventionsDefaults.LICENSE_COMMENTS),
     // Carries no license, so callers skip every license feature instead of reading its resources.
     NONE("none", null, null, "", "", "");
 
@@ -39,9 +33,8 @@ enum LicenseMode {
     private final String url;
     private final String comments;
 
-    LicenseMode(
-        String propertyValue, String licenseResource, String headerResource, String displayName, String url,
-        String comments) {
+    LicenseMode(String propertyValue, String licenseResource, String headerResource, String displayName, String url,
+            String comments) {
         this.propertyValue = propertyValue;
         this.licenseResource = licenseResource;
         this.headerResource = headerResource;
@@ -81,9 +74,8 @@ enum LicenseMode {
     }
 
     String javaHeaderPattern(String author) {
-        return ConventionsFile.toJavaBlockCommentPattern(
-            ConventionsFile.readResource(headerResource).replace(CopyrightNotice.AUTHOR_TOKEN, author)
-        );
+        return ConventionsFile.toJavaBlockCommentPattern(ConventionsFile.readResource(headerResource)
+                        .replace(CopyrightNotice.AUTHOR_TOKEN, author));
     }
 
     String displayName() {

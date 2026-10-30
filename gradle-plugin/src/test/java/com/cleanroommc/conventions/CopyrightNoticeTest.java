@@ -32,23 +32,22 @@ class CopyrightNoticeTest {
     @Test
     void replacesOnlyTheTokens() {
         String text = "Copyright (c) @YEAR@ @AUTHOR@\nCopyright (C) <year> author\n";
-        assertThat(CopyrightNotice.of(2021, 2026).apply(text)).isEqualTo(
-            "Copyright (c) 2021-2026 CleanroomMC contributors\nCopyright (C) <year> author\n"
-        );
+        assertThat(CopyrightNotice.of(2021, 2026)
+                        .apply(text)).isEqualTo("Copyright (c) 2021-2026 CleanroomMC contributors\nCopyright (C) <year> author\n");
     }
 
     @Test
     void rejectsAFutureStartYear() {
         assertThatThrownBy(() -> CopyrightNotice.of(2027, 2026))
-            .isInstanceOf(GradleException.class)
-            .hasMessageContaining("must not be later than the current year 2026");
+                .isInstanceOf(GradleException.class)
+                .hasMessageContaining("must not be later than the current year 2026");
     }
 
     @Test
     void rejectsANonFourDigitStartYear() {
         assertThatThrownBy(() -> CopyrightNotice.of(999, 2026))
-            .isInstanceOf(GradleException.class)
-            .hasMessageContaining("must be a four-digit year");
+                .isInstanceOf(GradleException.class)
+                .hasMessageContaining("must be a four-digit year");
     }
 
 }
