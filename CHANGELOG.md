@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.0 - 2026-11-10
+
+### Feature
+
+- **clearskies**: Update to 2.0.0 *[commit by [@Rongmario](https://github.com/Rongmario) in [a54486a](https://github.com/CleanroomMC/Conventions/commit/a54486aae165a8eabf5551d47a13764aa6623d61)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.5.0...1.6.0
+
 ## 1.5.0 - 2026-10-30
 
 ### Feature
