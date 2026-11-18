@@ -20,16 +20,9 @@ public class ConventionsSettingsPlugin implements Plugin<Settings> {
     private static void addRepositories(RepositoryHandler repos) {
         repos.mavenCentral();
         repos.gradlePluginPortal();
-        repos.exclusiveContent(exclusive -> {
-            exclusive.forRepository(() -> repos.maven(maven -> {
-                maven.setName(ConventionsDefaults.MAVEN_REPOSITORY_NAME);
-                maven.setUrl(ConventionsDefaults.MAVEN_REPOSITORY_URL);
-            }));
-            exclusive.filter(content -> {
-                for (String group : ConventionsDefaults.MAVEN_GROUPS) {
-                    content.includeGroup(group);
-                }
-            });
+        repos.maven(maven -> {
+            maven.setName(ConventionsDefaults.MAVEN_REPOSITORY_NAME);
+            maven.setUrl(ConventionsDefaults.MAVEN_REPOSITORY_URL);
         });
     }
 
