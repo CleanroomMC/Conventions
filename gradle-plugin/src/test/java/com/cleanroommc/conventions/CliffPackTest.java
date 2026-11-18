@@ -146,8 +146,10 @@ class CliffPackTest {
         String body = cliffBody();
         assertThat(body).contains("{% if not contributor.username %}{% continue %}{% endif -%}");
         assertThat(body).contains("{% if contributor.username == remote.github.owner %}{% continue %}{% endif -%}");
-        assertThat(body).contains("{% if not previous.version and founder.remote.username == contributor.username %}{% continue %}{% endif -%}");
-        assertThat(body).contains("{% if not previous.version and founder.author.name == contributor.username %}{% continue %}{% endif -%}");
+        assertThat(body).contains("{% if not previous.version and founder.remote.username == contributor.username "
+                        + "%}{% continue %}{% endif -%}");
+        assertThat(body).contains("{% if not previous.version and founder.author.name == contributor.username %}{% "
+                        + "continue %}{% endif -%}");
     }
 
     @Test

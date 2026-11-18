@@ -33,7 +33,8 @@ class CopyrightNoticeTest {
     void replacesOnlyTheTokens() {
         String text = "Copyright (c) @YEAR@ @AUTHOR@\nCopyright (C) <year> author\n";
         assertThat(CopyrightNotice.of(2021, 2026)
-                        .apply(text)).isEqualTo("Copyright (c) 2021-2026 CleanroomMC contributors\nCopyright (C) <year> author\n");
+                        .apply(text)).isEqualTo("Copyright (c) 2021-2026 CleanroomMC contributors\n"
+                        + "Copyright (C) <year> author\n");
     }
 
     @Test

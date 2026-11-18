@@ -32,14 +32,20 @@ public class ConventionsTestingPlugin implements Plugin<Project> {
             DependencyHandler dependencies = project.getDependencies();
             String testImplementation = JavaPlugin.TEST_IMPLEMENTATION_CONFIGURATION_NAME;
 
-            dependencies.addProvider(testImplementation, conventions.getJunitVersion().map(version -> dependencies.platform("org.junit:junit-bom:" + version)));
+            dependencies.addProvider(testImplementation,
+                    conventions.getJunitVersion()
+                            .map(version -> dependencies.platform("org.junit:junit-bom:" + version)));
             dependencies.add(testImplementation, "org.junit.jupiter:junit-jupiter");
             dependencies.add(testImplementation, "org.junit.platform:junit-platform-launcher");
 
-            dependencies.addProvider(testImplementation, conventions.getMockitoVersion().map(version -> "org.mockito:mockito-core:" + version));
-            dependencies.addProvider(testImplementation, conventions.getMockitoVersion().map(version -> "org.mockito:mockito-junit-jupiter:" + version));
+            dependencies.addProvider(testImplementation,
+                    conventions.getMockitoVersion().map(version -> "org.mockito:mockito-core:" + version));
+            dependencies.addProvider(testImplementation,
+                    conventions.getMockitoVersion().map(version -> "org.mockito:mockito-junit-jupiter:" + version));
 
-            dependencies.addProvider(testImplementation, conventions.getAssertjVersion().map(version -> dependencies.platform("org.assertj:assertj-bom:" + version)));
+            dependencies.addProvider(testImplementation,
+                    conventions.getAssertjVersion()
+                            .map(version -> dependencies.platform("org.assertj:assertj-bom:" + version)));
             dependencies.add(testImplementation, "org.assertj:assertj-core");
             dependencies.add(testImplementation, "org.assertj:assertj-guava");
         });

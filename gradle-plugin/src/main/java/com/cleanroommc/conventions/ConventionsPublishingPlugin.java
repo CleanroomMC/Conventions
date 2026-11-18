@@ -135,8 +135,10 @@ public class ConventionsPublishingPlugin implements Plugin<Project> {
         homepageUrl.convention(repositoryUrl);
 
         project.getPluginManager().withPlugin(JAVA_GRADLE_PLUGIN_ID, _ -> {
-            GradlePluginDevelopmentExtension gradlePlugin = project.getExtensions().getByType(GradlePluginDevelopmentExtension.class);
-            repositoryUrl.convention(fromProperty.orElse(fromGit).orElse(gradlePlugin.getVcsUrl().map(ConventionsPublishingPlugin::canonicalHttpUrl)));
+            GradlePluginDevelopmentExtension gradlePlugin = project.getExtensions()
+                    .getByType(GradlePluginDevelopmentExtension.class);
+            repositoryUrl.convention(fromProperty.orElse(fromGit)
+                            .orElse(gradlePlugin.getVcsUrl().map(ConventionsPublishingPlugin::canonicalHttpUrl)));
             homepageUrl.convention(gradlePlugin.getWebsite().orElse(repositoryUrl));
         });
 

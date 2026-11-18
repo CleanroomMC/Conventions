@@ -50,7 +50,8 @@ public abstract class ExtractConventionsTask extends DefaultTask {
         Provider<CopyrightNotice> notice = CopyrightNotice.provider(project, project.getRootProject());
         project.getTasks().register(NAME, ExtractConventionsTask.class, task -> {
             task.setGroup("conventions");
-            task.setDescription("Writes convention files into the project directory. Not attached to build, check or assemble.");
+            task.setDescription("Writes convention files into the project directory. Not attached to build, check or "
+                            + "assemble.");
             task.getDestinationDirectory().convention(project.getRootProject().getLayout().getProjectDirectory());
             for (ConventionsFile file : ConventionsFile.values()) {
                 if (file == ConventionsFile.CHECKSTYLE) {

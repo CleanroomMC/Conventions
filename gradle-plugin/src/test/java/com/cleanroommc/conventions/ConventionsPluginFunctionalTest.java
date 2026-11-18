@@ -238,7 +238,8 @@ class ConventionsPluginFunctionalTest {
                 }
                 """);
         javaFile("src/main/java/example/Example.java",
-                "package example;\n\npublic class Example {\n\n    public static final String VERSION = \"@{VERSION}\";\n\n}\n");
+                "package example;\n\npublic class Example {\n\n"
+                        + "    public static final String VERSION = \"@{VERSION}\";\n\n}\n");
 
         run("compileJava");
 
@@ -259,7 +260,9 @@ class ConventionsPluginFunctionalTest {
                         + printTestDependencies());
         property("conventions.javaMajor = 8");
         javaFile("src/main/java/example/Example.java",
-                "package example;\n\npublic final class Example {\n\n    public static final String VERSION = \"@{VERSION}\";\n\n    private Example() { }\n\n}\n");
+                "package example;\n\npublic final class Example {\n\n"
+                        + "    public static final String VERSION = \"@{VERSION}\";\n\n    private Example() { }\n\n"
+                        + "}\n");
         javaFile("src/test/java/example/ExampleTest.java",
                 """
                 package example;
@@ -405,7 +408,8 @@ class ConventionsPluginFunctionalTest {
     void beginFromRejectsAFutureYear() throws IOException {
         int future = Year.now().getValue() + 1;
         project("id 'java'\n    id 'com.cleanroommc.conventions'", "conventions { beginFrom = " + future + " }");
-        assertThat(runAndFail("extractConventions").getOutput()).contains("beginFrom must not be later than the current year");
+        assertThat(runAndFail("extractConventions").getOutput()).contains("beginFrom must not be later than the "
+                        + "current year");
     }
 
     @Test
@@ -439,8 +443,8 @@ class ConventionsPluginFunctionalTest {
     @Test
     void annotationVersionsCanBeConfiguredThroughTheExtension() throws IOException {
         project("id 'java'\n    id 'com.cleanroommc.conventions.annotations'",
-                "conventions {\n    jspecifyVersion = '0.3.0'\n    jetbrainsAnnotationsVersion = '26.0.2'\n    anoneVersion = '0.9.0'\n}\n\n"
-                        + printCompileOnly());
+                "conventions {\n    jspecifyVersion = '0.3.0'\n    jetbrainsAnnotationsVersion = '26.0.2'\n"
+                        + "    anoneVersion = '0.9.0'\n}\n\n" + printCompileOnly());
         String output = run("printCompileOnly").getOutput();
         assertThat(output).contains("org.jspecify:jspecify:0.3.0");
         assertThat(output).contains("org.jetbrains:annotations:26.0.2");
@@ -1173,7 +1177,8 @@ class ConventionsPluginFunctionalTest {
         Path source = buildSrc.resolve("src/main/java/StubToolchain.java");
         Files.createDirectories(source.getParent());
         Files.writeString(source,
-                "public class StubToolchain implements org.gradle.api.Plugin<org.gradle.api.Project> {\n\n    @Override\n    public void apply(org.gradle.api.Project project) { }\n\n}\n");
+                "public class StubToolchain implements org.gradle.api.Plugin<org.gradle.api.Project> {\n\n"
+                        + "    @Override\n    public void apply(org.gradle.api.Project project) { }\n\n}\n");
     }
 
     private void git(String... arguments) throws IOException {
