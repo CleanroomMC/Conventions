@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.7.0 - 2026-11-18
+
+### Feature
+
+- Update formatj + clearskies *[commit by [@Rongmario](https://github.com/Rongmario) in [211a23b](https://github.com/CleanroomMC/Conventions/commit/211a23b9e1ef22dbdefe8950465b5d9adf932066)]*
+
+### Bug Fix
+
+- Dont use exclusiveContent on designated groups for ease of access *[commit by [@Rongmario](https://github.com/Rongmario) in [18058f6](https://github.com/CleanroomMC/Conventions/commit/18058f6862aedae18ef50ca83990a6b54a41c6e1)]*
+
+**Full Changelog**: https://github.com/CleanroomMC/Conventions/compare/1.6.0...1.7.0
+
 ## 1.6.0 - 2026-11-10
 
 ### Feature
